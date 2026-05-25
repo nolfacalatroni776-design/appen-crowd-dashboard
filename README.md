@@ -16,11 +16,39 @@ npm run lint
 npm run build
 ```
 
-## GitHub Pages 部署
+## 当前 GitHub 推送
 
-本仓库内置 GitHub Actions 工作流。推送到 `main` 分支后会自动构建并发布 `dist/` 到 GitHub Pages。
+当前 demo 已推送到：
 
-仓库创建后，需要在 GitHub 仓库设置中确认：
+```text
+git@github.com:theone752y-a11y/demo.git
+```
+
+分支：
+
+- `appen-crowd-dashboard-source`：当前看板源码
+- `gh-pages`：已构建的静态发布产物
+
+没有覆盖该仓库原有 `main` 分支。
+
+要启用公开访问，需要在 GitHub 仓库设置中确认：
+
+- `Settings` -> `Pages`
+- `Build and deployment` -> `Source` 选择 `Deploy from a branch`
+- Branch 选择 `gh-pages`
+- Folder 选择 `/ (root)`
+
+启用后访问：
+
+```text
+https://theone752y-a11y.github.io/demo/
+```
+
+## 新仓库自动部署
+
+如果后续创建一个新的空仓库，本项目也内置 GitHub Actions 工作流。推送到 `main` 分支后可自动构建并发布 `dist/` 到 GitHub Pages。
+
+新仓库创建后，需要在 GitHub 仓库设置中确认：
 
 - `Settings` -> `Pages`
 - `Build and deployment` -> `Source` 选择 `GitHub Actions`
