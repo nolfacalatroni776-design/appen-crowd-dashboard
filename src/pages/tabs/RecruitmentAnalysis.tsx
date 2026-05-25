@@ -167,8 +167,8 @@ export default function RecruitmentAnalysis() {
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleDomainSort('current')}>
                     <div className="flex items-center justify-end">
-                      已到位
-                      <MetricInfo tip={metricTip('onboarded_workers')} align="right" />
+                      招募通过人数
+                      <MetricInfo tip={metricTip('approved_workers')} align="right" />
                       <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'current' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
                     </div>
                   </th>
@@ -207,19 +207,12 @@ export default function RecruitmentAnalysis() {
                       <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'passRate' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
                     </div>
                   </th>
-                  <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" style={{minWidth: '70px'}} onClick={() => handleDomainSort('onboardRate')}>
-                    <div className="flex items-center justify-end">
-                      上岗率
-                      <MetricInfo tip={metricTip('onboard_rate')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'onboardRate' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
-                    </div>
-                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
                 {filteredDomainRecruitData.length === 0 ? (
                   <tr>
-                    <td colSpan={11} className="py-8 text-center text-slate-500 text-sm">
+                    <td colSpan={10} className="py-8 text-center text-slate-500 text-sm">
                       没有匹配的领域数据
                     </td>
                   </tr>
@@ -254,7 +247,6 @@ export default function RecruitmentAnalysis() {
                     </td>
                     <td className="py-3 text-right text-slate-600">{row.applyRate}%</td>
                     <td className="py-3 text-right text-slate-600">{row.passRate}%</td>
-                    <td className="py-3 text-right text-slate-600">{row.onboardRate}%</td>
                   </tr>
                 ))}
               </tbody>
