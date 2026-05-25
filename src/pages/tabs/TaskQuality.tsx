@@ -44,7 +44,7 @@ export default function TaskQuality() {
           </div>
         </EditableChartCard>
 
-        <EditableChartCard id="tq-c3" title="后续质检通过率趋势" tooltip={metricTip('first_qc_pass_rate')} className="col-span-1">
+        <EditableChartCard id="tq-c3" title="后续质检通过率趋势" tooltip={metricTip('followup_qc_pass_rate')} className="col-span-1">
           <div className="h-72 w-full block">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={qualityTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -53,8 +53,7 @@ export default function TaskQuality() {
                 <YAxis tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} domain={[0, 100]} />
                 <Tooltip contentStyle={{ fontSize: '12px', borderRadius: '6px' }} />
                 <Legend wrapperStyle={{ fontSize: '10px' }} />
-                <Line type="monotone" dataKey="secondQcPassRate" name="二轮质检通过率" stroke="#10b981" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="thirdQcPassRate" name="三轮质检通过率" stroke="#6366f1" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="followupQcPassRate" name="后续质检通过率" stroke="#10b981" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>

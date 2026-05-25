@@ -433,8 +433,8 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     note: '按招募单去重',
   },
   approved_workers: {
-    name: '已通过人数',
-    definition: '审批通过人数',
+    name: '招募通过人数',
+    definition: '招募申请审核通过的去重人数',
     formula: 'count(status = approved)',
     source: '申请记录/已通过人员',
     refresh: '30 分钟',
@@ -449,12 +449,12 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     note: 'demo 使用“已到位”',
   },
   recruit_progress_rate: {
-    name: '招募进度',
-    definition: '已到位占目标比例',
-    formula: 'onboarded_workers / target_workers',
-    source: '招募单 + 任务',
+    name: '通过达成率',
+    definition: '招募通过人数占目标招募人数的比例',
+    formula: 'approved_workers / target_workers',
+    source: '招募单 + 申请记录',
     refresh: '30 分钟',
-    note: '当前平台表格有百分比',
+    note: '用于明细招募单排行的目标完成判断',
   },
   avg_daily_recruited_workers: {
     name: '日均招募人数',
@@ -591,6 +591,14 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     source: '质检/验收',
     refresh: '30 分钟',
     note: 'P0 质量指标',
+  },
+  followup_qc_pass_rate: {
+    name: '后续质检通过率',
+    definition: '首次质检未通过后，进入后续质检并通过的数据占比，不拆分具体轮次',
+    formula: 'followup_pass_count / followup_checked_count',
+    source: '质检/验收',
+    refresh: '30 分钟',
+    note: '用于观察返修后整体质量收敛情况',
   },
   rework_rate: {
     name: '返工率',

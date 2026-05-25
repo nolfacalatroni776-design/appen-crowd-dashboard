@@ -57,13 +57,13 @@ export const recruitTrend = [
 ];
 
 export const qualityTrend = [
-  { date: '11/1', secondQcPassRate: 92.4, thirdQcPassRate: 97.1 },
-  { date: '11/2', secondQcPassRate: 93.1, thirdQcPassRate: 97.4 },
-  { date: '11/3', secondQcPassRate: 91.8, thirdQcPassRate: 96.8 },
-  { date: '11/4', secondQcPassRate: 93.6, thirdQcPassRate: 97.9 },
-  { date: '11/5', secondQcPassRate: 94.2, thirdQcPassRate: 98.1 },
-  { date: '11/6', secondQcPassRate: 93.9, thirdQcPassRate: 97.7 },
-  { date: '11/7', secondQcPassRate: 94.8, thirdQcPassRate: 98.4 },
+  { date: '11/1', followupQcPassRate: 94.0 },
+  { date: '11/2', followupQcPassRate: 94.7 },
+  { date: '11/3', followupQcPassRate: 93.6 },
+  { date: '11/4', followupQcPassRate: 95.1 },
+  { date: '11/5', followupQcPassRate: 95.7 },
+  { date: '11/6', followupQcPassRate: 95.4 },
+  { date: '11/7', followupQcPassRate: 96.0 },
 ];
 
 export const cohortData = [
@@ -96,16 +96,16 @@ export const domainRecruitData = [
 ];
 
 export const topRecruitTasks = [
-  { id: 'R-20261101', name: '自动驾驶街景3D点云标注', domain: '自动驾驶', target: 500, applicants: 1250, onboarded: 420 },
-  { id: 'R-20261102', name: '方言语音采集与转写', domain: '语音合成', target: 300, applicants: 980, onboarded: 280 },
-  { id: 'R-20261103', name: '医疗CT影像病灶框选', domain: '医疗影像', target: 400, applicants: 850, onboarded: 150 },
-  { id: 'R-20261104', name: '电商评论情感极性分类', domain: '文本情感', target: 200, applicants: 760, onboarded: 190 },
-  { id: 'R-20261105', name: '自动驾驶车辆行为预测', domain: '自动驾驶', target: 600, applicants: 720, onboarded: 310 },
-  { id: 'R-20261106', name: '多语种机器翻译语料对齐', domain: 'NLP任务', target: 150, applicants: 650, onboarded: 120 },
-  { id: 'R-20261107', name: '商品图像多标签分类', domain: '图像标注', target: 250, applicants: 580, onboarded: 240 },
-  { id: 'R-20261108', name: '智能客服对话意图识别', domain: 'NLP任务', target: 200, applicants: 520, onboarded: 180 },
-  { id: 'R-20261109', name: '骨科X光片关键点标注', domain: '医疗影像', target: 300, applicants: 490, onboarded: 110 },
-  { id: 'R-20261110', name: '车载语音指令唤醒词采集', domain: '语音合成', target: 400, applicants: 450, onboarded: 350 },
+  { id: 'R-20261101', name: '自动驾驶街景3D点云标注', domain: '自动驾驶', target: 500, applicants: 1250, approved: 420 },
+  { id: 'R-20261102', name: '方言语音采集与转写', domain: '语音合成', target: 300, applicants: 980, approved: 280 },
+  { id: 'R-20261103', name: '医疗CT影像病灶框选', domain: '医疗影像', target: 400, applicants: 850, approved: 150 },
+  { id: 'R-20261104', name: '电商评论情感极性分类', domain: '文本情感', target: 200, applicants: 760, approved: 190 },
+  { id: 'R-20261105', name: '自动驾驶车辆行为预测', domain: '自动驾驶', target: 600, applicants: 720, approved: 310 },
+  { id: 'R-20261106', name: '多语种机器翻译语料对齐', domain: 'NLP任务', target: 150, applicants: 650, approved: 120 },
+  { id: 'R-20261107', name: '商品图像多标签分类', domain: '图像标注', target: 250, applicants: 580, approved: 240 },
+  { id: 'R-20261108', name: '智能客服对话意图识别', domain: 'NLP任务', target: 200, applicants: 520, approved: 180 },
+  { id: 'R-20261109', name: '骨科X光片关键点标注', domain: '医疗影像', target: 300, applicants: 490, approved: 110 },
+  { id: 'R-20261110', name: '车载语音指令唤醒词采集', domain: '语音合成', target: 400, applicants: 450, approved: 350 },
 ];
 
 export const domainEfficiencyData = [

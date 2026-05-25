@@ -17,6 +17,7 @@ export default function RecruitmentAnalysis() {
   const { isEditMode, chartLists, updateChartListItem, globalDomain } = useDashboard();
   const topRecruitTasksState = chartLists.topRecruitTasks || topRecruitTasks;
   const trendData = recruitTrendByDomain[globalDomain] || recruitTrendByDomain['全部领域'];
+  const getApprovedWorkers = (task: any) => Number(task.approved ?? task.onboarded ?? 0);
   let filteredDomainRecruitData = domainRecruitData.filter(d => globalDomain === '全部领域' || d.domain === globalDomain);
   const filteredReviewCycleDomains = reviewCycleData.domains.filter(d => globalDomain === '全部领域' || d.name === globalDomain);
 
@@ -65,9 +66,12 @@ export default function RecruitmentAnalysis() {
       if (taskSortConfig.key === 'reviewCycle') {
         aValue = Number(((a.target % 2) + 1.2).toFixed(1));
         bValue = Number(((b.target % 2) + 1.2).toFixed(1));
+      } else if (taskSortConfig.key === 'approved') {
+        aValue = getApprovedWorkers(a);
+        bValue = getApprovedWorkers(b);
       } else if (taskSortConfig.key === 'completionRate') {
-        aValue = a.target > 0 ? a.onboarded / a.target : 0;
-        bValue = b.target > 0 ? b.onboarded / b.target : 0;
+        aValue = a.target > 0 ? getApprovedWorkers(a) / a.target : 0;
+        bValue = b.target > 0 ? getApprovedWorkers(b) / b.target : 0;
       }
       if (aValue < bValue) {
         return taskSortConfig.direction === 'asc' ? -1 : 1;
@@ -290,11 +294,11 @@ export default function RecruitmentAnalysis() {
                       <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'applicants' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
                     </div>
                   </th>
-                  <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('onboarded')}>
+                  <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('approved')}>
                     <div className="flex items-center justify-end">
                       招募通过人数
                       <MetricInfo tip={metricTip('approved_workers')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'onboarded' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'approved' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('reviewCycle')}>
@@ -306,7 +310,7 @@ export default function RecruitmentAnalysis() {
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('completionRate')}>
                     <div className="flex items-center justify-end">
-                      达成率
+                      通过达成率
                       <MetricInfo tip={metricTip('recruit_progress_rate')} align="right" />
                       <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'completionRate' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
                     </div>
@@ -348,12 +352,12 @@ export default function RecruitmentAnalysis() {
                       {isEditMode ? <input type="number" className="w-full border rounded px-1 text-right" value={task.applicants} onChange={e => updateChartListItem('topRecruitTasks', task.id, { applicants: Number(e.target.value) })} /> : task.applicants.toLocaleString()}
                     </td>
                     <td className="py-3 pl-2 text-right text-emerald-600">
-                      {isEditMode ? <input type="number" className="w-full border rounded px-1 text-right" value={task.onboarded} onChange={e => updateChartListItem('topRecruitTasks', task.id, { onboarded: Number(e.target.value) })} /> : task.onboarded.toLocaleString()}
+                      {isEditMode ? <input type="number" className="w-full border rounded px-1 text-right" value={getApprovedWorkers(task)} onChange={e => updateChartListItem('topRecruitTasks', task.id, { approved: Number(e.target.value) })} /> : getApprovedWorkers(task).toLocaleString()}
                     </td>
                     <td className="py-3 text-right font-medium text-slate-700">
                       {((task.target % 2) + 1.2).toFixed(1)}天
                     </td>
-                    <td className="py-3 text-right text-slate-600">{task.target > 0 ? ((task.onboarded / task.target) * 100).toFixed(1) : 0}%</td>
+                    <td className="py-3 text-right text-slate-600">{task.target > 0 ? ((getApprovedWorkers(task) / task.target) * 100).toFixed(1) : 0}%</td>
                   </tr>
                 ))}
               </tbody>
