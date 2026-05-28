@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
-import { Info, Eye, EyeOff, Download } from 'lucide-react';
+import { Eye, EyeOff, Download } from 'lucide-react';
 import { useDashboard } from '@/src/context/DashboardContext';
+import MetricInfo from '@/src/components/MetricInfo';
 
 export default function EditableChartCard({ id, title: defaultTitle, tooltip: defaultTooltip = '', children, className = '', showTitleTooltip = true }: any) {
   const { isEditMode, widgetConfigs, updateWidget } = useDashboard();
@@ -66,15 +67,7 @@ export default function EditableChartCard({ id, title: defaultTitle, tooltip: de
           <div className="flex items-center justify-between w-full">
             <CardTitle className="text-sm font-bold tracking-tight text-slate-900 flex items-center">
               {config.title}
-              {displayTooltip && (
-                <div className="ml-2 group relative cursor-help">
-                  <Info className="w-4 h-4 text-slate-400" />
-                  <div className="absolute top-full left-0 mt-2 hidden group-hover:block w-80 p-3 bg-slate-800 text-white text-xs rounded shadow-lg z-50 text-left font-normal whitespace-pre-line leading-relaxed">
-                    {displayTooltip}
-                    <div className="absolute left-1.5 bottom-full w-2 h-2 bg-slate-800 transform rotate-45 -mb-1"></div>
-                  </div>
-                </div>
-              )}
+              <MetricInfo tip={displayTooltip} className="ml-2" iconClassName="w-4 h-4" />
             </CardTitle>
             <button
               className="text-slate-400 hover:text-teal-600 transition-colors"

@@ -426,11 +426,19 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   stage_churn_rate: {
     name: '转化环节流失率',
-    definition: '进入指定转化环节后未进入下一环节的用户数/进入该环节的用户数；不等同于 90 天未活跃/已流失用户',
+    definition: '进入指定转化环节后未进入下一环节的用户数/进入该环节的用户数；用于比较相邻转化断点，不应对多个环节简单平均，不等同于 90 天未活跃/已流失用户',
     formula: 'lost_users_at_stage / entered_stage_users',
     source: '漏斗事件',
     refresh: 'T+1',
     note: '支持新注册到认证、认证到申请等',
+  },
+  max_stage_churn_rate: {
+    name: '最大流失断点',
+    definition: '转化流失断点分析中流失率最高的转化环节，同时展示该环节未进入下一环节的用户数；用于定位当前最明显的转化阻塞点',
+    formula: 'max(stage_churn_rate)',
+    source: '漏斗事件',
+    refresh: 'T+1',
+    note: '不使用各环节流失率平均值',
   },
   stage_churn_users: {
     name: '转化环节流失人数',

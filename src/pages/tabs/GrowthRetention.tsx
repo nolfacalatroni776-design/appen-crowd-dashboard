@@ -100,6 +100,7 @@ export default function GrowthRetention() {
     };
   });
   const largestLoss = funnelRows.slice(1).reduce((max, row) => row.loss > max.loss ? row : max, { loss: 0, name: '' } as any);
+  const maxChurnStage = churnDataState.reduce((max, row) => Number(row.rate || 0) > Number(max.rate || 0) ? row : max, { rate: 0, count: 0, stage: '-' } as any);
 
   return (
     <div className="space-y-6">
@@ -329,14 +330,18 @@ export default function GrowthRetention() {
         </EditableChartCard>
 
         {/* Churn Analysis */}
-        <EditableChartCard id="gr-c3" title="用户流失原因分析" showTitleTooltip={false} className="col-span-1">
+        <EditableChartCard id="gr-c3" title="转化流失断点分析" showTitleTooltip={false} className="col-span-1">
             <div className="flex justify-between items-end mb-4">
               <div>
-                <div className="text-2xl font-bold text-slate-800">8.3%</div>
+                <div className="text-2xl font-bold text-slate-800">{Number(maxChurnStage.rate || 0).toFixed(1)}%</div>
                 <div className="flex items-center text-xs text-slate-500">
-                  本月流失率
-                  <MetricInfo tip={metricTip('stage_churn_rate')} />
+                  最大流失断点
+                  <MetricInfo tip={metricTip('max_stage_churn_rate')} />
                 </div>
+              </div>
+              <div className="text-right text-xs text-slate-500">
+                <div className="font-semibold text-slate-700">{maxChurnStage.stage}</div>
+                <div className="mt-1">{Number(maxChurnStage.count || 0).toLocaleString()}人未进入下一环节</div>
               </div>
             </div>
             <div className="overflow-x-auto">

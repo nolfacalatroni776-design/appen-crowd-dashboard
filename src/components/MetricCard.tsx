@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/src/components/ui/card';
-import { ArrowUpRight, ArrowDownRight, Info, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, Eye, EyeOff, Trash2 } from 'lucide-react';
 import { useDashboard } from '@/src/context/DashboardContext';
+import MetricInfo from '@/src/components/MetricInfo';
 
 export default function MetricCard({ 
   id, 
@@ -98,15 +99,7 @@ export default function MetricCard({
             ) : (
               <>
                 <h3 className="text-sm font-semibold text-slate-500">{config.title}</h3>
-                {config.tooltip && (
-                  <>
-                    <Info className="w-3.5 h-3.5 ml-1 text-slate-400 cursor-help" />
-                    <div className="absolute left-0 top-full mt-2 hidden group-hover:block w-72 p-3 bg-slate-800 text-white text-xs rounded shadow-lg z-50 whitespace-pre-line leading-relaxed">
-                      {config.tooltip}
-                      <div className="absolute left-4 bottom-full w-2 h-2 bg-slate-800 transform rotate-45 -mb-1"></div>
-                    </div>
-                  </>
-                )}
+                <MetricInfo tip={config.tooltip} />
               </>
             )}
           </div>
