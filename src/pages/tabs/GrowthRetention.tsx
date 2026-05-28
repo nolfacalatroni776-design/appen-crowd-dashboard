@@ -2,7 +2,22 @@ import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/src/components/ui/card';
 import { cohortData, platformOverviewData, userGrowthTrend } from '@/src/data/mockData';
 import { metricTip } from '@/src/data/metricDefinitions';
-import { Plus, Trash2 } from 'lucide-react';
+import {
+  Activity,
+  BadgeCheck,
+  Bed,
+  CircleCheck,
+  CircleX,
+  ClipboardList,
+  Clock3,
+  FileSearch,
+  Hourglass,
+  Moon,
+  Plus,
+  ShieldCheck,
+  Trash2,
+  UserPlus,
+} from 'lucide-react';
 import EditableChartCard from '@/src/components/EditableChartCard';
 import MetricCard from '@/src/components/MetricCard';
 import MetricInfo from '@/src/components/MetricInfo';
@@ -13,6 +28,29 @@ const toPercent = (value: number) => `${Number(value.toFixed(1))}%`;
 const lifecycleStageTip = (stage: string) => {
   if (stage.includes('已流失')) return metricTip('lost_users_90d');
   return metricTip('lifecycle_stage_users');
+};
+const normalizeLifecycleStage = (stage?: string) => String(stage ?? '').replace(/^[^\p{L}\p{N}]+/u, '').trim();
+const lifecycleStageIconClass = (status?: string) => {
+  if (status === 'good') return 'border-emerald-100 bg-emerald-50 text-emerald-600';
+  if (status === 'warning') return 'border-amber-100 bg-amber-50 text-amber-600';
+  if (status === 'danger') return 'border-red-100 bg-red-50 text-red-600';
+  if (status === 'info') return 'border-slate-200 bg-slate-50 text-slate-500';
+  return 'border-teal-100 bg-teal-50 text-teal-700';
+};
+const getLifecycleStageIcon = (stage?: string) => {
+  const normalizedStage = normalizeLifecycleStage(stage);
+  if (normalizedStage.includes('新注册')) return UserPlus;
+  if (normalizedStage.includes('待KYC')) return ShieldCheck;
+  if (normalizedStage.includes('未申请')) return ClipboardList;
+  if (normalizedStage.includes('审核中')) return Clock3;
+  if (normalizedStage.includes('申请通过')) return CircleCheck;
+  if (normalizedStage.includes('活跃执行')) return Activity;
+  if (normalizedStage.includes('30日未活跃')) return Moon;
+  if (normalizedStage.includes('60日沉睡')) return Bed;
+  if (normalizedStage.includes('已流失')) return CircleX;
+  if (normalizedStage.includes('认证')) return BadgeCheck;
+  if (normalizedStage.includes('待')) return Hourglass;
+  return FileSearch;
 };
 
 export default function GrowthRetention() {
@@ -235,16 +273,27 @@ export default function GrowthRetention() {
                 <div key={item.id} className="flex items-center justify-between text-xs hover:bg-slate-50 p-1 -mx-1 rounded-md transition-colors relative group">
                   {isEditMode ? (
                     <div className="flex w-full gap-2 items-center">
-                      <input className="font-medium text-slate-700 w-1/3 border rounded px-1 min-w-0" value={item.stage || item.phase} onChange={e => updateChartListItem('lifecycle', item.id, { stage: e.target.value })} />
+                      <input className="font-medium text-slate-700 w-1/3 border rounded px-1 min-w-0" value={normalizeLifecycleStage(item.stage || item.phase)} onChange={e => updateChartListItem('lifecycle', item.id, { stage: normalizeLifecycleStage(e.target.value) })} />
                       <input type="number" className="text-slate-500 w-1/4 border rounded px-1 text-right min-w-0" value={item.count || item.users} onChange={e => updateChartListItem('lifecycle', item.id, { count: Number(e.target.value) })} />
                       <input type="number" className="text-slate-500 w-1/4 border rounded px-1 text-right min-w-0" value={item.percent || 0} onChange={e => updateChartListItem('lifecycle', item.id, { percent: Number(e.target.value) })} />
                       <button onClick={() => removeChartListItem('lifecycle', item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded"><Trash2 className="w-3 h-3" /></button>
                     </div>
                   ) : (
                     <>
-                      <div className="w-32 flex items-center font-medium text-slate-700">
-                        {item.stage || item.phase}
-                        <MetricInfo tip={lifecycleStageTip(item.stage || item.phase || '')} />
+                      <div className="flex w-40 items-center font-medium text-slate-700">
+                        {(() => {
+                          const stageName = normalizeLifecycleStage(item.stage || item.phase);
+                          const StageIcon = getLifecycleStageIcon(stageName);
+                          return (
+                            <>
+                              <span className={`mr-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border ${lifecycleStageIconClass(item.status)}`}>
+                                <StageIcon className="h-3.5 w-3.5" strokeWidth={2.2} />
+                              </span>
+                              <span className="truncate">{stageName}</span>
+                              <MetricInfo tip={lifecycleStageTip(stageName)} />
+                            </>
+                          );
+                        })()}
                       </div>
                       <div className="flex-1 mx-4">
                         <div className="h-2 bg-slate-100 rounded-full overflow-hidden">

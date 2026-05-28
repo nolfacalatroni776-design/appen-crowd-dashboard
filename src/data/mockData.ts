@@ -74,15 +74,15 @@ export const cohortData = [
 ];
 
 export const lifecycleData = [
-  { stage: '🆕 新注册', count: 2474, percent: 0.77, trend: 15, status: 'normal' },
-  { stage: '⏳ 待KYC', count: 538, percent: 0.17, trend: 8, status: 'normal' },
-  { stage: '📋 未申请过招募', count: 1399, percent: 0.44, trend: -5, status: 'warning' },
-  { stage: '⏰ 招募审核中', count: 1175, percent: 0.37, trend: 0, status: 'normal' },
-  { stage: '✅ 招募申请通过', count: 739, percent: 0.23, trend: -12, status: 'warning' },
-  { stage: '🔨 活跃执行中', count: 8245, percent: 2.57, trend: 3, status: 'good' },
-  { stage: '💤 30日未活跃', count: 45230, percent: 14.12, trend: 2, status: 'warning' },
-  { stage: '😴 60日沉睡', count: 127580, percent: 39.82, trend: 5, status: 'danger' },
-  { stage: '❌ 已流失(90天未活跃)', count: 133012, percent: 41.51, trend: 1, status: 'info' },
+  { stage: '新注册', count: 2474, percent: 0.77, trend: 15, status: 'normal' },
+  { stage: '待KYC', count: 538, percent: 0.17, trend: 8, status: 'normal' },
+  { stage: '未申请过招募', count: 1399, percent: 0.44, trend: -5, status: 'warning' },
+  { stage: '招募审核中', count: 1175, percent: 0.37, trend: 0, status: 'normal' },
+  { stage: '招募申请通过', count: 739, percent: 0.23, trend: -12, status: 'warning' },
+  { stage: '活跃执行中', count: 8245, percent: 2.57, trend: 3, status: 'good' },
+  { stage: '30日未活跃', count: 45230, percent: 14.12, trend: 2, status: 'warning' },
+  { stage: '60日沉睡', count: 127580, percent: 39.82, trend: 5, status: 'danger' },
+  { stage: '已流失(90天未活跃)', count: 133012, percent: 41.51, trend: 1, status: 'info' },
 ];
 
 export const domainRecruitData = [
