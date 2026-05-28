@@ -135,7 +135,7 @@ export default function GrowthRetention() {
 
         <EditableChartCard id="gr-funnel" title="新增用户 D30 转化漏斗" showTitleTooltip={false} className="col-span-1">
           <div className="mt-2 space-y-4">
-            <div className="grid grid-cols-3 gap-2 text-[11px]">
+            <div className="grid grid-cols-2 gap-2 text-[11px] xl:grid-cols-4">
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
                 <div className="text-slate-400">入组用户</div>
                 <div className="mt-0.5 font-semibold text-slate-700">31-60天前新增注册</div>
@@ -143,6 +143,10 @@ export default function GrowthRetention() {
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
                 <div className="text-slate-400">观察窗口</div>
                 <div className="mt-0.5 font-semibold text-slate-700">注册后0-30天</div>
+              </div>
+              <div className="rounded border border-teal-100 bg-teal-50 px-3 py-2">
+                <div className="text-teal-600">D30窗口活跃</div>
+                <div className="mt-0.5 font-semibold text-teal-700">注册后24-30天</div>
               </div>
               <div className="rounded border border-amber-100 bg-amber-50 px-3 py-2">
                 <div className="text-amber-600">最大流失</div>
@@ -216,6 +220,10 @@ export default function GrowthRetention() {
 
         {/* 留存矩阵 */}
         <EditableChartCard id="gr-c1" title="用户留存矩阵（按注册周）" showTitleTooltip={false} className="col-span-1">
+            <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
+              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">按注册周分组</span>
+              <span>每行使用同一注册周期用户作为 D1/D7/D14/D30 留存基准</span>
+            </div>
             <div className="overflow-x-auto mt-2">
               <table className="w-full text-xs text-left">
                 <thead>
@@ -277,6 +285,10 @@ export default function GrowthRetention() {
 
         {/* Lifecycle */}
         <EditableChartCard id="gr-c2" title="用户生命周期阶段分布" showTitleTooltip={false} className="col-span-1">
+            <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
+              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">截至昨日快照</span>
+              <span>按用户最新生命周期状态归类，各阶段互斥统计</span>
+            </div>
             <div className="space-y-3 mt-2">
               {lifecycleDataState.map((item, i) => (
                 <div key={item.id} className="flex items-center justify-between text-xs hover:bg-slate-50 p-1 -mx-1 rounded-md transition-colors relative group">

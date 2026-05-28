@@ -21,11 +21,6 @@ const moduleTimeFilters: Record<string, { label: string; value: string }> = {
   recruitment: { label: '招募周期', value: '近30天' },
   task: { label: '任务周期', value: '近30天' },
 };
-const growthTimeContextFilters = [
-  { label: 'D30漏斗', value: '31-60天前注册' },
-  { label: '留存矩阵', value: '按注册周分组' },
-  { label: '生命周期', value: '截至昨日快照' },
-];
 
 export default function Layout() {
   const [activeTab, setActiveTab] = useState('traffic');
@@ -103,21 +98,6 @@ export default function Layout() {
             <ChevronDown className="w-4 h-4 ml-2 text-slate-400" />
           </button>
 
-          {activeTab === 'growth' && (
-            <>
-              <div className="h-4 w-px bg-slate-200 mx-1"></div>
-              {growthTimeContextFilters.map(filter => (
-                <div
-                  key={filter.label}
-                  className="flex h-9 items-center rounded-full border border-teal-100 bg-white/80 px-3 text-slate-700 shadow-sm"
-                >
-                  <span className="mr-1 text-slate-400">{filter.label}</span>
-                  {filter.value}
-                </div>
-              ))}
-            </>
-          )}
-          
           {activeTab === 'recruitment' && (
             <>
               <div className="h-4 w-px bg-slate-200 mx-1"></div>
