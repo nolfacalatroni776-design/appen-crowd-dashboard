@@ -16,41 +16,33 @@ npm run lint
 npm run build
 ```
 
-## 当前 GitHub 推送
+## 当前发布
 
-当前 demo 已推送到：
-
-```text
-git@github.com:theone752y-a11y/demo.git
-```
-
-分支：
-
-- `appen-crowd-dashboard-source`：当前看板源码
-- `gh-pages`：已构建的静态发布产物
-
-没有覆盖该仓库原有 `main` 分支。
-
-要启用公开访问，需要在 GitHub 仓库设置中确认：
-
-- `Settings` -> `Pages`
-- `Build and deployment` -> `Source` 选择 `Deploy from a branch`
-- Branch 选择 `gh-pages`
-- Folder 选择 `/ (root)`
-
-启用后访问：
+当前 demo 通过 GitHub Actions 发布到：
 
 ```text
-https://theone752y-a11y.github.io/demo/
+https://nolfacalatroni776-design.github.io/appen-crowd-dashboard/
 ```
 
-## 新仓库自动部署
+源码仓库：
 
-如果后续创建一个新的空仓库，本项目也内置 GitHub Actions 工作流。推送到 `main` 分支后可自动构建并发布 `dist/` 到 GitHub Pages。
+```text
+https://github.com/nolfacalatroni776-design/appen-crowd-dashboard
+```
 
-新仓库创建后，需要在 GitHub 仓库设置中确认：
+推送到 `main` 分支后会自动构建并更新 GitHub Pages。
 
-- `Settings` -> `Pages`
-- `Build and deployment` -> `Source` 选择 `GitHub Actions`
+## 编辑固化
 
-如果仓库名不是用户主页仓库，发布路径会自动使用 `/<repo-name>/`。
+页面编辑模式会先把改动保存在当前浏览器的 localStorage 中。要让研发、设计打开线上链接也看到同一份内容，需要把浏览器编辑态固化进源码并推送：
+
+```bash
+npm run persist:edits
+npm run lint
+npm run build
+git add src/data/defaultDashboardState.ts
+git commit -m "Persist dashboard edits"
+git push github-pages main
+```
+
+`persist:edits` 会读取 Chrome 中线上域名对应的 dashboard 编辑态，并写入 `src/data/defaultDashboardState.ts`。静态 GitHub Pages 页面不会直接持有 GitHub 写权限；如果要实现前端点击保存后自动提交源码，需要新增安全后端、GitHub App 或受控 GitHub Action 入口。

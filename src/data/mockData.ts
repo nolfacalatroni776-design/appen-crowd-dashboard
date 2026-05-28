@@ -19,7 +19,6 @@ export const platformOverviewData = {
 
 export const funnelData = [
   { name: '新注册用户', value: 2474, rate: 100 },
-  { name: '完成实名认证', value: 1937, rate: 78.3 },
   { name: '提交招募申请', value: 1175, rate: 60.7 },
   { name: '招募通过', value: 739, rate: 62.9 },
   { name: '参与任务执行', value: 630, rate: 85.2 },
@@ -76,10 +75,10 @@ export const cohortData = [
 
 export const lifecycleData = [
   { stage: '🆕 新注册', count: 2474, percent: 0.77, trend: 15, status: 'normal' },
-  { stage: '⏳ 认证中', count: 538, percent: 0.17, trend: 8, status: 'normal' },
-  { stage: '📋 待申请招募', count: 1399, percent: 0.44, trend: -5, status: 'warning' },
+  { stage: '⏳ 待KYC', count: 538, percent: 0.17, trend: 8, status: 'normal' },
+  { stage: '📋 未申请过招募', count: 1399, percent: 0.44, trend: -5, status: 'warning' },
   { stage: '⏰ 招募审核中', count: 1175, percent: 0.37, trend: 0, status: 'normal' },
-  { stage: '✅ 通过待上岗', count: 739, percent: 0.23, trend: -12, status: 'warning' },
+  { stage: '✅ 招募申请通过', count: 739, percent: 0.23, trend: -12, status: 'warning' },
   { stage: '🔨 活跃执行中', count: 8245, percent: 2.57, trend: 3, status: 'good' },
   { stage: '💤 30日未活跃', count: 45230, percent: 14.12, trend: 2, status: 'warning' },
   { stage: '😴 60日沉睡', count: 127580, percent: 39.82, trend: 5, status: 'danger' },
@@ -129,8 +128,8 @@ export const churnData = [
   { stage: '新注册→认证', count: 537, rate: 21.7, status: 'normal' },
   { stage: '认证→申请', count: 762, rate: 39.3, status: 'danger' },
   { stage: '申请→通过', count: 436, rate: 37.1, status: 'warning' },
-  { stage: '通过→上岗', count: 109, rate: 14.8, status: 'good' },
-  { stage: '上岗→7日活跃', count: 345, rate: 54.7, status: 'danger' },
+  { stage: '通过→任务执行', count: 109, rate: 14.8, status: 'good' },
+  { stage: '任务执行→7日活跃', count: 345, rate: 54.7, status: 'danger' },
 ];
 
 export const lifecycleDurationData = [

@@ -93,8 +93,8 @@ export default function RecruitmentAnalysis() {
 
       <div className="grid grid-cols-4 gap-4">
         <MetricCard id="ra-2" title="目标招募总人数" value="13,665人" change={800} changeLabel="较上周" tooltip={metricTip('target_workers')} />
-        <MetricCard id="ra-3" title="已到位总人数" value="7,394人" change={-200} changeLabel="较上周" isWarning tooltip={metricTip('onboarded_workers')} />
-        <MetricCard id="ra-4" title="总缺口人数" value="6,271人" change={0} changeLabel="缺口率 45.9%" isDanger tooltip={metricTip('gap_workers', 'gap_rate', 'recruitment_supply_gap')} />
+        <MetricCard id="ra-3" title="招募通过总人数" value="7,394人" change={-200} changeLabel="较上周" isWarning tooltip={metricTip('approved_workers')} />
+        <MetricCard id="ra-4" title="总缺口人数" value="6,271人" change={0} changeLabel="缺口率 45.9%" isDanger tooltip={metricTip('gap_workers', 'gap_rate')} />
         <MetricCard id="ra-5" title="整体通过率" value="63.5%" change={-1.2} changeLabel="较上月" tooltip={metricTip('approval_rate', 'recruit_approval_rate')} />
       </div>
 

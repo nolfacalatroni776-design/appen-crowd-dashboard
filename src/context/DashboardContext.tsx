@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { funnelData, lifecycleData, churnData, errorTypeData, lifecycleDurationData, topPagesData, topRecruitTasks } from '@/src/data/mockData';
+import { sourceDashboardState } from '@/src/data/defaultDashboardState';
 
-const STORAGE_KEY = 'appen-crowd-dashboard-edit-state-v1';
+export const STORAGE_KEY = 'appen-crowd-dashboard-edit-state-v2';
 
 const withIds = (listKey: string, arr: any[]) => arr.map((item, idx) => ({ ...item, id: item.id ?? `${listKey}-${idx}` }));
 
@@ -88,8 +89,7 @@ const readStoredDashboardState = (): StoredDashboardState => {
 
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return {};
-    return JSON.parse(raw) as StoredDashboardState;
+    return raw ? JSON.parse(raw) as StoredDashboardState : sourceDashboardState;
   } catch {
     return {};
   }
@@ -103,9 +103,10 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [customMetrics, setCustomMetrics] = useState<Record<string, CustomMetric[]>>(() => storedState.customMetrics ?? {});
   const [chartLists, setChartLists] = useState<Record<string, any[]>>(() => mergeStoredChartLists(storedState.chartLists));
   const [systemTexts, setSystemTexts] = useState<Record<string, string>>(() => storedState.systemTexts ?? {});
+  const [hasLocalEdits, setHasLocalEdits] = useState(false);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || !hasLocalEdits) return;
 
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -117,13 +118,15 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     } catch {
       // localStorage can be unavailable or full; keep the dashboard usable in-memory.
     }
-  }, [widgetConfigs, customMetrics, chartLists, systemTexts]);
+  }, [widgetConfigs, customMetrics, chartLists, systemTexts, hasLocalEdits]);
 
   const updateSystemText = (key: string, value: string) => {
+    setHasLocalEdits(true);
     setSystemTexts(prev => ({ ...prev, [key]: value }));
   };
 
   const updateWidget = (id: string, updates: Partial<WidgetConfig>) => {
+    setHasLocalEdits(true);
     setWidgetConfigs(prev => {
       const existing = prev[id] || {};
       return { ...prev, [id]: { ...existing, ...updates } };
@@ -131,6 +134,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const addCustomMetric = (tabId: string) => {
+    setHasLocalEdits(true);
     setCustomMetrics(prev => {
       const existing = prev[tabId] || [];
       const newMetric: CustomMetric = {
@@ -146,6 +150,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const removeCustomMetric = (tabId: string, metricId: string) => {
+    setHasLocalEdits(true);
     setCustomMetrics(prev => {
       const existing = prev[tabId] || [];
       return { ...prev, [tabId]: existing.filter(m => m.id !== metricId) };
@@ -153,6 +158,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const updateCustomMetric = (tabId: string, metricId: string, updates: Partial<CustomMetric>) => {
+    setHasLocalEdits(true);
     setCustomMetrics(prev => {
       const existing = prev[tabId] || [];
       return {
@@ -163,6 +169,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const updateChartListItem = (listKey: string, itemId: string, updates: any) => {
+    setHasLocalEdits(true);
     setChartLists(prev => ({
       ...prev,
       [listKey]: (prev[listKey] || []).map(item => item.id === itemId ? { ...item, ...updates } : item)
@@ -170,6 +177,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const addChartListItem = (listKey: string, newItem: any) => {
+    setHasLocalEdits(true);
     setChartLists(prev => ({
       ...prev,
       [listKey]: [...(prev[listKey] || []), { id: `item-${Date.now()}-${Math.random()}`, ...newItem }]
@@ -177,6 +185,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const removeChartListItem = (listKey: string, itemId: string) => {
+    setHasLocalEdits(true);
     setChartLists(prev => ({
       ...prev,
       [listKey]: (prev[listKey] || []).filter(item => item.id !== itemId)

@@ -34,7 +34,7 @@ export default function PlatformTraffic() {
         <MetricCard id="pt-4" title="整体跳出率" value={`${trafficKpiData.bounceRate}%`} change={trafficKpiData.bounceRateChange} changeLabel="VS 昨天" tooltip={metricTip('bounce_rate')} />
         <MetricCard id="pt-5" title="招募单点击率" value={`${trafficKpiData.recruitCtr}%`} change={trafficKpiData.recruitCtrChange} changeLabel="VS 昨天" tooltip={metricTip('recruit_sheet_ctr')} />
         <MetricCard id="pt-6" title="招募频道点击" value="2,860次" change={9.6} changeLabel="VS 昨天" tooltip={metricTip('recruit_channel_tab_clicks')} />
-        <MetricCard id="pt-7" title="招募搜索次数" value="742次" change={6.4} changeLabel="VS 昨天" tooltip={metricTip('recruit_search_submits')} />
+        <MetricCard id="pt-7" title="招募单搜索次数" value="742次" change={6.4} changeLabel="VS 昨天" tooltip={metricTip('recruit_search_submits')} />
         <MetricCard id="pt-8" title="登录意向点击" value="1,126次" change={11.8} changeLabel="VS 昨天" tooltip={metricTip('login_intent_clicks')} />
       </div>
 

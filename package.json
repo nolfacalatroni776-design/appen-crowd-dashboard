@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "preview:public": "vite preview --host 0.0.0.0 --port 4173",
     "tunnel": "localtunnel --port 4173 --local-host 127.0.0.1",
+    "persist:edits": "node scripts/persist-dashboard-edits.mjs",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
   },

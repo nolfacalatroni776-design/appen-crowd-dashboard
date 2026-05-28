@@ -32,7 +32,6 @@ export default function GrowthRetention() {
   const funnelDataState = chartLists.funnel || [];
   const funnelMetricKeys = [
     'funnel_new_registered_users',
-    'funnel_verified_users_d30',
     'funnel_applied_users_d30',
     'funnel_approved_users_d30',
     'funnel_task_started_users_d30',
@@ -63,8 +62,8 @@ export default function GrowthRetention() {
         <MetricCard id="gr-4" title="今日新增注册" value={`+${platformOverviewData.newUsers}`} change={platformOverviewData.newUsersChange} changeLabel="较昨日" tooltip={metricTip('new_registered_users')} />
         <MetricCard id="gr-5" title="DAU 今日活跃" value={platformOverviewData.dau.toLocaleString()} change={platformOverviewData.dauChange} changeLabel="较昨日" tooltip={metricTip('daily_active_users')} />
         <MetricCard id="gr-6" title="MAU 月活用户" value={platformOverviewData.mau.toLocaleString()} change={platformOverviewData.mauChange} changeLabel="较上月" isWarning tooltip={metricTip('monthly_active_users')} />
-        <MetricCard id="gr-7" title="平台活跃率" value={`${platformOverviewData.activeRate}%`} change={-0.1} changeLabel="较上月" isWarning tooltip={metricTip('platform_active_rate')} />
-        <MetricCard id="gr-1" title="注册转化率" value="5.47%" change={-0.3} changeLabel="较昨日" isWarning tooltip={metricTip('registration_conversion_rate')} />
+        <MetricCard id="gr-7" title="平台月活跃用户占比" value={`${platformOverviewData.activeRate}%`} change={-0.1} changeLabel="较上月" isWarning tooltip={metricTip('platform_active_rate')} />
+        <MetricCard id="gr-1" title="新访客注册转化率" value="5.47%" change={-0.3} changeLabel="较昨日" isWarning tooltip={metricTip('registration_conversion_rate')} />
         <MetricCard id="gr-2" title="实名认证率" value="78.3%" change={-1.8} changeLabel="较昨日" isWarning tooltip={metricTip('real_name_verification_rate')} />
         <MetricCard id="gr-3" title="招募申请率" value="60.7%" change={-5.4} changeLabel="较昨日" isDanger tooltip={metricTip('recruit_apply_rate')} />
       </div>
