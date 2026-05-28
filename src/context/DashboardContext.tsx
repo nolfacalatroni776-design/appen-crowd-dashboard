@@ -7,7 +7,7 @@ export const STORAGE_KEY = 'appen-crowd-dashboard-edit-state-v2';
 const withIds = (listKey: string, arr: any[]) => arr.map((item, idx) => ({ ...item, id: item.id ?? `${listKey}-${idx}` }));
 
 const stripLifecycleStageIcon = (stage?: string) => String(stage ?? '').replace(/^[^\p{L}\p{N}]+/u, '').trim();
-const normalizeLifecycleStageName = (stage?: string) => stripLifecycleStageIcon(stage).replace('待KYC', '待实名认证');
+const normalizeLifecycleStageName = (stage?: string) => stripLifecycleStageIcon(stage).replace(/待[A-Za-z]{3}/g, '待实名认证');
 
 const initialChartLists: Record<string, any[]> = {
   funnel: withIds('funnel', funnelData),

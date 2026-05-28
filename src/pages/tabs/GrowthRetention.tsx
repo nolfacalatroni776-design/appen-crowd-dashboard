@@ -27,7 +27,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 const toPercent = (value: number) => `${Number(value.toFixed(1))}%`;
 const lifecycleStageTip = (stage: string) => {
   if (stage.includes('新注册')) return metricTip('lifecycle_stage_new_registered');
-  if (stage.includes('待实名认证') || stage.includes('待KYC')) return metricTip('lifecycle_stage_pending_verification');
+  if (stage.includes('待实名认证') || /待[A-Za-z]{3}/.test(stage)) return metricTip('lifecycle_stage_pending_verification');
   if (stage.includes('未申请')) return metricTip('lifecycle_stage_no_application');
   if (stage.includes('审核中')) return metricTip('lifecycle_stage_reviewing');
   if (stage.includes('申请通过')) return metricTip('lifecycle_stage_approved');
@@ -37,7 +37,7 @@ const lifecycleStageTip = (stage: string) => {
   if (stage.includes('已流失')) return metricTip('lost_users_90d');
   return metricTip('lifecycle_stage_users');
 };
-const normalizeLifecycleStage = (stage?: string) => String(stage ?? '').replace(/^[^\p{L}\p{N}]+/u, '').trim().replace('待KYC', '待实名认证');
+const normalizeLifecycleStage = (stage?: string) => String(stage ?? '').replace(/^[^\p{L}\p{N}]+/u, '').trim().replace(/待[A-Za-z]{3}/g, '待实名认证');
 const lifecycleStageIconClass = (status?: string) => {
   if (status === 'good') return 'border-emerald-100 bg-emerald-50 text-emerald-600';
   if (status === 'warning') return 'border-amber-100 bg-amber-50 text-amber-600';
