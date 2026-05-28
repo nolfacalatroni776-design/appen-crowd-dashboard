@@ -659,7 +659,6 @@ export const metricTip = (...keys: string[]) =>
       return [
         `${metric.name}`,
         `定义：${metric.definition}`,
-        `公式：${metric.formula}`,
       ]
         .filter(Boolean)
         .join('\n');
