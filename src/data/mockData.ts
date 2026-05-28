@@ -22,7 +22,7 @@ export const funnelData = [
   { name: '提交招募申请', value: 1175, rate: 60.7 },
   { name: '招募通过', value: 739, rate: 62.9 },
   { name: '参与任务执行', value: 630, rate: 85.2 },
-  { name: 'D30持续活跃用户', value: 285, rate: 45.3 },
+  { name: 'D30窗口活跃用户', value: 285, rate: 45.3 },
 ];
 
 export const userGrowthTrend = [

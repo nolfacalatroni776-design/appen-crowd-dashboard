@@ -241,8 +241,8 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     note: '有效任务行为可按领取、进入任务或首次提交定义',
   },
   funnel_d30_active_workers: {
-    name: 'D30持续活跃用户',
-    definition: '新注册用户分组中，注册后第 24-30 天仍有有效任务提交的用户数',
+    name: 'D30窗口活跃用户',
+    definition: '已完整经历 30 天观察期的新注册用户中，注册后第 24-30 天内至少有一次有效任务提交的用户数；未注册满 30 天的新用户不纳入统计',
     formula: 'count(distinct worker_id where valid_submit_at between registered_at + 24d and registered_at + 30d)',
     source: '用户注册事件 + 任务提交事件',
     refresh: 'T+1',
