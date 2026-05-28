@@ -28,6 +28,13 @@ const mergeStoredChartLists = (storedChartLists?: Record<string, any[]>) => {
     name: idx === initialChartLists.funnel.length - 1 ? defaultItem.name : (merged.funnel?.[idx]?.name ?? defaultItem.name),
   }));
 
+  merged.lifecycle = initialChartLists.lifecycle.map((defaultItem, idx) => ({
+    ...defaultItem,
+    ...(merged.lifecycle?.[idx] ?? {}),
+    id: defaultItem.id,
+    stage: String(defaultItem.stage).includes('已流失') ? defaultItem.stage : (merged.lifecycle?.[idx]?.stage ?? defaultItem.stage),
+  }));
+
   return merged;
 };
 

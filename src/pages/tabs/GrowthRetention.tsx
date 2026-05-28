@@ -10,6 +10,10 @@ import { useDashboard } from '@/src/context/DashboardContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const toPercent = (value: number) => `${Number(value.toFixed(1))}%`;
+const lifecycleStageTip = (stage: string) => {
+  if (stage.includes('已流失')) return metricTip('lost_users_90d');
+  return metricTip('lifecycle_stage_users');
+};
 
 export default function GrowthRetention() {
   const { isEditMode, chartLists, updateChartListItem, addChartListItem, removeChartListItem } = useDashboard();
@@ -66,7 +70,7 @@ export default function GrowthRetention() {
       </div>
 
       <div className="grid grid-cols-2 gap-6">
-        <EditableChartCard id="gr-c0" title="用户增长趋势" tooltip={metricTip('new_registered_users', 'daily_active_users', 'stage_churn_rate')} className="col-span-1">
+        <EditableChartCard id="gr-c0" title="用户增长趋势" tooltip={metricTip('new_registered_users', 'daily_active_users', 'inactive_90d_new_users')} className="col-span-1">
           <div className="h-64 w-full block">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={userGrowthTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -77,7 +81,7 @@ export default function GrowthRetention() {
                 <Legend wrapperStyle={{ fontSize: '10px' }} />
                 <Line type="monotone" dataKey="new" name="新增注册" stroke="#3b82f6" strokeWidth={2} dot={false} />
                 <Line type="monotone" dataKey="active" name="活跃用户" stroke="#10b981" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="churn" name="流失用户" stroke="#ef4444" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="inactive90" name="90天未活跃用户" stroke="#ef4444" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -241,7 +245,7 @@ export default function GrowthRetention() {
                     <>
                       <div className="w-32 flex items-center font-medium text-slate-700">
                         {item.stage || item.phase}
-                        <MetricInfo tip={metricTip('lifecycle_stage_users')} />
+                        <MetricInfo tip={lifecycleStageTip(item.stage || item.phase || '')} />
                       </div>
                       <div className="flex-1 mx-4">
                         <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -337,7 +341,7 @@ export default function GrowthRetention() {
 
         {/* Average Lifecycle */}
         <EditableChartCard id="gr-c4" title="用户平均生命周期时长" showTitleTooltip={false} className="col-span-1">
-            <div className="grid grid-cols-3 gap-2 mb-6">
+            <div className="grid grid-cols-2 gap-2 mb-6">
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
                 <div className="flex items-center text-xs text-slate-500 mb-1">
                   平均生命周期
@@ -352,13 +356,6 @@ export default function GrowthRetention() {
                   <MetricInfo tip={metricTip('time_to_first_task_days')} />
                 </div>
                 <div className="text-lg font-bold text-slate-800">6.8天</div>
-              </div>
-              <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                <div className="flex items-center text-xs text-slate-500 mb-1">
-                  首单→流失
-                  <MetricInfo tip={metricTip('time_from_first_task_to_churn_days')} align="right" />
-                </div>
-                <div className="text-lg font-bold text-slate-800">61.7天</div>
               </div>
             </div>
             

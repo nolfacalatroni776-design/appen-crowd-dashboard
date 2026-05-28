@@ -27,13 +27,13 @@ export const funnelData = [
 ];
 
 export const userGrowthTrend = [
-  { date: '11/1', new: 150, active: 400, churn: 50 },
-  { date: '11/2', new: 200, active: 450, churn: 60 },
-  { date: '11/3', new: 180, active: 420, churn: 55 },
-  { date: '11/4', new: 250, active: 500, churn: 70 },
-  { date: '11/5', new: 300, active: 600, churn: 80 },
-  { date: '11/6', new: 280, active: 580, churn: 75 },
-  { date: '11/7', new: 350, active: 700, churn: 90 },
+  { date: '11/1', new: 150, active: 400, inactive90: 50 },
+  { date: '11/2', new: 200, active: 450, inactive90: 60 },
+  { date: '11/3', new: 180, active: 420, inactive90: 55 },
+  { date: '11/4', new: 250, active: 500, inactive90: 70 },
+  { date: '11/5', new: 300, active: 600, inactive90: 80 },
+  { date: '11/6', new: 280, active: 580, inactive90: 75 },
+  { date: '11/7', new: 350, active: 700, inactive90: 90 },
 ];
 
 export const dataOutputTrend = [
@@ -83,7 +83,7 @@ export const lifecycleData = [
   { stage: '🔨 活跃执行中', count: 8245, percent: 2.57, trend: 3, status: 'good' },
   { stage: '💤 30日未活跃', count: 45230, percent: 14.12, trend: 2, status: 'warning' },
   { stage: '😴 60日沉睡', count: 127580, percent: 39.82, trend: 5, status: 'danger' },
-  { stage: '❌ 已流失', count: 133012, percent: 41.51, trend: 1, status: 'info' },
+  { stage: '❌ 已流失(90天未活跃)', count: 133012, percent: 41.51, trend: 1, status: 'info' },
 ];
 
 export const domainRecruitData = [
