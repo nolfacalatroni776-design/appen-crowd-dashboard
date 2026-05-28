@@ -20,7 +20,7 @@ export default function TaskQuality() {
         <MetricCard id="tq-2" title="参与人数" value="8,245人" change={10} changeLabel="较上周" tooltip={metricTip('task_participants')} />
         <MetricCard id="tq-3" title="总提交量" value="315,161条" change={12} changeLabel="较上周" tooltip={metricTip('total_submissions')} />
         <MetricCard id="tq-4" title="标注质检通过率" value="89.2%" change={1.3} changeLabel="较昨日" tooltip={metricTip('labeling_qc_pass_rate')} />
-        
+
         <MetricCard id="tq-5" title="返工率" value="7.8%" change={0} changeLabel="较昨日" isWarning tooltip={metricTip('rework_rate')} />
         <MetricCard id="tq-6" title="今日提交量" value="45,023条" change={8} changeLabel="较昨日" tooltip={metricTip('daily_submissions', 'daily_submitted_items')} />
         <MetricCard id="tq-7" title="人均日产能" value="38.2条" change={-4.5} changeLabel="较昨日" isWarning tooltip={metricTip('avg_daily_output_per_worker')} />
@@ -37,7 +37,7 @@ export default function TaskQuality() {
                 <YAxis tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={{ fontSize: '12px', borderRadius: '6px' }} />
                 <Legend wrapperStyle={{ fontSize: '10px' }} />
-                <Line type="monotone" dataKey="labelingSubmissions" name="标注提交数据条数" stroke="#6366f1" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="labelingSubmissions" name="标注提交数据条数" stroke="#14b8a6" strokeWidth={2} dot={false} />
                 <Line type="monotone" dataKey="collectionSubmissions" name="采集提交数据条数" stroke="#10b981" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
@@ -85,8 +85,8 @@ export default function TaskQuality() {
                     )}
                   </div>
                   <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-indigo-500 min-w-1" 
+                    <div
+                      className="h-full bg-teal-500 min-w-1"
                       style={{ width: isEditMode ? '100%' : `${item.percent}%` }}
                     />
                   </div>
@@ -104,9 +104,9 @@ export default function TaskQuality() {
                 </div>
               ))}
               {isEditMode && (
-                <button 
+                <button
                   onClick={() => addChartListItem('errorType', { type: '新错误类型', percent: 0, count: 0, group: '描述' })}
-                  className="w-full mt-2 py-1.5 flex items-center justify-center gap-1 border border-dashed border-blue-300 rounded text-xs text-blue-500 hover:bg-blue-50"
+                  className="w-full mt-2 py-1.5 flex items-center justify-center gap-1 border border-dashed border-teal-300 rounded text-xs text-teal-600 hover:bg-teal-50"
                 >
                    <Plus className="w-3 h-3" /> 添加错误类型
                 </button>

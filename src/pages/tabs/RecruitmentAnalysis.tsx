@@ -10,7 +10,9 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 import { useDashboard } from '@/src/context/DashboardContext';
 
-export default function RecruitmentAnalysis() {
+const recruitStatusOptions = ['招募中', '审核中', '已暂停', '已完成'];
+
+export default function RecruitmentAnalysis({ recruitStatusFilter = '全部招募单状态' }: { recruitStatusFilter?: string }) {
   const [viewMode, setViewMode] = useState<'domain' | 'task'>('domain');
   const [domainSortConfig, setDomainSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [taskSortConfig, setTaskSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
@@ -30,8 +32,17 @@ export default function RecruitmentAnalysis() {
   const filteredReviewCycleDomains = reviewCycleData.domains.filter(d => globalDomain === '全部领域' || d.name === globalDomain);
 
   let filteredTasks = topRecruitTasksState.filter(task => {
-    return globalDomain === '全部领域' || task.domain === globalDomain;
+    const matchesDomain = globalDomain === '全部领域' || task.domain === globalDomain;
+    const matchesStatus = recruitStatusFilter === '全部招募单状态' || (task.recruitStatus ?? '招募中') === recruitStatusFilter;
+    return matchesDomain && matchesStatus;
   });
+
+  const statusBadgeClass = (status: string) => {
+    if (status === '已完成') return 'bg-emerald-50 text-emerald-700 border-emerald-100';
+    if (status === '审核中') return 'bg-sky-50 text-sky-700 border-sky-100';
+    if (status === '已暂停') return 'bg-amber-50 text-amber-700 border-amber-100';
+    return 'bg-teal-50 text-teal-700 border-teal-100';
+  };
 
   const handleDomainSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'desc';
@@ -117,28 +128,29 @@ export default function RecruitmentAnalysis() {
                 <Tooltip contentStyle={{ fontSize: '12px', borderRadius: '6px' }} />
                 <Legend wrapperStyle={{ fontSize: '10px' }} />
                 <Line type="monotone" dataKey="applyRate" name="申请率" stroke="#f59e0b" strokeWidth={2} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="passRate" name="通过率" stroke="#8b5cf6" strokeWidth={2} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="passRate" name="通过率" stroke="#14b8a6" strokeWidth={2} dot={{ r: 3 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </EditableChartCard>
       </div>
 
-      <div className="flex border-b border-slate-200 mt-8 mb-4">
-        <button 
-          onClick={() => setViewMode('domain')}
-          className={`pb-2 px-4 font-medium text-sm transition-colors relative ${viewMode === 'domain' ? 'text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
-        >
-          按领域查看
-          {viewMode === 'domain' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>}
-        </button>
-        <button 
-          onClick={() => setViewMode('task')}
-          className={`pb-2 px-4 font-medium text-sm transition-colors relative ${viewMode === 'task' ? 'text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
-        >
-          明细招募单排行
-          {viewMode === 'task' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>}
-        </button>
+      <div className="flex flex-wrap items-center justify-between gap-3 mt-8 mb-4">
+        <div className="inline-flex rounded-full bg-white border border-slate-200 p-1 shadow-sm">
+          <button
+            onClick={() => setViewMode('domain')}
+            className={`px-4 py-2 font-medium text-sm transition-colors rounded-full ${viewMode === 'domain' ? 'bg-teal-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+          >
+            按领域查看
+          </button>
+          <button
+            onClick={() => setViewMode('task')}
+            className={`px-4 py-2 font-medium text-sm transition-colors rounded-full ${viewMode === 'task' ? 'bg-teal-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+          >
+            明细招募单排行
+          </button>
+        </div>
+
       </div>
 
       {viewMode === 'domain' ? (
@@ -150,69 +162,69 @@ export default function RecruitmentAnalysis() {
                   <th className="pb-3 font-medium cursor-pointer hover:text-slate-700" onClick={() => handleDomainSort('domain')}>
                     <div className="flex items-center">
                       领域
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'domain' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'domain' ? (domainSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleDomainSort('tasks')}>
                     <div className="flex items-center justify-end">
                       招募单
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'tasks' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'tasks' ? (domainSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleDomainSort('target')}>
                     <div className="flex items-center justify-end">
                       目标人数
                       <MetricInfo tip={metricTip('target_workers')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'target' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'target' ? (domainSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleDomainSort('applicants')}>
                     <div className="flex items-center justify-end">
                       申请人数
                       <MetricInfo tip={metricTip('applied_workers')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'applicants' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'applicants' ? (domainSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleDomainSort('current')}>
                     <div className="flex items-center justify-end">
                       招募通过人数
                       <MetricInfo tip={metricTip('approved_workers')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'current' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'current' ? (domainSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleDomainSort('gap')}>
                     <div className="flex items-center justify-end">
                       缺口人数
                       <MetricInfo tip={metricTip('gap_workers')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'gap' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'gap' ? (domainSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleDomainSort('gapRate')}>
                     <div className="flex items-center justify-end">
                       缺口率
                       <MetricInfo tip={metricTip('gap_rate')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'gapRate' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'gapRate' ? (domainSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleDomainSort('reviewCycle')}>
                     <div className="flex items-center justify-end">
                       平均审核周期
                       <MetricInfo tip={metricTip('avg_review_cycle_days')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'reviewCycle' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'reviewCycle' ? (domainSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" style={{minWidth: '70px'}} onClick={() => handleDomainSort('applyRate')}>
                     <div className="flex items-center justify-end">
                       申请率
                       <MetricInfo tip={metricTip('application_rate')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'applyRate' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'applyRate' ? (domainSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" style={{minWidth: '70px'}} onClick={() => handleDomainSort('passRate')}>
                     <div className="flex items-center justify-end">
                       通过率
                       <MetricInfo tip={metricTip('approval_rate')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'passRate' ? (domainSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'passRate' ? (domainSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                 </tr>
@@ -234,7 +246,7 @@ export default function RecruitmentAnalysis() {
                     </td>
                     <td className="py-3 text-right text-slate-600">{row.tasks}</td>
                     <td className="py-3 text-right text-slate-600">{row.target.toLocaleString()}</td>
-                    <td className="py-3 text-right font-medium text-blue-600">{row.applicants.toLocaleString()}</td>
+                    <td className="py-3 text-right font-medium text-teal-700">{row.applicants.toLocaleString()}</td>
                     <td className="py-3 text-right text-slate-600">{row.current.toLocaleString()}</td>
                     <td className="py-3 text-right font-medium text-slate-700">{row.gap.toLocaleString()}</td>
                     <td className="py-3 text-right">
@@ -243,7 +255,7 @@ export default function RecruitmentAnalysis() {
                           row.gapRate > 50 ? 'text-red-600' : row.gapRate > 25 ? 'text-amber-600' : 'text-emerald-600'
                         }`}>{row.gapRate}%</span>
                         <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                          <div 
+                          <div
                             className={`h-full ${row.gapRate > 50 ? 'bg-red-500' : row.gapRate > 25 ? 'bg-amber-500' : 'bg-emerald-500'}`}
                             style={{ width: `${row.gapRate}%` }}
                           />
@@ -271,48 +283,51 @@ export default function RecruitmentAnalysis() {
                   <th className="pb-3 font-medium cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('name')}>
                     <div className="flex items-center">
                       招募单名称
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'name' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'name' ? (taskSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('domain')}>
                     <div className="flex items-center">
                       业务领域
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'domain' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'domain' ? (taskSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
+                  </th>
+                  <th className="pb-3 font-medium">
+                    <div className="flex items-center">状态</div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('target')}>
                     <div className="flex items-center justify-end">
                       目标人数
                       <MetricInfo tip={metricTip('target_workers')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'target' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'target' ? (taskSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('applicants')}>
                     <div className="flex items-center justify-end">
                       申请人数
                       <MetricInfo tip={metricTip('applied_workers')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'applicants' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'applicants' ? (taskSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('approved')}>
                     <div className="flex items-center justify-end">
                       招募通过人数
                       <MetricInfo tip={metricTip('approved_workers')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'approved' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'approved' ? (taskSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('reviewCycle')}>
                     <div className="flex items-center justify-end">
                       平均审核周期
                       <MetricInfo tip={metricTip('avg_review_cycle_days')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'reviewCycle' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'reviewCycle' ? (taskSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('passRate')}>
                     <div className="flex items-center justify-end">
                       通过率
                       <MetricInfo tip={metricTip('approval_rate')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'passRate' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'passRate' ? (taskSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>
                 </tr>
@@ -320,7 +335,7 @@ export default function RecruitmentAnalysis() {
               <tbody className="divide-y divide-slate-50">
                 {filteredTasks.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-slate-500 text-sm">
+                    <td colSpan={9} className="py-8 text-center text-slate-500 text-sm">
                       没有找到匹配的招募单
                     </td>
                   </tr>
@@ -345,10 +360,21 @@ export default function RecruitmentAnalysis() {
                         <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs">{task.domain}</span>
                       )}
                     </td>
+                    <td className="py-3">
+                      {isEditMode ? (
+                        <select className="w-full border rounded px-1 py-0.5 text-xs text-slate-600 bg-slate-50" value={task.recruitStatus ?? '招募中'} onChange={e => updateChartListItem('topRecruitTasks', task.id, { recruitStatus: e.target.value })}>
+                          {recruitStatusOptions.map(status => (
+                            <option key={status} value={status}>{status}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <span className={`px-2 py-1 rounded-full border text-xs font-medium ${statusBadgeClass(task.recruitStatus ?? '招募中')}`}>{task.recruitStatus ?? '招募中'}</span>
+                      )}
+                    </td>
                     <td className="py-3 pl-2 text-right text-slate-600">
                       {isEditMode ? <input type="number" className="w-full border rounded px-1 text-right" value={task.target} onChange={e => updateChartListItem('topRecruitTasks', task.id, { target: Number(e.target.value) })} /> : task.target.toLocaleString()}
                     </td>
-                    <td className="py-3 pl-2 text-right font-bold text-blue-600">
+                    <td className="py-3 pl-2 text-right font-bold text-teal-700">
                       {isEditMode ? <input type="number" className="w-full border rounded px-1 text-right" value={task.applicants} onChange={e => updateChartListItem('topRecruitTasks', task.id, { applicants: Number(e.target.value) })} /> : task.applicants.toLocaleString()}
                     </td>
                     <td className="py-3 pl-2 text-right text-emerald-600">

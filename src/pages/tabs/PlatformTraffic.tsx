@@ -42,7 +42,7 @@ export default function PlatformTraffic() {
         <EditableChartCard id="pt-c1" title="流量趋势分析" tooltip={metricTip('page_views', 'unique_visitors', 'bounce_rate')} className="col-span-2">
           <div className="flex justify-end mb-2">
               <div className="flex space-x-2 text-xs">
-                <button className="px-2 py-1 bg-blue-50 text-blue-600 rounded font-medium">PV/UV趋势</button>
+                <button className="px-2 py-1 bg-teal-50 text-teal-700 rounded font-medium">PV/UV趋势</button>
                 <button className="px-2 py-1 text-slate-500 hover:bg-slate-50 rounded">跳出率趋势</button>
               </div>
           </div>
@@ -54,7 +54,7 @@ export default function PlatformTraffic() {
                 <YAxis tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={{ fontSize: '12px', borderRadius: '6px' }} />
                 <Legend wrapperStyle={{ fontSize: '12px' }} verticalAlign="bottom" height={36} />
-                <Line type="monotone" dataKey="pv" name="PV" stroke="#3b82f6" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="pv" name="PV" stroke="#14b8a6" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
                 <Line type="monotone" dataKey="uv" name="UV" stroke="#10b981" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
               </LineChart>
             </ResponsiveContainer>
@@ -253,7 +253,7 @@ export default function PlatformTraffic() {
                   cursor={{ fill: '#f1f5f9' }}
                 />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
-                <Bar yAxisId="left" dataKey="pv" name="PV (浏览量)" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar yAxisId="left" dataKey="pv" name="PV (浏览量)" fill="#14b8a6" radius={[4, 4, 0, 0]} />
                 <Bar yAxisId="right" dataKey="uv" name="UV (独立访客)" fill="#10b981" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -310,7 +310,7 @@ export default function PlatformTraffic() {
                         <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[10px]">{task.domain}</span>
                       </td>
                       <td className="py-2 text-right font-medium text-slate-700">{task.pv.toLocaleString()}</td>
-                      <td className="py-2 text-right font-medium text-blue-600">{task.uv.toLocaleString()}</td>
+                      <td className="py-2 text-right font-medium text-teal-700">{task.uv.toLocaleString()}</td>
                       <td className="py-2 text-right font-medium text-slate-700">{task.clicks.toLocaleString()}</td>
                       <td className="py-2 text-right font-medium text-emerald-600">{task.ctr.toFixed(1)}%</td>
                     </tr>

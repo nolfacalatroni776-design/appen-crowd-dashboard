@@ -51,7 +51,8 @@ export default function MetricCard({
   const numChange = Number(displayChange);
 
   return (
-    <Card className={`relative ${isEditMode ? "ring-2 ring-blue-400 ring-offset-1 transition-all" : ""} ${!config.visible ? "opacity-50 grayscale" : ""}`}>
+    <Card className={`relative overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-[0_22px_55px_rgba(15,23,42,0.08)] ${isEditMode ? "ring-2 ring-teal-300 ring-offset-2 transition-all" : ""} ${!config.visible ? "opacity-50 grayscale" : ""}`}>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-teal-300 via-emerald-300 to-lime-200" />
       {isEditMode && (
         <div className="absolute -top-3 -right-3 flex space-x-1 z-20">
           <button 
@@ -82,7 +83,7 @@ export default function MetricCard({
                   value={localTitle}
                   onChange={(e) => setLocalTitle(e.target.value)}
                   onBlur={handleBlur}
-                  className="text-sm font-medium text-slate-700 bg-blue-50 border border-blue-200 rounded px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="text-sm font-medium text-slate-700 bg-teal-50 border border-teal-200 rounded px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-teal-500"
                   placeholder="指标名称"
                 />
                 <input 
@@ -90,13 +91,13 @@ export default function MetricCard({
                   value={localTooltip}
                   onChange={(e) => setLocalTooltip(e.target.value)}
                   onBlur={handleBlur}
-                  className="text-xs text-slate-600 bg-blue-50 border border-blue-200 rounded px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="text-xs text-slate-600 bg-teal-50 border border-teal-200 rounded px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-teal-500"
                   placeholder="指标说明 Tip"
                 />
               </div>
             ) : (
               <>
-                <h3 className="text-sm font-medium text-slate-500">{config.title}</h3>
+                <h3 className="text-sm font-semibold text-slate-500">{config.title}</h3>
                 {config.tooltip && (
                   <>
                     <Info className="w-3.5 h-3.5 ml-1 text-slate-400 cursor-help" />
@@ -110,14 +111,14 @@ export default function MetricCard({
             )}
           </div>
         </div>
-        <div className="text-2xl font-bold text-slate-800 mb-2">
+        <div className="text-2xl font-bold tracking-tight text-slate-900 mb-2">
           {isEditMode ? (
             <input 
               type="text" 
               value={localValue}
               onChange={(e) => setLocalValue(e.target.value)}
               onBlur={handleBlur}
-              className="w-full bg-blue-50 border border-blue-200 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full bg-teal-50 border border-teal-200 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-teal-500"
             />
           ) : (
             displayValue
@@ -131,7 +132,7 @@ export default function MetricCard({
                 value={localChange}
                 onChange={(e) => setLocalChange(e.target.value)}
                 onBlur={handleBlur}
-                className="w-20 bg-blue-50 border border-blue-200 rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-20 bg-teal-50 border border-teal-200 rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-teal-500"
               />
               <span className="text-slate-400">{changeLabel}</span>
             </div>

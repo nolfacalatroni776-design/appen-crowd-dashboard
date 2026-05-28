@@ -36,6 +36,13 @@ const mergeStoredChartLists = (storedChartLists?: Record<string, any[]>) => {
     stage: String(defaultItem.stage).includes('已流失') ? defaultItem.stage : (merged.lifecycle?.[idx]?.stage ?? defaultItem.stage),
   }));
 
+  merged.topRecruitTasks = initialChartLists.topRecruitTasks.map((defaultItem, idx) => ({
+    ...defaultItem,
+    ...(merged.topRecruitTasks?.[idx] ?? {}),
+    id: defaultItem.id,
+    recruitStatus: merged.topRecruitTasks?.[idx]?.recruitStatus ?? defaultItem.recruitStatus,
+  }));
+
   return merged;
 };
 

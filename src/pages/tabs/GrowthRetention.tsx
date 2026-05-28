@@ -17,7 +17,7 @@ const lifecycleStageTip = (stage: string) => {
 
 export default function GrowthRetention() {
   const { isEditMode, chartLists, updateChartListItem, addChartListItem, removeChartListItem } = useDashboard();
-  
+
   const getCohortColor = (val) => {
     if (!val) return 'bg-slate-50 text-slate-400';
     if (val > 50) return 'bg-emerald-500 text-white';
@@ -78,7 +78,7 @@ export default function GrowthRetention() {
                 <YAxis tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={{ fontSize: '12px', borderRadius: '6px' }} />
                 <Legend wrapperStyle={{ fontSize: '10px' }} />
-                <Line type="monotone" dataKey="new" name="新增注册" stroke="#3b82f6" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="new" name="新增注册" stroke="#14b8a6" strokeWidth={2} dot={false} />
                 <Line type="monotone" dataKey="active" name="活跃用户" stroke="#10b981" strokeWidth={2} dot={false} />
                 <Line type="monotone" dataKey="inactive90" name="90天未活跃用户" stroke="#ef4444" strokeWidth={2} dot={false} />
               </LineChart>
@@ -135,13 +135,13 @@ export default function GrowthRetention() {
                   ) : (
                     <>
                       <span className="flex min-w-0 items-center font-medium text-slate-700">
-                        <span className="mr-1.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[10px] text-blue-600">{idx + 1}</span>
+                        <span className="mr-1.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-teal-50 text-[10px] text-teal-700">{idx + 1}</span>
                         <span className="truncate">{step.name}</span>
                         <MetricInfo tip={metricTip(funnelMetricKeys[idx] || 'registration_conversion_rate')} />
                       </span>
                       <span className="text-right font-semibold text-slate-700">{Number(step.value).toLocaleString()}人</span>
                       <span className="text-right text-slate-600">{toPercent(step.stepRate)}</span>
-                      <span className="text-right font-semibold text-blue-600">{toPercent(step.cumulativeRate)}</span>
+                      <span className="text-right font-semibold text-teal-700">{toPercent(step.cumulativeRate)}</span>
                       <span className={`text-right font-medium ${step.loss > 0 ? 'text-red-500' : 'text-slate-400'}`}>
                         {idx === 0 ? '-' : `-${Number(step.loss).toLocaleString()}人`}
                       </span>
@@ -149,17 +149,17 @@ export default function GrowthRetention() {
                   )}
                 </div>
                 <div className="mt-2 h-2.5 bg-slate-100 rounded-sm overflow-hidden flex items-center">
-                  <div 
-                    className={`h-full transition-all duration-500 ${!isEditMode ? 'min-w-1' : ''}`} 
-                    style={{ width: isEditMode ? '100%' : `${Math.max(step.cumulativeRate, 1)}%`, backgroundColor: step.color || '#3b82f6' }}
+                  <div
+                    className={`h-full transition-all duration-500 ${!isEditMode ? 'min-w-1' : ''}`}
+                    style={{ width: isEditMode ? '100%' : `${Math.max(step.cumulativeRate, 1)}%`, backgroundColor: step.color || '#14b8a6' }}
                   />
                 </div>
               </div>
             ))}
             {isEditMode && (
-              <button 
+              <button
                 onClick={() => addChartListItem('funnel', { name: '自定义阶段', value: 0, rate: '0%', color: '#94a3b8' })}
-                className="w-full mt-2 py-1.5 flex items-center justify-center gap-1 border border-dashed border-blue-300 rounded text-xs text-blue-500 hover:bg-blue-50"
+                className="w-full mt-2 py-1.5 flex items-center justify-center gap-1 border border-dashed border-teal-300 rounded text-xs text-teal-600 hover:bg-teal-50"
               >
                 <Plus className="w-3 h-3" /> 添加漏斗阶段
               </button>
@@ -248,8 +248,8 @@ export default function GrowthRetention() {
                       </div>
                       <div className="flex-1 mx-4">
                         <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                          <div 
-                            className={`h-full ${item.status === 'warning' ? 'bg-amber-400' : item.status === 'danger' ? 'bg-red-400' : item.status === 'good' ? 'bg-emerald-400' : item.status === 'info' ? 'bg-slate-400' : 'bg-blue-400'}`}
+                          <div
+                            className={`h-full ${item.status === 'warning' ? 'bg-amber-400' : item.status === 'danger' ? 'bg-red-400' : item.status === 'good' ? 'bg-emerald-400' : item.status === 'info' ? 'bg-slate-400' : 'bg-teal-400'}`}
                             style={{ width: `${Math.max(item.percent || 0, 1)}%` }}
                           />
                         </div>
@@ -261,9 +261,9 @@ export default function GrowthRetention() {
                 </div>
               ))}
               {isEditMode && (
-                <button 
+                <button
                   onClick={() => addChartListItem('lifecycle', { stage: '自定义阶段', count: 0, percent: 0, status: 'normal' })}
-                  className="w-full mt-2 py-1.5 flex items-center justify-center gap-1 border border-dashed border-blue-300 rounded text-xs text-blue-500 hover:bg-blue-50"
+                  className="w-full mt-2 py-1.5 flex items-center justify-center gap-1 border border-dashed border-teal-300 rounded text-xs text-teal-600 hover:bg-teal-50"
                 >
                    <Plus className="w-3 h-3" /> 添加阶段
                 </button>
@@ -328,9 +328,9 @@ export default function GrowthRetention() {
                 </tbody>
               </table>
               {isEditMode && (
-                <button 
+                <button
                   onClick={() => addChartListItem('churn', { stage: '新环节', count: 0, rate: 0, status: 'normal' })}
-                  className="w-full mt-2 py-1 flex items-center justify-center gap-1 border border-dashed border-blue-300 rounded text-xs text-blue-500 hover:bg-blue-50"
+                  className="w-full mt-2 py-1 flex items-center justify-center gap-1 border border-dashed border-teal-300 rounded text-xs text-teal-600 hover:bg-teal-50"
                 >
                    <Plus className="w-3 h-3" /> 添加流失环节
                 </button>
@@ -357,7 +357,7 @@ export default function GrowthRetention() {
                 <div className="text-lg font-bold text-slate-800">6.8天</div>
               </div>
             </div>
-            
+
             <div className="space-y-3">
               {lifecycleDurationDataState.map((item, i) => (
                 <div key={item.id} className="relative group p-1 -mx-1 rounded-md hover:bg-slate-50 transition-colors">
@@ -377,17 +377,17 @@ export default function GrowthRetention() {
                     )}
                   </div>
                   <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-blue-500 min-w-1" 
+                    <div
+                      className="h-full bg-teal-500 min-w-1"
                       style={{ width: isEditMode ? '100%' : `${item.percent}%` }}
                     />
                   </div>
                 </div>
               ))}
               {isEditMode && (
-                <button 
+                <button
                   onClick={() => addChartListItem('lifecycleDuration', { range: '新时间段', percent: 0, desc: '描述' })}
-                  className="w-full mt-2 py-1.5 flex items-center justify-center gap-1 border border-dashed border-blue-300 rounded text-xs text-blue-500 hover:bg-blue-50"
+                  className="w-full mt-2 py-1.5 flex items-center justify-center gap-1 border border-dashed border-teal-300 rounded text-xs text-teal-600 hover:bg-teal-50"
                 >
                    <Plus className="w-3 h-3" /> 添加占比区间
                 </button>

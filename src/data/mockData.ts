@@ -95,16 +95,16 @@ export const domainRecruitData = [
 ];
 
 export const topRecruitTasks = [
-  { id: 'R-20261101', name: '自动驾驶街景3D点云标注', domain: '自动驾驶', target: 500, applicants: 1250, reviewed: 638, approved: 420, passRate: 65.8 },
-  { id: 'R-20261102', name: '方言语音采集与转写', domain: '语音合成', target: 300, applicants: 980, reviewed: 458, approved: 280, passRate: 61.2 },
-  { id: 'R-20261103', name: '医疗CT影像病灶框选', domain: '医疗影像', target: 400, applicants: 850, reviewed: 257, approved: 150, passRate: 58.3 },
-  { id: 'R-20261104', name: '电商评论情感极性分类', domain: '文本情感', target: 200, applicants: 760, reviewed: 279, approved: 190, passRate: 68.1 },
-  { id: 'R-20261105', name: '自动驾驶车辆行为预测', domain: '自动驾驶', target: 600, applicants: 720, reviewed: 471, approved: 310, passRate: 65.8 },
-  { id: 'R-20261106', name: '多语种机器翻译语料对齐', domain: 'NLP任务', target: 150, applicants: 650, reviewed: 163, approved: 120, passRate: 73.5 },
-  { id: 'R-20261107', name: '商品图像多标签分类', domain: '图像标注', target: 250, applicants: 580, reviewed: 337, approved: 240, passRate: 71.3 },
-  { id: 'R-20261108', name: '智能客服对话意图识别', domain: 'NLP任务', target: 200, applicants: 520, reviewed: 245, approved: 180, passRate: 73.5 },
-  { id: 'R-20261109', name: '骨科X光片关键点标注', domain: '医疗影像', target: 300, applicants: 490, reviewed: 189, approved: 110, passRate: 58.3 },
-  { id: 'R-20261110', name: '车载语音指令唤醒词采集', domain: '语音合成', target: 400, applicants: 450, reviewed: 420, approved: 350, passRate: 83.3 },
+  { id: 'R-20261101', name: '自动驾驶街景3D点云标注', domain: '自动驾驶', recruitStatus: '招募中', target: 500, applicants: 1250, reviewed: 638, approved: 420, passRate: 65.8 },
+  { id: 'R-20261102', name: '方言语音采集与转写', domain: '语音合成', recruitStatus: '审核中', target: 300, applicants: 980, reviewed: 458, approved: 280, passRate: 61.2 },
+  { id: 'R-20261103', name: '医疗CT影像病灶框选', domain: '医疗影像', recruitStatus: '招募中', target: 400, applicants: 850, reviewed: 257, approved: 150, passRate: 58.3 },
+  { id: 'R-20261104', name: '电商评论情感极性分类', domain: '文本情感', recruitStatus: '已完成', target: 200, applicants: 760, reviewed: 279, approved: 190, passRate: 68.1 },
+  { id: 'R-20261105', name: '自动驾驶车辆行为预测', domain: '自动驾驶', recruitStatus: '已暂停', target: 600, applicants: 720, reviewed: 471, approved: 310, passRate: 65.8 },
+  { id: 'R-20261106', name: '多语种机器翻译语料对齐', domain: 'NLP任务', recruitStatus: '招募中', target: 150, applicants: 650, reviewed: 163, approved: 120, passRate: 73.5 },
+  { id: 'R-20261107', name: '商品图像多标签分类', domain: '图像标注', recruitStatus: '已完成', target: 250, applicants: 580, reviewed: 337, approved: 240, passRate: 71.3 },
+  { id: 'R-20261108', name: '智能客服对话意图识别', domain: 'NLP任务', recruitStatus: '审核中', target: 200, applicants: 520, reviewed: 245, approved: 180, passRate: 73.5 },
+  { id: 'R-20261109', name: '骨科X光片关键点标注', domain: '医疗影像', recruitStatus: '已暂停', target: 300, applicants: 490, reviewed: 189, approved: 110, passRate: 58.3 },
+  { id: 'R-20261110', name: '车载语音指令唤醒词采集', domain: '语音合成', recruitStatus: '招募中', target: 400, applicants: 450, reviewed: 420, approved: 350, passRate: 83.3 },
 ];
 
 export const domainEfficiencyData = [
@@ -238,10 +238,10 @@ export const trafficTrendData = [
 ];
 
 export const trafficSourceData = [
-  { name: '直接访问', value: 4500, percent: 39.1, color: '#3b82f6' },
+  { name: '直接访问', value: 4500, percent: 39.1, color: '#14b8a6' },
   { name: '搜索引擎', value: 3200, percent: 27.8, color: '#10b981' },
   { name: '外部链接', value: 1800, percent: 15.7, color: '#f59e0b' },
-  { name: '社交媒体', value: 1200, percent: 10.4, color: '#8b5cf6' },
+  { name: '社交媒体', value: 1200, percent: 10.4, color: '#2dd4bf' },
   { name: '邮件营销', value: 800, percent: 7.0, color: '#ef4444' },
 ];
 
@@ -255,11 +255,11 @@ export const topPagesData = [
 
 export const visitorDeviceData = {
   visitor: [
-    { name: '新访客', value: 62, color: '#3b82f6' },
-    { name: '老访客', value: 38, color: '#8b5cf6' },
+    { name: '新访客', value: 62, color: '#14b8a6' },
+    { name: '老访客', value: 38, color: '#2dd4bf' },
   ],
   device: [
-    { name: 'PC端', value: 65, color: '#3b82f6' },
+    { name: 'PC端', value: 65, color: '#14b8a6' },
     { name: '移动端', value: 30, color: '#10b981' },
     { name: '平板', value: 5, color: '#f59e0b' },
   ]
