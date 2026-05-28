@@ -15,12 +15,24 @@ const tabs = [
 ];
 
 const recruitStatusOptions = ['全部招募单状态', '招募中', '审核中', '已暂停', '已完成'];
+const moduleTimeFilters: Record<string, { label: string; value: string }> = {
+  traffic: { label: '访问时间', value: '近30天' },
+  growth: { label: '增长趋势', value: '近30天' },
+  recruitment: { label: '招募周期', value: '近30天' },
+  task: { label: '任务周期', value: '近30天' },
+};
+const growthTimeContextFilters = [
+  { label: 'D30漏斗', value: '31-60天前注册' },
+  { label: '留存矩阵', value: '按注册周 Cohort' },
+  { label: '生命周期', value: '截至昨日快照' },
+];
 
 export default function Layout() {
   const [activeTab, setActiveTab] = useState('traffic');
   const [recruitStatusFilter, setRecruitStatusFilter] = useState('全部招募单状态');
   const { isEditMode, setIsEditMode, globalDomain, setGlobalDomain } = useDashboard();
   const activeTabLabel = tabs.find(tab => tab.id === activeTab)?.label ?? '';
+  const activeTimeFilter = moduleTimeFilters[activeTab] ?? moduleTimeFilters.traffic;
 
   return (
     <div className="min-h-screen bg-[#eef8f4] flex flex-col font-sans text-slate-900">
@@ -82,13 +94,29 @@ export default function Layout() {
         <div className="mx-auto flex w-full max-w-[1480px] flex-wrap items-center gap-3">
           <div className="flex items-center text-slate-500 font-semibold mr-1">
             <Filter className="w-4 h-4 mr-2" />
-            全局筛选
+            模块筛选
           </div>
           <button className="flex h-9 items-center rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm transition hover:border-teal-200 hover:text-teal-700">
             <Calendar className="w-4 h-4 mr-2 text-slate-400" />
-            近30天
+            <span className="mr-1 text-slate-400">{activeTimeFilter.label}</span>
+            {activeTimeFilter.value}
             <ChevronDown className="w-4 h-4 ml-2 text-slate-400" />
           </button>
+
+          {activeTab === 'growth' && (
+            <>
+              <div className="h-4 w-px bg-slate-200 mx-1"></div>
+              {growthTimeContextFilters.map(filter => (
+                <div
+                  key={filter.label}
+                  className="flex h-9 items-center rounded-full border border-teal-100 bg-white/80 px-3 text-slate-700 shadow-sm"
+                >
+                  <span className="mr-1 text-slate-400">{filter.label}</span>
+                  {filter.value}
+                </div>
+              ))}
+            </>
+          )}
           
           {activeTab === 'recruitment' && (
             <>

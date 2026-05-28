@@ -129,11 +129,11 @@ export default function GrowthRetention() {
             <div className="grid grid-cols-3 gap-2 text-[11px]">
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
                 <div className="text-slate-400">入组用户</div>
-                <div className="mt-0.5 font-semibold text-slate-700">近30天新增注册</div>
+                <div className="mt-0.5 font-semibold text-slate-700">31-60天前新增注册</div>
               </div>
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
                 <div className="text-slate-400">观察窗口</div>
-                <div className="mt-0.5 font-semibold text-slate-700">注册后30天</div>
+                <div className="mt-0.5 font-semibold text-slate-700">注册后0-30天</div>
               </div>
               <div className="rounded border border-amber-100 bg-amber-50 px-3 py-2">
                 <div className="text-amber-600">最大流失</div>

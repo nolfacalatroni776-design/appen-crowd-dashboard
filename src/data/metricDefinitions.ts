@@ -194,11 +194,11 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   funnel_new_registered_users: {
     name: '新注册用户',
-    definition: '入组时间范围内完成注册的去重用户数，是 D30 转化漏斗分母',
+    definition: '统计日前 31-60 天完成注册的去重用户数，是 D30 转化漏斗分母；该 cohort 已完整经过注册后 0-30 天观察窗口',
     formula: 'count(distinct user_id where registered_at in cohort_range)',
     source: '用户注册事件',
     refresh: 'T+1',
-    note: '建议使用已满 D30 观察窗口的注册 cohort',
+    note: '不使用近 30 天新注册用户，避免 cohort 尚未满 30 天导致 D30 状态不可观察',
   },
   funnel_verified_users_d30: {
     name: '完成实名认证',
