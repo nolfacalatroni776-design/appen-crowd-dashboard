@@ -441,12 +441,12 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     note: '与已到位需区分',
   },
   recruit_progress_rate: {
-    name: '通过达成率',
+    name: '招募目标完成率',
     definition: '招募通过人数占目标招募人数的比例',
     formula: 'approved_workers / target_workers',
     source: '招募单 + 申请记录',
     refresh: '30 分钟',
-    note: '用于明细招募单排行的目标完成判断',
+    note: '不再作为明细招募单排行中的通过率口径',
   },
   avg_daily_recruited_workers: {
     name: '日均招募人数',

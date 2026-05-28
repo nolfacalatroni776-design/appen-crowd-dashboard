@@ -95,16 +95,16 @@ export const domainRecruitData = [
 ];
 
 export const topRecruitTasks = [
-  { id: 'R-20261101', name: '自动驾驶街景3D点云标注', domain: '自动驾驶', target: 500, applicants: 1250, approved: 420 },
-  { id: 'R-20261102', name: '方言语音采集与转写', domain: '语音合成', target: 300, applicants: 980, approved: 280 },
-  { id: 'R-20261103', name: '医疗CT影像病灶框选', domain: '医疗影像', target: 400, applicants: 850, approved: 150 },
-  { id: 'R-20261104', name: '电商评论情感极性分类', domain: '文本情感', target: 200, applicants: 760, approved: 190 },
-  { id: 'R-20261105', name: '自动驾驶车辆行为预测', domain: '自动驾驶', target: 600, applicants: 720, approved: 310 },
-  { id: 'R-20261106', name: '多语种机器翻译语料对齐', domain: 'NLP任务', target: 150, applicants: 650, approved: 120 },
-  { id: 'R-20261107', name: '商品图像多标签分类', domain: '图像标注', target: 250, applicants: 580, approved: 240 },
-  { id: 'R-20261108', name: '智能客服对话意图识别', domain: 'NLP任务', target: 200, applicants: 520, approved: 180 },
-  { id: 'R-20261109', name: '骨科X光片关键点标注', domain: '医疗影像', target: 300, applicants: 490, approved: 110 },
-  { id: 'R-20261110', name: '车载语音指令唤醒词采集', domain: '语音合成', target: 400, applicants: 450, approved: 350 },
+  { id: 'R-20261101', name: '自动驾驶街景3D点云标注', domain: '自动驾驶', target: 500, applicants: 1250, reviewed: 638, approved: 420, passRate: 65.8 },
+  { id: 'R-20261102', name: '方言语音采集与转写', domain: '语音合成', target: 300, applicants: 980, reviewed: 458, approved: 280, passRate: 61.2 },
+  { id: 'R-20261103', name: '医疗CT影像病灶框选', domain: '医疗影像', target: 400, applicants: 850, reviewed: 257, approved: 150, passRate: 58.3 },
+  { id: 'R-20261104', name: '电商评论情感极性分类', domain: '文本情感', target: 200, applicants: 760, reviewed: 279, approved: 190, passRate: 68.1 },
+  { id: 'R-20261105', name: '自动驾驶车辆行为预测', domain: '自动驾驶', target: 600, applicants: 720, reviewed: 471, approved: 310, passRate: 65.8 },
+  { id: 'R-20261106', name: '多语种机器翻译语料对齐', domain: 'NLP任务', target: 150, applicants: 650, reviewed: 163, approved: 120, passRate: 73.5 },
+  { id: 'R-20261107', name: '商品图像多标签分类', domain: '图像标注', target: 250, applicants: 580, reviewed: 337, approved: 240, passRate: 71.3 },
+  { id: 'R-20261108', name: '智能客服对话意图识别', domain: 'NLP任务', target: 200, applicants: 520, reviewed: 245, approved: 180, passRate: 73.5 },
+  { id: 'R-20261109', name: '骨科X光片关键点标注', domain: '医疗影像', target: 300, applicants: 490, reviewed: 189, approved: 110, passRate: 58.3 },
+  { id: 'R-20261110', name: '车载语音指令唤醒词采集', domain: '语音合成', target: 400, applicants: 450, reviewed: 420, approved: 350, passRate: 83.3 },
 ];
 
 export const domainEfficiencyData = [

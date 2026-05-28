@@ -18,6 +18,14 @@ export default function RecruitmentAnalysis() {
   const topRecruitTasksState = chartLists.topRecruitTasks || topRecruitTasks;
   const trendData = recruitTrendByDomain[globalDomain] || recruitTrendByDomain['全部领域'];
   const getApprovedWorkers = (task: any) => Number(task.approved ?? task.onboarded ?? 0);
+  const getTaskPassRate = (task: any) => {
+    const reviewedApplications = Number(task.reviewed ?? task.reviewedApplications ?? task.applicants ?? 0);
+    if (reviewedApplications > 0) {
+      return (getApprovedWorkers(task) / reviewedApplications) * 100;
+    }
+    const explicitRate = Number(task.passRate);
+    return Number.isFinite(explicitRate) ? explicitRate : 0;
+  };
   let filteredDomainRecruitData = domainRecruitData.filter(d => globalDomain === '全部领域' || d.domain === globalDomain);
   const filteredReviewCycleDomains = reviewCycleData.domains.filter(d => globalDomain === '全部领域' || d.name === globalDomain);
 
@@ -69,9 +77,9 @@ export default function RecruitmentAnalysis() {
       } else if (taskSortConfig.key === 'approved') {
         aValue = getApprovedWorkers(a);
         bValue = getApprovedWorkers(b);
-      } else if (taskSortConfig.key === 'completionRate') {
-        aValue = a.target > 0 ? getApprovedWorkers(a) / a.target : 0;
-        bValue = b.target > 0 ? getApprovedWorkers(b) / b.target : 0;
+      } else if (taskSortConfig.key === 'passRate') {
+        aValue = getTaskPassRate(a);
+        bValue = getTaskPassRate(b);
       }
       if (aValue < bValue) {
         return taskSortConfig.direction === 'asc' ? -1 : 1;
@@ -300,11 +308,11 @@ export default function RecruitmentAnalysis() {
                       <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'reviewCycle' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
                     </div>
                   </th>
-                  <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('completionRate')}>
+                  <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleTaskSort('passRate')}>
                     <div className="flex items-center justify-end">
-                      通过达成率
-                      <MetricInfo tip={metricTip('recruit_progress_rate')} align="right" />
-                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'completionRate' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
+                      通过率
+                      <MetricInfo tip={metricTip('approval_rate')} align="right" />
+                      <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${taskSortConfig?.key === 'passRate' ? (taskSortConfig.direction === 'asc' ? 'text-blue-600 rotate-180' : 'text-blue-600') : 'text-slate-300'}`} />
                     </div>
                   </th>
                 </tr>
@@ -349,7 +357,7 @@ export default function RecruitmentAnalysis() {
                     <td className="py-3 text-right font-medium text-slate-700">
                       {((task.target % 2) + 1.2).toFixed(1)}天
                     </td>
-                    <td className="py-3 text-right text-slate-600">{task.target > 0 ? ((getApprovedWorkers(task) / task.target) * 100).toFixed(1) : 0}%</td>
+                    <td className="py-3 text-right text-slate-600">{getTaskPassRate(task).toFixed(1)}%</td>
                   </tr>
                 ))}
               </tbody>
