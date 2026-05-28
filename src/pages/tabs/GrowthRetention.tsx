@@ -120,7 +120,7 @@ export default function GrowthRetention() {
       </div>
 
       <div className="grid grid-cols-2 gap-6">
-        <EditableChartCard id="gr-c0" title="用户增长趋势" tooltip={metricTip('new_registered_users', 'daily_active_users', 'inactive_90d_new_users')} className="col-span-1">
+        <EditableChartCard id="gr-c0" title="用户增长趋势" tooltip={metricTip('new_registered_users', 'daily_active_users', 'inactive_90d_new_users')} className="order-1 col-span-1">
           <div className="h-64 w-full block">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={userGrowthTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -137,7 +137,7 @@ export default function GrowthRetention() {
           </div>
         </EditableChartCard>
 
-        <EditableChartCard id="gr-funnel" title="新用户转化漏斗（截至当前）" showTitleTooltip={false} className="col-span-1">
+        <EditableChartCard id="gr-funnel" title="新用户转化漏斗（截至当前）" showTitleTooltip={false} className="order-4 col-span-1">
           <div className="mt-2 space-y-4">
             <div className="grid grid-cols-2 gap-2 text-[11px] xl:grid-cols-3">
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
@@ -219,7 +219,7 @@ export default function GrowthRetention() {
         </EditableChartCard>
 
         {/* 留存矩阵 */}
-        <EditableChartCard id="gr-c1" title="用户留存矩阵（按注册周）" showTitleTooltip={false} className="col-span-1">
+        <EditableChartCard id="gr-c1" title="用户留存矩阵（按注册周）" showTitleTooltip={false} className="order-3 col-span-1">
             <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
               <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">按注册周分组</span>
               <span>点击某一注册周期，可同步查看该批新用户截至当前的转化漏斗</span>
@@ -288,7 +288,7 @@ export default function GrowthRetention() {
         </EditableChartCard>
 
         {/* Lifecycle */}
-        <EditableChartCard id="gr-c2" title="用户生命周期阶段分布" showTitleTooltip={false} className="col-span-1">
+        <EditableChartCard id="gr-c2" title="用户生命周期阶段分布" showTitleTooltip={false} className="order-2 col-span-1">
             <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
               <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">截至昨日快照</span>
               <span>按用户最新生命周期状态归类，各阶段互斥统计</span>
@@ -346,7 +346,7 @@ export default function GrowthRetention() {
         </EditableChartCard>
 
         {/* Churn Analysis */}
-        <EditableChartCard id="gr-c3" title="转化流失断点分析" showTitleTooltip={false} className="col-span-1">
+        <EditableChartCard id="gr-c3" title="转化流失断点分析" showTitleTooltip={false} className="order-5 col-span-1">
             <div className="flex justify-between items-end mb-4">
               <div>
                 <div className="text-2xl font-bold text-slate-800">{Number(maxChurnStage.rate || 0).toFixed(1)}%</div>
@@ -417,7 +417,7 @@ export default function GrowthRetention() {
         </EditableChartCard>
 
         {/* Average Lifecycle */}
-        <EditableChartCard id="gr-c4" title="用户平均生命周期时长" showTitleTooltip={false} className="col-span-1">
+        <EditableChartCard id="gr-c4" title="用户平均生命周期时长" showTitleTooltip={false} className="order-6 col-span-1">
             <div className="grid grid-cols-2 gap-2 mb-6">
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
                 <div className="flex items-center text-xs text-slate-500 mb-1">
