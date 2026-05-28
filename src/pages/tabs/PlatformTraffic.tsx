@@ -179,9 +179,12 @@ export default function PlatformTraffic() {
             </div>
         </EditableChartCard>
 
-        <EditableChartCard id="pt-c4" title="访客 & 设备分析" tooltip={metricTip('device_share', 'unique_visitors')} className="col-span-1">
+        <EditableChartCard id="pt-c4" title="访客 & 设备分析" tooltip={metricTip('new_returning_visitor_share', 'device_share', 'unique_visitors')} className="col-span-1">
             <div className="mb-6">
-              <div className="text-xs font-medium text-slate-500 mb-2">新老访客比例</div>
+              <div className="mb-2 flex items-center text-xs font-medium text-slate-500">
+                新老访客比例
+                <MetricInfo tip={metricTip('new_returning_visitor_share')} />
+              </div>
               <div className="flex items-center">
                 <div className="w-24 h-24 relative mr-4">
                   <ResponsiveContainer width="100%" height="100%">
@@ -218,7 +221,10 @@ export default function PlatformTraffic() {
             </div>
 
             <div>
-              <div className="text-xs font-medium text-slate-500 mb-3">设备终端分布</div>
+              <div className="mb-3 flex items-center text-xs font-medium text-slate-500">
+                设备终端分布
+                <MetricInfo tip={metricTip('device_share')} />
+              </div>
               <div className="space-y-4">
                 {visitorDeviceData.device.map((item, i) => (
                   <div key={i}>

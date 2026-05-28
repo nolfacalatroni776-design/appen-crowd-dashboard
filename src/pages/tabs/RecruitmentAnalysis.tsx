@@ -114,7 +114,7 @@ export default function RecruitmentAnalysis({ recruitStatusFilter = '全部招�
         <MetricCard id="ra-2" title="目标招募总人数" value="13,665人" change={800} changeLabel="较上周" tooltip={metricTip('target_workers')} />
         <MetricCard id="ra-3" title="招募通过总人数" value="7,394人" change={-200} changeLabel="较上周" isWarning tooltip={metricTip('approved_workers')} />
         <MetricCard id="ra-4" title="总缺口人数" value="6,271人" change={0} changeLabel="缺口率 45.9%" isDanger tooltip={metricTip('gap_workers', 'gap_rate')} />
-        <MetricCard id="ra-5" title="整体通过率" value="63.5%" change={-1.2} changeLabel="较上月" tooltip={metricTip('approval_rate', 'recruit_approval_rate')} />
+        <MetricCard id="ra-5" title="整体通过率" value="63.5%" change={-1.2} changeLabel="较上月" tooltip={metricTip('approval_rate')} />
       </div>
 
       <div className="grid grid-cols-1 gap-6">
@@ -168,6 +168,7 @@ export default function RecruitmentAnalysis({ recruitStatusFilter = '全部招�
                   <th className="pb-3 font-medium text-right cursor-pointer hover:text-slate-700" onClick={() => handleDomainSort('tasks')}>
                     <div className="flex items-center justify-end">
                       招募单
+                      <MetricInfo tip={metricTip('recruit_sheet_count')} align="right" />
                       <ArrowUpDown className={`w-3.5 h-3.5 ml-1 ${domainSortConfig?.key === 'tasks' ? (domainSortConfig.direction === 'asc' ? 'text-teal-700 rotate-180' : 'text-teal-700') : 'text-slate-300'}`} />
                     </div>
                   </th>

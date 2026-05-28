@@ -26,10 +26,18 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const toPercent = (value: number) => `${Number(value.toFixed(1))}%`;
 const lifecycleStageTip = (stage: string) => {
+  if (stage.includes('新注册')) return metricTip('lifecycle_stage_new_registered');
+  if (stage.includes('待实名认证') || stage.includes('待KYC')) return metricTip('lifecycle_stage_pending_verification');
+  if (stage.includes('未申请')) return metricTip('lifecycle_stage_no_application');
+  if (stage.includes('审核中')) return metricTip('lifecycle_stage_reviewing');
+  if (stage.includes('申请通过')) return metricTip('lifecycle_stage_approved');
+  if (stage.includes('活跃执行')) return metricTip('lifecycle_stage_active_running');
+  if (stage.includes('30日未活跃')) return metricTip('lifecycle_stage_inactive_30d');
+  if (stage.includes('60日沉睡')) return metricTip('lifecycle_stage_dormant_60d');
   if (stage.includes('已流失')) return metricTip('lost_users_90d');
   return metricTip('lifecycle_stage_users');
 };
-const normalizeLifecycleStage = (stage?: string) => String(stage ?? '').replace(/^[^\p{L}\p{N}]+/u, '').trim();
+const normalizeLifecycleStage = (stage?: string) => String(stage ?? '').replace(/^[^\p{L}\p{N}]+/u, '').trim().replace('待KYC', '待实名认证');
 const lifecycleStageIconClass = (status?: string) => {
   if (status === 'good') return 'border-emerald-100 bg-emerald-50 text-emerald-600';
   if (status === 'warning') return 'border-amber-100 bg-amber-50 text-amber-600';
@@ -40,7 +48,7 @@ const lifecycleStageIconClass = (status?: string) => {
 const getLifecycleStageIcon = (stage?: string) => {
   const normalizedStage = normalizeLifecycleStage(stage);
   if (normalizedStage.includes('新注册')) return UserPlus;
-  if (normalizedStage.includes('待KYC')) return ShieldCheck;
+  if (normalizedStage.includes('待实名认证')) return ShieldCheck;
   if (normalizedStage.includes('未申请')) return ClipboardList;
   if (normalizedStage.includes('审核中')) return Clock3;
   if (normalizedStage.includes('申请通过')) return CircleCheck;
@@ -56,7 +64,7 @@ const getLifecycleStageIcon = (stage?: string) => {
 export default function GrowthRetention() {
   const { isEditMode, chartLists, updateChartListItem, addChartListItem, removeChartListItem } = useDashboard();
 
-  const getCohortColor = (val) => {
+  const getRetentionColor = (val) => {
     if (!val) return 'bg-slate-50 text-slate-400';
     if (val > 50) return 'bg-emerald-500 text-white';
     if (val > 30) return 'bg-emerald-400 text-white';
@@ -205,8 +213,8 @@ export default function GrowthRetention() {
           </div>
         </EditableChartCard>
 
-        {/* Cohort Matrix */}
-        <EditableChartCard id="gr-c1" title="用户留存矩阵 (Cohort)" showTitleTooltip={false} className="col-span-1">
+        {/* 留存矩阵 */}
+        <EditableChartCard id="gr-c1" title="用户留存矩阵（按注册周）" showTitleTooltip={false} className="col-span-1">
             <div className="overflow-x-auto mt-2">
               <table className="w-full text-xs text-left">
                 <thead>
@@ -249,10 +257,10 @@ export default function GrowthRetention() {
                     <tr key={i}>
                       <td className="py-2 font-medium text-slate-700">{row.week}</td>
                       <td className="py-2 text-slate-600">{row.users}</td>
-                      <td className="py-1"><div className={`px-2 py-1 rounded text-center ${getCohortColor(row.d1)}`}>{row.d1 ? `${row.d1}%` : '-'}</div></td>
-                      <td className="py-1"><div className={`px-2 py-1 rounded text-center ${getCohortColor(row.d7)}`}>{row.d7 ? `${row.d7}%` : '-'}</div></td>
-                      <td className="py-1"><div className={`px-2 py-1 rounded text-center ${getCohortColor(row.d14)}`}>{row.d14 ? `${row.d14}%` : '-'}</div></td>
-                      <td className="py-1"><div className={`px-2 py-1 rounded text-center ${getCohortColor(row.d30)}`}>{row.d30 ? `${row.d30}%` : '-'}</div></td>
+                      <td className="py-1"><div className={`px-2 py-1 rounded text-center ${getRetentionColor(row.d1)}`}>{row.d1 ? `${row.d1}%` : '-'}</div></td>
+                      <td className="py-1"><div className={`px-2 py-1 rounded text-center ${getRetentionColor(row.d7)}`}>{row.d7 ? `${row.d7}%` : '-'}</div></td>
+                      <td className="py-1"><div className={`px-2 py-1 rounded text-center ${getRetentionColor(row.d14)}`}>{row.d14 ? `${row.d14}%` : '-'}</div></td>
+                      <td className="py-1"><div className={`px-2 py-1 rounded text-center ${getRetentionColor(row.d30)}`}>{row.d30 ? `${row.d30}%` : '-'}</div></td>
                     </tr>
                   ))}
                 </tbody>
@@ -407,6 +415,10 @@ export default function GrowthRetention() {
               </div>
             </div>
 
+            <div className="mb-2 flex items-center text-xs font-medium text-slate-500">
+              生命周期时长分布
+              <MetricInfo tip={metricTip('lifecycle_duration_bucket_share')} />
+            </div>
             <div className="space-y-3">
               {lifecycleDurationDataState.map((item, i) => (
                 <div key={item.id} className="relative group p-1 -mx-1 rounded-md hover:bg-slate-50 transition-colors">

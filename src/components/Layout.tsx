@@ -23,7 +23,7 @@ const moduleTimeFilters: Record<string, { label: string; value: string }> = {
 };
 const growthTimeContextFilters = [
   { label: 'D30漏斗', value: '31-60天前注册' },
-  { label: '留存矩阵', value: '按注册周 Cohort' },
+  { label: '留存矩阵', value: '按注册周分组' },
   { label: '生命周期', value: '截至昨日快照' },
 ];
 

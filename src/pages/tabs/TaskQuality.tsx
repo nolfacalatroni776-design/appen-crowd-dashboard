@@ -22,7 +22,7 @@ export default function TaskQuality() {
         <MetricCard id="tq-4" title="标注质检通过率" value="89.2%" change={1.3} changeLabel="较昨日" tooltip={metricTip('labeling_qc_pass_rate')} />
 
         <MetricCard id="tq-5" title="返工率" value="7.8%" change={0} changeLabel="较昨日" isWarning tooltip={metricTip('rework_rate')} />
-        <MetricCard id="tq-6" title="今日提交量" value="45,023条" change={8} changeLabel="较昨日" tooltip={metricTip('daily_submissions', 'daily_submitted_items')} />
+        <MetricCard id="tq-6" title="今日提交量" value="45,023条" change={8} changeLabel="较昨日" tooltip={metricTip('daily_submissions')} />
         <MetricCard id="tq-7" title="人均日产能" value="38.2条" change={-4.5} changeLabel="较昨日" isWarning tooltip={metricTip('avg_daily_output_per_worker')} />
         <MetricCard id="tq-8" title="采集质检通过率" value="85.2%" change={2.1} changeLabel="较昨日" tooltip={metricTip('collection_qc_pass_rate')} />
       </div>

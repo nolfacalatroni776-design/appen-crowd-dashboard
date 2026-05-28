@@ -22,7 +22,7 @@ export const funnelData = [
   { name: '提交招募申请', value: 1175, rate: 60.7 },
   { name: '招募通过', value: 739, rate: 62.9 },
   { name: '参与任务执行', value: 630, rate: 85.2 },
-  { name: 'D30持续活跃 Worker', value: 285, rate: 45.3 },
+  { name: 'D30持续活跃用户', value: 285, rate: 45.3 },
 ];
 
 export const userGrowthTrend = [
@@ -75,7 +75,7 @@ export const cohortData = [
 
 export const lifecycleData = [
   { stage: '新注册', count: 2474, percent: 0.77, trend: 15, status: 'normal' },
-  { stage: '待KYC', count: 538, percent: 0.17, trend: 8, status: 'normal' },
+  { stage: '待实名认证', count: 538, percent: 0.17, trend: 8, status: 'normal' },
   { stage: '未申请过招募', count: 1399, percent: 0.44, trend: -5, status: 'warning' },
   { stage: '招募审核中', count: 1175, percent: 0.37, trend: 0, status: 'normal' },
   { stage: '招募申请通过', count: 739, percent: 0.23, trend: -12, status: 'warning' },
@@ -117,9 +117,9 @@ export const domainEfficiencyData = [
 ];
 
 export const errorTypeData = [
-  { type: '边界框不精确', percent: 40.0, count: 9832, group: '新Worker占65%' },
-  { type: '类别选择错误', percent: 30.0, count: 7374, group: '跨领域Worker占48%' },
-  { type: '属性漏标', percent: 15.0, count: 3687, group: '低活跃Worker占52%' },
+  { type: '边界框不精确', percent: 40.0, count: 9832, group: '新用户占65%' },
+  { type: '类别选择错误', percent: 30.0, count: 7374, group: '跨领域用户占48%' },
+  { type: '属性漏标', percent: 15.0, count: 3687, group: '低活跃用户占52%' },
   { type: '规则理解错误', percent: 10.0, count: 2458, group: '各阶段均匀分布' },
   { type: '其他', percent: 5.0, count: 1231, group: '-' },
 ];

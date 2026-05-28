@@ -7,6 +7,7 @@ export const STORAGE_KEY = 'appen-crowd-dashboard-edit-state-v2';
 const withIds = (listKey: string, arr: any[]) => arr.map((item, idx) => ({ ...item, id: item.id ?? `${listKey}-${idx}` }));
 
 const stripLifecycleStageIcon = (stage?: string) => String(stage ?? '').replace(/^[^\p{L}\p{N}]+/u, '').trim();
+const normalizeLifecycleStageName = (stage?: string) => stripLifecycleStageIcon(stage).replace('待KYC', '待实名认证');
 
 const initialChartLists: Record<string, any[]> = {
   funnel: withIds('funnel', funnelData),
@@ -37,7 +38,7 @@ const mergeStoredChartLists = (storedChartLists?: Record<string, any[]>) => {
     id: defaultItem.id,
     stage: String(defaultItem.stage).includes('已流失')
       ? defaultItem.stage
-      : stripLifecycleStageIcon(merged.lifecycle?.[idx]?.stage ?? defaultItem.stage),
+      : normalizeLifecycleStageName(merged.lifecycle?.[idx]?.stage ?? defaultItem.stage),
   }));
 
   merged.topRecruitTasks = initialChartLists.topRecruitTasks.map((defaultItem, idx) => ({
