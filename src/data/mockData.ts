@@ -18,11 +18,11 @@ export const platformOverviewData = {
 };
 
 export const funnelData = [
-  { name: '新注册用户', value: 2474, rate: 100 },
-  { name: '提交招募申请', value: 1175, rate: 60.7 },
-  { name: '招募通过', value: 739, rate: 62.9 },
-  { name: '参与任务执行', value: 630, rate: 85.2 },
-  { name: 'D30窗口活跃用户', value: 285, rate: 45.3 },
+  { name: '新注册用户', value: 847, rate: 100 },
+  { name: '完成实名认证', value: 612, rate: 72.3 },
+  { name: '提交招募申请', value: 346, rate: 56.5 },
+  { name: '招募通过', value: 214, rate: 61.8 },
+  { name: '首次任务执行', value: 158, rate: 73.8 },
 ];
 
 export const userGrowthTrend = [
@@ -66,11 +66,11 @@ export const qualityTrend = [
 ];
 
 export const cohortData = [
-  { week: '10月 W1', users: 534, d1: 52.1, d7: 28.3, d14: 18.5, d30: 12.1 },
-  { week: '10月 W2', users: 612, d1: 49.8, d7: 26.1, d14: 17.2, d30: 11.8 },
-  { week: '10月 W3', users: 488, d1: 55.3, d7: 30.2, d14: 19.8, d30: 12.5 },
-  { week: '10月 W4', users: 723, d1: 50.9, d7: 27.6, d14: 18.1, d30: null },
-  { week: '11月 W1', users: 847, d1: 53.4, d7: 29.1, d14: null, d30: null },
+  { week: '10月 W1', users: 534, verified: 431, applied: 292, approved: 188, taskStarted: 154, d1: 52.1, d7: 28.3, d14: 18.5, d30: 12.1 },
+  { week: '10月 W2', users: 612, verified: 479, applied: 315, approved: 197, taskStarted: 164, d1: 49.8, d7: 26.1, d14: 17.2, d30: 11.8 },
+  { week: '10月 W3', users: 488, verified: 391, applied: 272, approved: 176, taskStarted: 147, d1: 55.3, d7: 30.2, d14: 19.8, d30: 12.5 },
+  { week: '10月 W4', users: 723, verified: 552, applied: 337, approved: 211, taskStarted: 179, d1: 50.9, d7: 27.6, d14: 18.1, d30: null },
+  { week: '11月 W1', users: 847, verified: 612, applied: 346, approved: 214, taskStarted: 158, d1: 53.4, d7: 29.1, d14: null, d30: null },
 ];
 
 export const lifecycleData = [

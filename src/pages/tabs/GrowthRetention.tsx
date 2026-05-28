@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/src/components/ui/card';
 import { cohortData, platformOverviewData, userGrowthTrend } from '@/src/data/mockData';
 import { metricTip } from '@/src/data/metricDefinitions';
@@ -61,8 +61,17 @@ const getLifecycleStageIcon = (stage?: string) => {
   return FileSearch;
 };
 
+const buildFunnelFromCohort = (cohort) => [
+  { id: 'funnel-current-registered', name: '新注册用户', value: cohort?.users ?? 0, metricKey: 'funnel_new_registered_users', color: '#14b8a6' },
+  { id: 'funnel-current-verified', name: '完成实名认证', value: cohort?.verified ?? 0, metricKey: 'funnel_verified_users_current', color: '#10b981' },
+  { id: 'funnel-current-applied', name: '提交招募申请', value: cohort?.applied ?? 0, metricKey: 'funnel_applied_users_current', color: '#22c55e' },
+  { id: 'funnel-current-approved', name: '招募通过', value: cohort?.approved ?? 0, metricKey: 'funnel_approved_users_current', color: '#84cc16' },
+  { id: 'funnel-current-task-started', name: '首次任务执行', value: cohort?.taskStarted ?? 0, metricKey: 'funnel_task_started_users_current', color: '#65a30d' },
+];
+
 export default function GrowthRetention() {
   const { isEditMode, chartLists, updateChartListItem, addChartListItem, removeChartListItem } = useDashboard();
+  const [selectedCohortIndex, setSelectedCohortIndex] = useState(cohortData.length - 1);
 
   const getRetentionColor = (val) => {
     if (!val) return 'bg-slate-50 text-slate-400';
@@ -76,24 +85,19 @@ export default function GrowthRetention() {
   const churnDataState = chartLists.churn || [];
   const lifecycleDurationDataState = chartLists.lifecycleDuration || [];
   const funnelDataState = chartLists.funnel || [];
-  const funnelMetricKeys = [
-    'funnel_new_registered_users',
-    'funnel_applied_users_d30',
-    'funnel_approved_users_d30',
-    'funnel_task_started_users_d30',
-    'funnel_d30_active_workers',
-  ];
-  const funnelBaseValue = Number(funnelDataState[0]?.value || 0);
-  const funnelRows = funnelDataState.map((step, idx) => {
+  const selectedCohort = cohortData[selectedCohortIndex] ?? cohortData[cohortData.length - 1];
+  const currentFunnelData = isEditMode ? funnelDataState : buildFunnelFromCohort(selectedCohort);
+  const funnelBaseValue = Number(currentFunnelData[0]?.value || 0);
+  const funnelRows = currentFunnelData.map((step, idx) => {
     const currentValue = Number(step.value || 0);
-    const previousValue = Number(funnelDataState[idx - 1]?.value || currentValue);
+    const previousValue = Number(currentFunnelData[idx - 1]?.value || currentValue);
     const stepRate = idx === 0 || previousValue === 0 ? 100 : (currentValue / previousValue) * 100;
     const cumulativeRate = funnelBaseValue === 0 ? 0 : (currentValue / funnelBaseValue) * 100;
     const loss = idx === 0 ? 0 : Math.max(previousValue - currentValue, 0);
 
     return {
       ...step,
-      metricKey: funnelMetricKeys[idx] || 'funnel_step_conversion_rate',
+      metricKey: step.metricKey || 'funnel_step_conversion_rate',
       stepRate,
       cumulativeRate,
       loss,
@@ -133,20 +137,16 @@ export default function GrowthRetention() {
           </div>
         </EditableChartCard>
 
-        <EditableChartCard id="gr-funnel" title="新增用户 D30 转化漏斗" showTitleTooltip={false} className="col-span-1">
+        <EditableChartCard id="gr-funnel" title="新用户转化漏斗（截至当前）" showTitleTooltip={false} className="col-span-1">
           <div className="mt-2 space-y-4">
-            <div className="grid grid-cols-2 gap-2 text-[11px] xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2 text-[11px] xl:grid-cols-3">
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
-                <div className="text-slate-400">入组用户</div>
-                <div className="mt-0.5 font-semibold text-slate-700">31-60天前新增注册</div>
+                <div className="text-slate-400">当前注册周期</div>
+                <div className="mt-0.5 font-semibold text-slate-700">{selectedCohort.week}</div>
               </div>
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
-                <div className="text-slate-400">观察窗口</div>
-                <div className="mt-0.5 font-semibold text-slate-700">注册后0-30天</div>
-              </div>
-              <div className="rounded border border-teal-100 bg-teal-50 px-3 py-2">
-                <div className="text-teal-600">D30窗口活跃</div>
-                <div className="mt-0.5 font-semibold text-teal-700">注册后24-30天</div>
+                <div className="text-slate-400">统计口径</div>
+                <div className="mt-0.5 font-semibold text-slate-700">截至当前最新状态</div>
               </div>
               <div className="rounded border border-amber-100 bg-amber-50 px-3 py-2">
                 <div className="text-amber-600">最大流失</div>
@@ -188,7 +188,7 @@ export default function GrowthRetention() {
                       <span className="flex min-w-0 items-center font-medium text-slate-700">
                         <span className="mr-1.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-teal-50 text-[10px] text-teal-700">{idx + 1}</span>
                         <span className="truncate">{step.name}</span>
-                        <MetricInfo tip={metricTip(funnelMetricKeys[idx] || 'registration_conversion_rate')} />
+                        <MetricInfo tip={metricTip(step.metricKey || 'registration_conversion_rate')} />
                       </span>
                       <span className="text-right font-semibold text-slate-700">{Number(step.value).toLocaleString()}人</span>
                       <span className="text-right text-slate-600">{toPercent(step.stepRate)}</span>
@@ -222,7 +222,7 @@ export default function GrowthRetention() {
         <EditableChartCard id="gr-c1" title="用户留存矩阵（按注册周）" showTitleTooltip={false} className="col-span-1">
             <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
               <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">按注册周分组</span>
-              <span>每行使用同一注册周期用户作为 D1/D7/D14/D30 留存基准</span>
+              <span>点击某一注册周期，可同步查看该批新用户截至当前的转化漏斗</span>
             </div>
             <div className="overflow-x-auto mt-2">
               <table className="w-full text-xs text-left">
@@ -263,7 +263,11 @@ export default function GrowthRetention() {
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {cohortData.map((row, i) => (
-                    <tr key={i}>
+                    <tr
+                      key={i}
+                      className={`cursor-pointer transition-colors ${selectedCohortIndex === i ? 'bg-teal-50/80' : 'hover:bg-slate-50'}`}
+                      onClick={() => setSelectedCohortIndex(i)}
+                    >
                       <td className="py-2 font-medium text-slate-700">{row.week}</td>
                       <td className="py-2 text-slate-600">{row.users}</td>
                       <td className="py-1"><div className={`px-2 py-1 rounded text-center ${getRetentionColor(row.d1)}`}>{row.d1 ? `${row.d1}%` : '-'}</div></td>
