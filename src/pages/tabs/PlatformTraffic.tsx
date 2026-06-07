@@ -10,16 +10,163 @@ import { Download, Info } from 'lucide-react';
 
 import { useDashboard } from '@/src/context/DashboardContext';
 
-export default function PlatformTraffic() {
+type TrafficDeviceFilter = 'total' | 'app' | 'web';
+
+const deviceProfiles: Record<TrafficDeviceFilter, {
+  label: string;
+  share: number;
+  avgTime: string;
+  uvChange: number;
+  pvChange: number;
+  avgTimeChange: number;
+  bounceRate: number;
+  bounceRateChange: number;
+  recruitCtr: number;
+  recruitCtrChange: number;
+  actionMultiplier: number;
+  recruitClickMultiplier: number;
+  newVisitorShare: number;
+  sourceMultipliers: Record<string, number>;
+}> = {
+  total: {
+    label: '总计',
+    share: 1,
+    avgTime: trafficKpiData.avgTime,
+    uvChange: trafficKpiData.uvChange,
+    pvChange: trafficKpiData.pvChange,
+    avgTimeChange: trafficKpiData.avgTimeChange,
+    bounceRate: trafficKpiData.bounceRate,
+    bounceRateChange: trafficKpiData.bounceRateChange,
+    recruitCtr: trafficKpiData.recruitCtr,
+    recruitCtrChange: trafficKpiData.recruitCtrChange,
+    actionMultiplier: 1,
+    recruitClickMultiplier: 1,
+    newVisitorShare: 62,
+    sourceMultipliers: {},
+  },
+  app: {
+    label: 'App',
+    share: 0.32,
+    avgTime: '6m 18s',
+    uvChange: 15.8,
+    pvChange: 10.4,
+    avgTimeChange: 18.6,
+    bounceRate: 24.8,
+    bounceRateChange: -3.0,
+    recruitCtr: 46.7,
+    recruitCtrChange: 4.1,
+    actionMultiplier: 1.12,
+    recruitClickMultiplier: 1.08,
+    newVisitorShare: 58,
+    sourceMultipliers: {
+      直接访问: 0.86,
+      搜索引擎: 0.78,
+      外部链接: 0.82,
+      社交媒体: 1.38,
+      邮件营销: 0.95,
+    },
+  },
+  web: {
+    label: 'Web',
+    share: 0.68,
+    avgTime: '5m 25s',
+    uvChange: 11.1,
+    pvChange: 7.4,
+    avgTimeChange: 13.2,
+    bounceRate: 31.0,
+    bounceRateChange: -1.6,
+    recruitCtr: 40.5,
+    recruitCtrChange: 2.8,
+    actionMultiplier: 0.95,
+    recruitClickMultiplier: 0.96,
+    newVisitorShare: 64,
+    sourceMultipliers: {
+      直接访问: 1.06,
+      搜索引擎: 1.09,
+      外部链接: 1.07,
+      社交媒体: 0.82,
+      邮件营销: 1.02,
+    },
+  },
+};
+
+const scaleCount = (value: number, factor: number) => Math.max(0, Math.round(value * factor));
+const clampPercent = (value: number) => Math.min(100, Math.max(0, Number(value.toFixed(1))));
+
+const buildScaledSourceData = (deviceFilter: TrafficDeviceFilter, share: number) => {
+  const multipliers = deviceProfiles[deviceFilter].sourceMultipliers;
+  const scaled = trafficSourceData.map(item => ({
+    ...item,
+    value: scaleCount(item.value, share * (multipliers[item.name] ?? 1)),
+  }));
+  const total = scaled.reduce((sum, item) => sum + item.value, 0);
+
+  return scaled.map(item => ({
+    ...item,
+    percent: total > 0 ? Number(((item.value / total) * 100).toFixed(1)) : 0,
+  }));
+};
+
+export default function PlatformTraffic({ deviceFilter = 'total' }: { deviceFilter?: TrafficDeviceFilter }) {
   const { isEditMode, chartLists, updateChartListItem } = useDashboard();
+  const deviceProfile = deviceProfiles[deviceFilter];
   const topPagesDataState = chartLists.topPages || topPagesData;
+  const trafficKpi = {
+    uv: scaleCount(trafficKpiData.uv, deviceProfile.share),
+    pv: scaleCount(trafficKpiData.pv, deviceProfile.share),
+    avgTime: deviceProfile.avgTime,
+    uvChange: deviceProfile.uvChange,
+    pvChange: deviceProfile.pvChange,
+    avgTimeChange: deviceProfile.avgTimeChange,
+    bounceRate: deviceProfile.bounceRate,
+    bounceRateChange: deviceProfile.bounceRateChange,
+    recruitCtr: deviceProfile.recruitCtr,
+    recruitCtrChange: deviceProfile.recruitCtrChange,
+    recruitChannelClicks: scaleCount(2860, deviceProfile.share * deviceProfile.actionMultiplier),
+    recruitSearchSubmits: scaleCount(742, deviceProfile.share * deviceProfile.actionMultiplier),
+    loginIntentClicks: scaleCount(1126, deviceProfile.share * deviceProfile.actionMultiplier),
+  };
+  const trafficTrendDataByDevice = trafficTrendData.map(item => ({
+    ...item,
+    pv: scaleCount(item.pv, deviceProfile.share),
+    uv: scaleCount(item.uv, deviceProfile.share),
+  }));
+  const trafficSourceDataByDevice = buildScaledSourceData(deviceFilter, deviceProfile.share);
+  const topPagesDataByDevice = topPagesDataState.map(row => ({
+    ...row,
+    pv: isEditMode ? row.pv : scaleCount(row.pv, deviceProfile.share),
+    uv: isEditMode ? row.uv : scaleCount(row.uv, deviceProfile.share),
+    bounce: isEditMode ? row.bounce : clampPercent(row.bounce + (deviceProfile.bounceRate - trafficKpiData.bounceRate)),
+  }));
+  const visitorDataByDevice = [
+    { ...visitorDeviceData.visitor[0], value: deviceProfile.newVisitorShare },
+    { ...visitorDeviceData.visitor[1], value: 100 - deviceProfile.newVisitorShare },
+  ];
+  const deviceDistributionData = deviceFilter === 'total'
+    ? visitorDeviceData.device
+    : visitorDeviceData.device
+        .filter(item => item.name.toLowerCase() === deviceFilter)
+        .map(item => ({ ...item, value: 100 }));
+  const domainTrafficDataByDevice = domainTrafficData.map(row => ({
+    ...row,
+    pv: scaleCount(row.pv, deviceProfile.share),
+    uv: scaleCount(row.uv, deviceProfile.share),
+  }));
+  const taskTrafficDataByDevice = taskTrafficData.map(task => {
+    const pv = scaleCount(task.pv, deviceProfile.share);
+    const uv = scaleCount(task.uv, deviceProfile.share);
+    const clicks = scaleCount(task.clicks, deviceProfile.share * deviceProfile.recruitClickMultiplier);
+    const ctr = pv > 0 ? (clicks / pv) * 100 : 0;
+
+    return { ...task, pv, uv, clicks, ctr };
+  });
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-lg font-bold text-slate-800">平台流量统计</h2>
-          <p className="text-sm text-slate-500 mt-1">实时监控平台页面访问量、用户行为及来源分布</p>
+          <p className="text-sm text-slate-500 mt-1">实时监控平台页面访问量、用户行为及来源分布 · 当前设备端：{deviceProfile.label}</p>
         </div>
         <button className="px-4 py-2 bg-white border border-slate-200 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center">
           <Download className="w-4 h-4 mr-2" />
@@ -28,14 +175,14 @@ export default function PlatformTraffic() {
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <MetricCard id="pt-1" title="UV (独立访客)" value={trafficKpiData.uv.toLocaleString()} change={trafficKpiData.uvChange} changeLabel="VS 昨天" tooltip={metricTip('unique_visitors')} />
-        <MetricCard id="pt-2" title="PV (页面浏览量)" value={trafficKpiData.pv.toLocaleString()} change={trafficKpiData.pvChange} changeLabel="VS 昨天" tooltip={metricTip('page_views')} />
-        <MetricCard id="pt-3" title="人均停留时长" value={trafficKpiData.avgTime} change={trafficKpiData.avgTimeChange} changeLabel="VS 昨天" tooltip={metricTip('avg_session_duration')} />
-        <MetricCard id="pt-4" title="整体跳出率" value={`${trafficKpiData.bounceRate}%`} change={trafficKpiData.bounceRateChange} changeLabel="VS 昨天" tooltip={metricTip('bounce_rate')} />
-        <MetricCard id="pt-5" title="招募单点击率" value={`${trafficKpiData.recruitCtr}%`} change={trafficKpiData.recruitCtrChange} changeLabel="VS 昨天" tooltip={metricTip('recruit_sheet_ctr')} />
-        <MetricCard id="pt-6" title="招募频道点击" value="2,860次" change={9.6} changeLabel="VS 昨天" tooltip={metricTip('recruit_channel_tab_clicks')} />
-        <MetricCard id="pt-7" title="招募单搜索次数" value="742次" change={6.4} changeLabel="VS 昨天" tooltip={metricTip('recruit_search_submits')} />
-        <MetricCard id="pt-8" title="登录意向点击" value="1,126次" change={11.8} changeLabel="VS 昨天" tooltip={metricTip('login_intent_clicks')} />
+        <MetricCard id="pt-1" title="UV (独立访客)" value={trafficKpi.uv.toLocaleString()} change={trafficKpi.uvChange} changeLabel="VS 昨天" tooltip={metricTip('unique_visitors')} />
+        <MetricCard id="pt-2" title="PV (页面浏览量)" value={trafficKpi.pv.toLocaleString()} change={trafficKpi.pvChange} changeLabel="VS 昨天" tooltip={metricTip('page_views')} />
+        <MetricCard id="pt-3" title="人均停留时长" value={trafficKpi.avgTime} change={trafficKpi.avgTimeChange} changeLabel="VS 昨天" tooltip={metricTip('avg_session_duration')} />
+        <MetricCard id="pt-4" title="整体跳出率" value={`${trafficKpi.bounceRate}%`} change={trafficKpi.bounceRateChange} changeLabel="VS 昨天" tooltip={metricTip('bounce_rate')} />
+        <MetricCard id="pt-5" title="招募单点击率" value={`${trafficKpi.recruitCtr}%`} change={trafficKpi.recruitCtrChange} changeLabel="VS 昨天" tooltip={metricTip('recruit_sheet_ctr')} />
+        <MetricCard id="pt-6" title="招募频道点击" value={`${trafficKpi.recruitChannelClicks.toLocaleString()}次`} change={9.6} changeLabel="VS 昨天" tooltip={metricTip('recruit_channel_tab_clicks')} />
+        <MetricCard id="pt-7" title="招募单搜索次数" value={`${trafficKpi.recruitSearchSubmits.toLocaleString()}次`} change={6.4} changeLabel="VS 昨天" tooltip={metricTip('recruit_search_submits')} />
+        <MetricCard id="pt-8" title="登录意向点击" value={`${trafficKpi.loginIntentClicks.toLocaleString()}次`} change={11.8} changeLabel="VS 昨天" tooltip={metricTip('login_intent_clicks')} />
       </div>
 
       <div className="grid grid-cols-3 gap-6">
@@ -48,7 +195,7 @@ export default function PlatformTraffic() {
           </div>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={trafficTrendData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+              <LineChart data={trafficTrendDataByDevice} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
@@ -66,7 +213,7 @@ export default function PlatformTraffic() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={trafficSourceData}
+                    data={trafficSourceDataByDevice}
                     cx="50%"
                     cy="50%"
                     innerRadius={50}
@@ -74,7 +221,7 @@ export default function PlatformTraffic() {
                     paddingAngle={2}
                     dataKey="value"
                   >
-                    {trafficSourceData.map((entry, index) => (
+                    {trafficSourceDataByDevice.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
@@ -83,7 +230,7 @@ export default function PlatformTraffic() {
               </ResponsiveContainer>
             </div>
             <div className="mt-2 space-y-2">
-              {trafficSourceData.map((item, i) => (
+              {trafficSourceDataByDevice.map((item, i) => (
                 <div key={i} className="flex items-center justify-between text-xs">
                   <div className="flex items-center">
                     <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: item.color }}></span>
@@ -131,7 +278,7 @@ export default function PlatformTraffic() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  {topPagesDataState.map((row) => (
+                  {topPagesDataByDevice.map((row) => (
                     <tr key={row.id} className="hover:bg-slate-50">
                       <td className="py-3">
                         {isEditMode ? (
@@ -190,7 +337,7 @@ export default function PlatformTraffic() {
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={visitorDeviceData.visitor}
+                        data={visitorDataByDevice}
                         cx="50%"
                         cy="50%"
                         innerRadius={25}
@@ -198,7 +345,7 @@ export default function PlatformTraffic() {
                         paddingAngle={2}
                         dataKey="value"
                       >
-                        {visitorDeviceData.visitor.map((entry, index) => (
+                        {visitorDataByDevice.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
@@ -207,7 +354,7 @@ export default function PlatformTraffic() {
                   </ResponsiveContainer>
                 </div>
                 <div className="space-y-2 flex-1">
-                  {visitorDeviceData.visitor.map((item, i) => (
+                  {visitorDataByDevice.map((item, i) => (
                     <div key={i} className="flex items-center justify-between text-xs">
                       <div className="flex items-center">
                         <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: item.color }}></span>
@@ -226,7 +373,7 @@ export default function PlatformTraffic() {
                 <MetricInfo tip={metricTip('device_share')} />
               </div>
               <div className="space-y-4">
-                {visitorDeviceData.device.map((item, i) => (
+                {deviceDistributionData.map((item, i) => (
                   <div key={i}>
                     <div className="flex justify-between text-xs mb-1">
                       <span className="font-medium text-slate-700">{item.name}</span>
@@ -249,7 +396,7 @@ export default function PlatformTraffic() {
         <EditableChartCard id="pt-c5" title="各领域招募单访问情况" tooltip={metricTip('page_views', 'unique_visitors')} className="col-span-1">
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={domainTrafficData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+              <BarChart data={domainTrafficDataByDevice} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="domain" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
                 <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
@@ -301,7 +448,7 @@ export default function PlatformTraffic() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  {taskTrafficData.map((task, i) => (
+                  {taskTrafficDataByDevice.map((task, i) => (
                     <tr key={i} className="hover:bg-slate-50">
                       <td className="py-2 text-center">
                         <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold ${i < 3 ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-500'}`}>

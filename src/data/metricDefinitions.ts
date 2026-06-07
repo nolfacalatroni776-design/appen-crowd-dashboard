@@ -186,11 +186,11 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   device_share: {
     name: '设备分布',
-    definition: '指定设备类型访问 UV/全部设备类型访问 UV，用于观察 PC、移动端和平板占比',
+    definition: '指定设备端访问 UV/全部设备端访问 UV，用于观察 App 和 Web 的访问占比',
     formula: 'device_uv / total_uv',
     source: 'user_agent 或前端设备字段',
     refresh: '1 小时',
-    note: '用于判断移动端招募体验',
+    note: '用于判断不同设备端的招募访问体验',
   },
   registration_conversion_rate: {
     name: '新访客注册转化率',

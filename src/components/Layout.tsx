@@ -15,6 +15,11 @@ const tabs = [
 ];
 
 const recruitStatusOptions = ['全部招募单状态', '招募中', '审核中', '已暂停', '已完成'];
+const trafficDeviceOptions = [
+  { value: 'total', label: '设备端：总计' },
+  { value: 'app', label: '设备端：App' },
+  { value: 'web', label: '设备端：Web' },
+];
 const moduleTimeFilters: Record<string, { label: string; value: string }> = {
   traffic: { label: '访问时间', value: '近30天' },
   growth: { label: '增长趋势', value: '近30天' },
@@ -25,6 +30,7 @@ const moduleTimeFilters: Record<string, { label: string; value: string }> = {
 export default function Layout() {
   const [activeTab, setActiveTab] = useState('traffic');
   const [recruitStatusFilter, setRecruitStatusFilter] = useState('全部招募单状态');
+  const [trafficDeviceFilter, setTrafficDeviceFilter] = useState<'total' | 'app' | 'web'>('total');
   const { isEditMode, setIsEditMode, globalDomain, setGlobalDomain } = useDashboard();
   const activeTabLabel = tabs.find(tab => tab.id === activeTab)?.label ?? '';
   const activeTimeFilter = moduleTimeFilters[activeTab] ?? moduleTimeFilters.traffic;
@@ -98,6 +104,22 @@ export default function Layout() {
             <ChevronDown className="w-4 h-4 ml-2 text-slate-400" />
           </button>
 
+          {activeTab === 'traffic' && (
+            <>
+              <div className="h-4 w-px bg-slate-200 mx-1"></div>
+              <select
+                className="h-9 rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm outline-none transition hover:border-teal-200 focus:border-teal-300 focus:ring-2 focus:ring-teal-100"
+                value={trafficDeviceFilter}
+                onChange={(e) => setTrafficDeviceFilter(e.target.value as 'total' | 'app' | 'web')}
+                aria-label="设备端筛选"
+              >
+                {trafficDeviceOptions.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </>
+          )}
+
           {activeTab === 'recruitment' && (
             <>
               <div className="h-4 w-px bg-slate-200 mx-1"></div>
@@ -148,7 +170,7 @@ export default function Layout() {
 
       <main className="flex-1 overflow-x-hidden px-6 py-6">
         <div className="mx-auto min-w-0 max-w-[1480px] flex-1 space-y-6 rounded-[28px] border border-white/80 bg-white/45 p-5 shadow-2xl shadow-teal-950/5">
-          {activeTab === 'traffic' && <PlatformTraffic />}
+          {activeTab === 'traffic' && <PlatformTraffic deviceFilter={trafficDeviceFilter} />}
           {activeTab === 'growth' && <GrowthRetention />}
           {activeTab === 'recruitment' && <RecruitmentAnalysis recruitStatusFilter={recruitStatusFilter} />}
           {activeTab === 'task' && <TaskQuality />}

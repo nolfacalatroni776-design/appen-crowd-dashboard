@@ -259,9 +259,8 @@ export const visitorDeviceData = {
     { name: '老访客', value: 38, color: '#2dd4bf' },
   ],
   device: [
-    { name: 'PC端', value: 65, color: '#14b8a6' },
-    { name: '移动端', value: 30, color: '#10b981' },
-    { name: '平板', value: 5, color: '#f59e0b' },
+    { name: 'App', value: 32, color: '#10b981' },
+    { name: 'Web', value: 68, color: '#14b8a6' },
   ]
 };
 
