@@ -12,6 +12,12 @@ import { useDashboard } from '@/src/context/DashboardContext';
 
 type TrafficDeviceFilter = 'total' | 'app' | 'web';
 
+const trafficDeviceOptions: { value: TrafficDeviceFilter; label: string }[] = [
+  { value: 'total', label: '设备端：总计' },
+  { value: 'app', label: '设备端：App' },
+  { value: 'web', label: '设备端：Web' },
+];
+
 const deviceProfiles: Record<TrafficDeviceFilter, {
   label: string;
   share: number;
@@ -107,8 +113,9 @@ const buildScaledSourceData = (deviceFilter: TrafficDeviceFilter, share: number)
   }));
 };
 
-export default function PlatformTraffic({ deviceFilter = 'total' }: { deviceFilter?: TrafficDeviceFilter }) {
+export default function PlatformTraffic() {
   const { isEditMode, chartLists, updateChartListItem } = useDashboard();
+  const [deviceFilter, setDeviceFilter] = React.useState<TrafficDeviceFilter>('total');
   const deviceProfile = deviceProfiles[deviceFilter];
   const topPagesDataState = chartLists.topPages || topPagesData;
   const trafficKpi = {
@@ -163,15 +170,31 @@ export default function PlatformTraffic({ deviceFilter = 'total' }: { deviceFilt
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-4">
         <div>
           <h2 className="text-lg font-bold text-slate-800">平台流量统计</h2>
           <p className="text-sm text-slate-500 mt-1">T+1 查看昨日平台页面访问量、用户行为及来源分布 · 当前设备端：{deviceProfile.label}</p>
         </div>
-        <button className="px-4 py-2 bg-white border border-slate-200 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center">
-          <Download className="w-4 h-4 mr-2" />
-          导出报表
-        </button>
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <div className="flex h-9 items-center rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm">
+            <span className="mr-1 text-slate-400">访问时间</span>
+            近30天
+          </div>
+          <select
+            className="h-9 rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm outline-none transition hover:border-teal-200 focus:border-teal-300 focus:ring-2 focus:ring-teal-100"
+            value={deviceFilter}
+            onChange={(event) => setDeviceFilter(event.target.value as TrafficDeviceFilter)}
+            aria-label="设备端筛选"
+          >
+            {trafficDeviceOptions.map(option => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+          <button className="px-4 py-2 bg-white border border-slate-200 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center">
+            <Download className="w-4 h-4 mr-2" />
+            导出报表
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-4 gap-4">

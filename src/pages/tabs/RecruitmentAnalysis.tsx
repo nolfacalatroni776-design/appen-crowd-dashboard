@@ -12,11 +12,12 @@ import { useDashboard } from '@/src/context/DashboardContext';
 
 const recruitStatusOptions = ['招募中', '审核中', '已暂停', '已完成'];
 
-export default function RecruitmentAnalysis({ recruitStatusFilter = '全部招募单状态' }: { recruitStatusFilter?: string }) {
+export default function RecruitmentAnalysis() {
   const [viewMode, setViewMode] = useState<'domain' | 'task'>('domain');
   const [domainSortConfig, setDomainSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [taskSortConfig, setTaskSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
-  const { isEditMode, chartLists, updateChartListItem, globalDomain } = useDashboard();
+  const [recruitStatusFilter, setRecruitStatusFilter] = useState('全部招募单状态');
+  const { isEditMode, chartLists, updateChartListItem, globalDomain, setGlobalDomain } = useDashboard();
   const topRecruitTasksState = chartLists.topRecruitTasks || topRecruitTasks;
   const trendData = recruitTrendByDomain[globalDomain] || recruitTrendByDomain['全部领域'];
   const getApprovedWorkers = (task: any) => Number(task.approved ?? task.onboarded ?? 0);
@@ -104,6 +105,44 @@ export default function RecruitmentAnalysis({ recruitStatusFilter = '全部招�
 
   return (
     <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-bold text-slate-800">招募分析</h2>
+          <p className="text-sm text-slate-500 mt-1">招募周期按申请与审核事件统计，状态类指标展示截至昨日快照</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <div className="flex h-9 items-center rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm">
+            <span className="mr-1 text-slate-400">招募统计周期</span>
+            近30天
+          </div>
+          <select
+            className="h-9 rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm outline-none transition hover:border-teal-200 focus:border-teal-300 focus:ring-2 focus:ring-teal-100"
+            value={globalDomain}
+            onChange={(event) => setGlobalDomain(event.target.value)}
+            aria-label="业务领域筛选"
+          >
+            <option value="全部领域">全部领域</option>
+            <option value="自动驾驶">自动驾驶</option>
+            <option value="医疗影像">医疗影像</option>
+            <option value="语音合成">语音合成</option>
+            <option value="文本情感">文本情感</option>
+            <option value="图像标注">图像标注</option>
+            <option value="NLP任务">NLP任务</option>
+          </select>
+          <select
+            className="h-9 rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm outline-none transition hover:border-teal-200 focus:border-teal-300 focus:ring-2 focus:ring-teal-100"
+            value={recruitStatusFilter}
+            onChange={(event) => setRecruitStatusFilter(event.target.value)}
+            aria-label="招募单状态筛选"
+          >
+            <option value="全部招募单状态">全部招募单状态</option>
+            {recruitStatusOptions.map(status => (
+              <option key={status} value={status}>{status}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       <div className="grid grid-cols-3 gap-4">
         <MetricCard id="ra-s1" title="新增招募单" value={`${recruitTaskStatusData.new.value}个`} change={recruitTaskStatusData.new.change} changeLabel={recruitTaskStatusData.new.label} tooltip={metricTip('new_recruit_sheets')} />
         <MetricCard id="ra-s2" title="进行中招募单" value={`${recruitTaskStatusData.inProgress.value}个`} change={recruitTaskStatusData.inProgress.change} changeLabel={recruitTaskStatusData.inProgress.label} tooltip={metricTip('active_recruit_sheets')} />

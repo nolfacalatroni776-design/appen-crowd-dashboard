@@ -15,6 +15,30 @@ export default function TaskQuality() {
 
   return (
     <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-bold text-slate-800">任务&质量</h2>
+          <p className="text-sm text-slate-500 mt-1">提交类指标按任务提交时间统计，质量类指标按质检完成时间统计，状态类指标展示截至昨日快照</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <div className="flex h-9 items-center rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm">
+            <span className="mr-1 text-slate-400">任务统计周期</span>
+            近30天
+          </div>
+          <select
+            className="h-9 rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm outline-none transition hover:border-teal-200 focus:border-teal-300 focus:ring-2 focus:ring-teal-100"
+            defaultValue="全部任务类型"
+            aria-label="任务类型筛选"
+          >
+            <option value="全部任务类型">全部任务类型</option>
+            <option value="标注任务">标注任务</option>
+            <option value="采集任务">采集任务</option>
+            <option value="审核任务">审核任务</option>
+            <option value="质检任务">质检任务</option>
+          </select>
+        </div>
+      </div>
+
       <div className="grid grid-cols-4 gap-4">
         <MetricCard id="tq-1" title="进行中任务数" value="1,169个" change={0} changeLabel="占任务总量30%" tooltip={metricTip('active_tasks')} />
         <MetricCard id="tq-2" title="参与人数" value="8,245人" change={10} changeLabel="较上周" tooltip={metricTip('task_participants')} />

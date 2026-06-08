@@ -108,6 +108,13 @@ export default function GrowthRetention() {
 
   return (
     <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-bold text-slate-800">增长&留存</h2>
+          <p className="mt-1 text-sm text-slate-500">日指标按 T+1 展示昨日结果；趋势、留存和生命周期分别使用各自业务观察周期</p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-4 gap-4">
         <MetricCard id="gr-0" title="注册总用户数" value={platformOverviewData.totalUsers.toLocaleString()} change={0.08} changeLabel="较前日" tooltip={metricTip('registered_users_total')} />
         <MetricCard id="gr-4" title="昨日新增注册" value={`+${platformOverviewData.newUsers}`} change={platformOverviewData.newUsersChange} changeLabel="较前日" tooltip={metricTip('new_registered_users')} />
@@ -121,6 +128,10 @@ export default function GrowthRetention() {
 
       <div className="grid grid-cols-2 gap-6">
         <EditableChartCard id="gr-c0" title="用户增长趋势" tooltip={metricTip('new_registered_users', 'daily_active_users', 'inactive_90d_new_users')} className="order-1 col-span-1">
+          <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
+            <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">趋势周期：近30天</span>
+            <span>按自然日展示昨日及以前已落表数据</span>
+          </div>
           <div className="h-64 w-full block">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={userGrowthTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -139,6 +150,10 @@ export default function GrowthRetention() {
 
         <EditableChartCard id="gr-funnel" title="新用户转化漏斗（截至昨日）" showTitleTooltip={false} className="order-4 col-span-1">
           <div className="mt-2 space-y-4">
+            <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
+              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">转化状态：截至昨日</span>
+              <span>点击留存矩阵中的注册周期后，同步查看该批新用户当前转化进度</span>
+            </div>
             <div className="grid grid-cols-2 gap-2 text-[11px] xl:grid-cols-3">
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
                 <div className="text-slate-400">当前注册周期</div>
@@ -221,7 +236,8 @@ export default function GrowthRetention() {
         {/* 留存矩阵 */}
         <EditableChartCard id="gr-c1" title="用户留存矩阵（按注册周）" showTitleTooltip={false} className="order-3 col-span-1">
             <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">按注册周分组</span>
+              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">注册周期：近8周</span>
+              <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">按注册周分组</span>
               <span>点击某一注册周期，可同步查看该批新用户截至昨日的转化漏斗</span>
             </div>
             <div className="overflow-x-auto mt-2">
@@ -347,6 +363,10 @@ export default function GrowthRetention() {
 
         {/* Churn Analysis */}
         <EditableChartCard id="gr-c3" title="转化流失断点分析" showTitleTooltip={false} className="order-5 col-span-1">
+            <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
+              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">转化状态：截至昨日</span>
+              <span>按相邻转化环节定位人数掉点，不展示跨环节平均流失率</span>
+            </div>
             <div className="flex justify-between items-end mb-4">
               <div>
                 <div className="text-2xl font-bold text-slate-800">{Number(maxChurnStage.rate || 0).toFixed(1)}%</div>
@@ -418,6 +438,10 @@ export default function GrowthRetention() {
 
         {/* Average Lifecycle */}
         <EditableChartCard id="gr-c4" title="用户平均生命周期时长" showTitleTooltip={false} className="order-6 col-span-1">
+            <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
+              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">统计口径：截至昨日</span>
+              <span>按用户从注册到最近一次有效任务行为的间隔统计</span>
+            </div>
             <div className="grid grid-cols-2 gap-2 mb-6">
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
                 <div className="flex items-center text-xs text-slate-500 mb-1">

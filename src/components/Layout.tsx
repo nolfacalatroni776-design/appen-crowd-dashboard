@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, Filter, Calendar, ChevronDown, Edit3, Check, Sparkles } from 'lucide-react';
+import { Bell, Edit3, Check, Sparkles } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { useDashboard } from '@/src/context/DashboardContext';
 import GrowthRetention from '@/src/pages/tabs/GrowthRetention';
@@ -14,26 +14,10 @@ const tabs = [
   { id: 'task', label: '任务&质量' },
 ];
 
-const recruitStatusOptions = ['全部招募单状态', '招募中', '审核中', '已暂停', '已完成'];
-const trafficDeviceOptions = [
-  { value: 'total', label: '设备端：总计' },
-  { value: 'app', label: '设备端：App' },
-  { value: 'web', label: '设备端：Web' },
-];
-const moduleTimeFilters: Record<string, { label: string; value: string }> = {
-  traffic: { label: '访问时间', value: '近30天' },
-  growth: { label: '增长趋势', value: '近30天' },
-  recruitment: { label: '招募周期', value: '近30天' },
-  task: { label: '任务周期', value: '近30天' },
-};
-
 export default function Layout() {
   const [activeTab, setActiveTab] = useState('traffic');
-  const [recruitStatusFilter, setRecruitStatusFilter] = useState('全部招募单状态');
-  const [trafficDeviceFilter, setTrafficDeviceFilter] = useState<'total' | 'app' | 'web'>('total');
-  const { isEditMode, setIsEditMode, globalDomain, setGlobalDomain } = useDashboard();
+  const { isEditMode, setIsEditMode } = useDashboard();
   const activeTabLabel = tabs.find(tab => tab.id === activeTab)?.label ?? '';
-  const activeTimeFilter = moduleTimeFilters[activeTab] ?? moduleTimeFilters.traffic;
 
   return (
     <div className="min-h-screen bg-[#eef8f4] flex flex-col font-sans text-slate-900">
@@ -91,88 +75,11 @@ export default function Layout() {
         </div>
       </header>
 
-      <div className="border-b border-white/70 bg-[#f8fcfa]/80 px-6 py-3 text-sm backdrop-blur">
-        <div className="mx-auto flex w-full max-w-[1480px] flex-wrap items-center gap-3">
-          <div className="flex items-center text-slate-500 font-semibold mr-1">
-            <Filter className="w-4 h-4 mr-2" />
-            模块筛选
-          </div>
-          <button className="flex h-9 items-center rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm transition hover:border-teal-200 hover:text-teal-700">
-            <Calendar className="w-4 h-4 mr-2 text-slate-400" />
-            <span className="mr-1 text-slate-400">{activeTimeFilter.label}</span>
-            {activeTimeFilter.value}
-            <ChevronDown className="w-4 h-4 ml-2 text-slate-400" />
-          </button>
-
-          {activeTab === 'traffic' && (
-            <>
-              <div className="h-4 w-px bg-slate-200 mx-1"></div>
-              <select
-                className="h-9 rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm outline-none transition hover:border-teal-200 focus:border-teal-300 focus:ring-2 focus:ring-teal-100"
-                value={trafficDeviceFilter}
-                onChange={(e) => setTrafficDeviceFilter(e.target.value as 'total' | 'app' | 'web')}
-                aria-label="设备端筛选"
-              >
-                {trafficDeviceOptions.map(option => (
-                  <option key={option.value} value={option.value}>{option.label}</option>
-                ))}
-              </select>
-            </>
-          )}
-
-          {activeTab === 'recruitment' && (
-            <>
-              <div className="h-4 w-px bg-slate-200 mx-1"></div>
-              
-              <select 
-                className="h-9 rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm outline-none transition hover:border-teal-200 focus:border-teal-300 focus:ring-2 focus:ring-teal-100"
-                value={globalDomain}
-                onChange={(e) => setGlobalDomain(e.target.value)}
-              >
-                <option value="全部领域">全部领域</option>
-                <option value="自动驾驶">自动驾驶</option>
-                <option value="医疗影像">医疗影像</option>
-                <option value="语音合成">语音合成</option>
-                <option value="文本情感">文本情感</option>
-                <option value="图像标注">图像标注</option>
-                <option value="NLP任务">NLP任务</option>
-              </select>
-              <select
-                className="h-9 rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm outline-none transition hover:border-teal-200 focus:border-teal-300 focus:ring-2 focus:ring-teal-100"
-                value={recruitStatusFilter}
-                onChange={(e) => setRecruitStatusFilter(e.target.value)}
-              >
-                {recruitStatusOptions.map(status => (
-                  <option key={status} value={status}>{status}</option>
-                ))}
-              </select>
-            </>
-          )}
-
-          {activeTab === 'task' && (
-            <>
-              <div className="h-4 w-px bg-slate-200 mx-1"></div>
-              <select 
-                className="h-9 rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm outline-none transition hover:border-teal-200 focus:border-teal-300 focus:ring-2 focus:ring-teal-100"
-                defaultValue="全部任务类型"
-              >
-                <option value="全部任务类型">全部任务类型</option>
-                <option value="标注任务">标注任务</option>
-                <option value="采集任务">采集任务</option>
-                <option value="审核任务">审核任务</option>
-                <option value="质检任务">质检任务</option>
-              </select>
-            </>
-          )}
-
-        </div>
-      </div>
-
       <main className="flex-1 overflow-x-hidden px-6 py-6">
         <div className="mx-auto min-w-0 max-w-[1480px] flex-1 space-y-6 rounded-[28px] border border-white/80 bg-white/45 p-5 shadow-2xl shadow-teal-950/5">
-          {activeTab === 'traffic' && <PlatformTraffic deviceFilter={trafficDeviceFilter} />}
+          {activeTab === 'traffic' && <PlatformTraffic />}
           {activeTab === 'growth' && <GrowthRetention />}
-          {activeTab === 'recruitment' && <RecruitmentAnalysis recruitStatusFilter={recruitStatusFilter} />}
+          {activeTab === 'recruitment' && <RecruitmentAnalysis />}
           {activeTab === 'task' && <TaskQuality />}
         </div>
       </main>
