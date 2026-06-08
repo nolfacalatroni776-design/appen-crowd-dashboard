@@ -19,12 +19,12 @@ export default function TaskQuality() {
         <MetricCard id="tq-1" title="进行中任务数" value="1,169个" change={0} changeLabel="占任务总量30%" tooltip={metricTip('active_tasks')} />
         <MetricCard id="tq-2" title="参与人数" value="8,245人" change={10} changeLabel="较上周" tooltip={metricTip('task_participants')} />
         <MetricCard id="tq-3" title="总提交量" value="315,161条" change={12} changeLabel="较上周" tooltip={metricTip('total_submissions')} />
-        <MetricCard id="tq-4" title="标注质检通过率" value="89.2%" change={1.3} changeLabel="较昨日" tooltip={metricTip('labeling_qc_pass_rate')} />
+        <MetricCard id="tq-4" title="标注质检通过率" value="89.2%" change={1.3} changeLabel="较前日" tooltip={metricTip('labeling_qc_pass_rate')} />
 
-        <MetricCard id="tq-5" title="返工率" value="7.8%" change={0} changeLabel="较昨日" isWarning tooltip={metricTip('rework_rate')} />
-        <MetricCard id="tq-6" title="今日提交量" value="45,023条" change={8} changeLabel="较昨日" tooltip={metricTip('daily_submissions')} />
-        <MetricCard id="tq-7" title="人均日产能" value="38.2条" change={-4.5} changeLabel="较昨日" isWarning tooltip={metricTip('avg_daily_output_per_worker')} />
-        <MetricCard id="tq-8" title="采集质检通过率" value="85.2%" change={2.1} changeLabel="较昨日" tooltip={metricTip('collection_qc_pass_rate')} />
+        <MetricCard id="tq-5" title="返工率" value="7.8%" change={0} changeLabel="较前日" isWarning tooltip={metricTip('rework_rate')} />
+        <MetricCard id="tq-6" title="昨日提交量" value="45,023条" change={8} changeLabel="较前日" tooltip={metricTip('daily_submissions')} />
+        <MetricCard id="tq-7" title="人均日产能" value="38.2条" change={-4.5} changeLabel="较前日" isWarning tooltip={metricTip('avg_daily_output_per_worker')} />
+        <MetricCard id="tq-8" title="采集质检通过率" value="85.2%" change={2.1} changeLabel="较前日" tooltip={metricTip('collection_qc_pass_rate')} />
       </div>
 
       <div className="grid grid-cols-2 gap-6">

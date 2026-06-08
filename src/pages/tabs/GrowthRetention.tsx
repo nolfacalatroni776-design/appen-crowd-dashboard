@@ -109,14 +109,14 @@ export default function GrowthRetention() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-4 gap-4">
-        <MetricCard id="gr-0" title="注册总用户数" value={platformOverviewData.totalUsers.toLocaleString()} change={0.08} changeLabel="较昨日" tooltip={metricTip('registered_users_total')} />
-        <MetricCard id="gr-4" title="今日新增注册" value={`+${platformOverviewData.newUsers}`} change={platformOverviewData.newUsersChange} changeLabel="较昨日" tooltip={metricTip('new_registered_users')} />
-        <MetricCard id="gr-5" title="DAU 今日活跃" value={platformOverviewData.dau.toLocaleString()} change={platformOverviewData.dauChange} changeLabel="较昨日" tooltip={metricTip('daily_active_users')} />
+        <MetricCard id="gr-0" title="注册总用户数" value={platformOverviewData.totalUsers.toLocaleString()} change={0.08} changeLabel="较前日" tooltip={metricTip('registered_users_total')} />
+        <MetricCard id="gr-4" title="昨日新增注册" value={`+${platformOverviewData.newUsers}`} change={platformOverviewData.newUsersChange} changeLabel="较前日" tooltip={metricTip('new_registered_users')} />
+        <MetricCard id="gr-5" title="DAU 昨日活跃" value={platformOverviewData.dau.toLocaleString()} change={platformOverviewData.dauChange} changeLabel="较前日" tooltip={metricTip('daily_active_users')} />
         <MetricCard id="gr-6" title="MAU 月活用户" value={platformOverviewData.mau.toLocaleString()} change={platformOverviewData.mauChange} changeLabel="较上月" isWarning tooltip={metricTip('monthly_active_users')} />
         <MetricCard id="gr-7" title="平台月活跃用户占比" value={`${platformOverviewData.activeRate}%`} change={-0.1} changeLabel="较上月" isWarning tooltip={metricTip('platform_active_rate')} />
-        <MetricCard id="gr-1" title="新访客注册转化率" value="5.47%" change={-0.3} changeLabel="较昨日" isWarning tooltip={metricTip('registration_conversion_rate')} />
-        <MetricCard id="gr-2" title="实名认证率" value="78.3%" change={-1.8} changeLabel="较昨日" isWarning tooltip={metricTip('real_name_verification_rate')} />
-        <MetricCard id="gr-3" title="招募申请率" value="60.7%" change={-5.4} changeLabel="较昨日" isDanger tooltip={metricTip('recruit_apply_rate')} />
+        <MetricCard id="gr-1" title="新访客注册转化率" value="5.47%" change={-0.3} changeLabel="较前日" isWarning tooltip={metricTip('registration_conversion_rate')} />
+        <MetricCard id="gr-2" title="实名认证率" value="78.3%" change={-1.8} changeLabel="较前日" isWarning tooltip={metricTip('real_name_verification_rate')} />
+        <MetricCard id="gr-3" title="招募申请率" value="60.7%" change={-5.4} changeLabel="较前日" isDanger tooltip={metricTip('recruit_apply_rate')} />
       </div>
 
       <div className="grid grid-cols-2 gap-6">
@@ -137,7 +137,7 @@ export default function GrowthRetention() {
           </div>
         </EditableChartCard>
 
-        <EditableChartCard id="gr-funnel" title="新用户转化漏斗（截至当前）" showTitleTooltip={false} className="order-4 col-span-1">
+        <EditableChartCard id="gr-funnel" title="新用户转化漏斗（截至昨日）" showTitleTooltip={false} className="order-4 col-span-1">
           <div className="mt-2 space-y-4">
             <div className="grid grid-cols-2 gap-2 text-[11px] xl:grid-cols-3">
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
@@ -146,7 +146,7 @@ export default function GrowthRetention() {
               </div>
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
                 <div className="text-slate-400">统计口径</div>
-                <div className="mt-0.5 font-semibold text-slate-700">截至当前最新状态</div>
+                <div className="mt-0.5 font-semibold text-slate-700">截至昨日最新状态</div>
               </div>
               <div className="rounded border border-amber-100 bg-amber-50 px-3 py-2">
                 <div className="text-amber-600">最大流失</div>
@@ -222,7 +222,7 @@ export default function GrowthRetention() {
         <EditableChartCard id="gr-c1" title="用户留存矩阵（按注册周）" showTitleTooltip={false} className="order-3 col-span-1">
             <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
               <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">按注册周分组</span>
-              <span>点击某一注册周期，可同步查看该批新用户截至当前的转化漏斗</span>
+              <span>点击某一注册周期，可同步查看该批新用户截至昨日的转化漏斗</span>
             </div>
             <div className="overflow-x-auto mt-2">
               <table className="w-full text-xs text-left">

@@ -166,7 +166,7 @@ export default function PlatformTraffic({ deviceFilter = 'total' }: { deviceFilt
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-lg font-bold text-slate-800">平台流量统计</h2>
-          <p className="text-sm text-slate-500 mt-1">实时监控平台页面访问量、用户行为及来源分布 · 当前设备端：{deviceProfile.label}</p>
+          <p className="text-sm text-slate-500 mt-1">T+1 查看昨日平台页面访问量、用户行为及来源分布 · 当前设备端：{deviceProfile.label}</p>
         </div>
         <button className="px-4 py-2 bg-white border border-slate-200 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center">
           <Download className="w-4 h-4 mr-2" />
@@ -175,14 +175,14 @@ export default function PlatformTraffic({ deviceFilter = 'total' }: { deviceFilt
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <MetricCard id="pt-1" title="UV (独立访客)" value={trafficKpi.uv.toLocaleString()} change={trafficKpi.uvChange} changeLabel="VS 昨天" tooltip={metricTip('unique_visitors')} />
-        <MetricCard id="pt-2" title="PV (页面浏览量)" value={trafficKpi.pv.toLocaleString()} change={trafficKpi.pvChange} changeLabel="VS 昨天" tooltip={metricTip('page_views')} />
-        <MetricCard id="pt-3" title="人均停留时长" value={trafficKpi.avgTime} change={trafficKpi.avgTimeChange} changeLabel="VS 昨天" tooltip={metricTip('avg_session_duration')} />
-        <MetricCard id="pt-4" title="整体跳出率" value={`${trafficKpi.bounceRate}%`} change={trafficKpi.bounceRateChange} changeLabel="VS 昨天" tooltip={metricTip('bounce_rate')} />
-        <MetricCard id="pt-5" title="招募单点击率" value={`${trafficKpi.recruitCtr}%`} change={trafficKpi.recruitCtrChange} changeLabel="VS 昨天" tooltip={metricTip('recruit_sheet_ctr')} />
-        <MetricCard id="pt-6" title="招募频道点击" value={`${trafficKpi.recruitChannelClicks.toLocaleString()}次`} change={9.6} changeLabel="VS 昨天" tooltip={metricTip('recruit_channel_tab_clicks')} />
-        <MetricCard id="pt-7" title="招募单搜索次数" value={`${trafficKpi.recruitSearchSubmits.toLocaleString()}次`} change={6.4} changeLabel="VS 昨天" tooltip={metricTip('recruit_search_submits')} />
-        <MetricCard id="pt-8" title="登录意向点击" value={`${trafficKpi.loginIntentClicks.toLocaleString()}次`} change={11.8} changeLabel="VS 昨天" tooltip={metricTip('login_intent_clicks')} />
+        <MetricCard id="pt-1" title="UV (独立访客)" value={trafficKpi.uv.toLocaleString()} change={trafficKpi.uvChange} changeLabel="较前日" tooltip={metricTip('unique_visitors')} />
+        <MetricCard id="pt-2" title="PV (页面浏览量)" value={trafficKpi.pv.toLocaleString()} change={trafficKpi.pvChange} changeLabel="较前日" tooltip={metricTip('page_views')} />
+        <MetricCard id="pt-3" title="人均停留时长" value={trafficKpi.avgTime} change={trafficKpi.avgTimeChange} changeLabel="较前日" tooltip={metricTip('avg_session_duration')} />
+        <MetricCard id="pt-4" title="整体跳出率" value={`${trafficKpi.bounceRate}%`} change={trafficKpi.bounceRateChange} changeLabel="较前日" tooltip={metricTip('bounce_rate')} />
+        <MetricCard id="pt-5" title="招募单点击率" value={`${trafficKpi.recruitCtr}%`} change={trafficKpi.recruitCtrChange} changeLabel="较前日" tooltip={metricTip('recruit_sheet_ctr')} />
+        <MetricCard id="pt-6" title="招募频道点击" value={`${trafficKpi.recruitChannelClicks.toLocaleString()}次`} change={9.6} changeLabel="较前日" tooltip={metricTip('recruit_channel_tab_clicks')} />
+        <MetricCard id="pt-7" title="招募单搜索次数" value={`${trafficKpi.recruitSearchSubmits.toLocaleString()}次`} change={6.4} changeLabel="较前日" tooltip={metricTip('recruit_search_submits')} />
+        <MetricCard id="pt-8" title="登录意向点击" value={`${trafficKpi.loginIntentClicks.toLocaleString()}次`} change={11.8} changeLabel="较前日" tooltip={metricTip('login_intent_clicks')} />
       </div>
 
       <div className="grid grid-cols-3 gap-6">

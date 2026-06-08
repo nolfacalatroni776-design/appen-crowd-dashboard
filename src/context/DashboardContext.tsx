@@ -154,7 +154,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         title: '新增自定义指标',
         value: '0',
         change: 0,
-        changeLabel: '较昨日',
+        changeLabel: '较前日',
         tooltip: '自定义指标说明',
       };
       return { ...prev, [tabId]: [...existing, newMetric] };

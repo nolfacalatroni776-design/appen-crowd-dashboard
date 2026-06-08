@@ -10,26 +10,26 @@ type MetricDefinition = {
 export const metricDefinitions: Record<string, MetricDefinition> = {
   registered_users_total: {
     name: '注册总用户数',
-    definition: '截至统计日平台累计完成注册的去重众包用户数，以用户 ID 去重',
+    definition: '截至统计日（即昨日），平台累计完成注册的去重众包用户数，以用户 ID 去重',
     formula: 'count(distinct user_id where registered_at <= end_time)',
     source: '用户表/注册事件',
-    refresh: 'T+1 或准实时',
+    refresh: 'T+1',
     note: 'demo 显示 320,392',
   },
   new_registered_users: {
-    name: '今日新增注册',
+    name: '昨日新增注册',
     definition: '所选时间范围内完成注册的去重用户数，以用户 ID 去重',
     formula: 'count(distinct user_id where registered_at in range)',
     source: '用户表/注册事件',
-    refresh: '15 分钟',
-    note: '今日口径用自然日',
+    refresh: 'T+1',
+    note: '今日查看昨日自然日数据',
   },
   daily_active_users: {
     name: 'DAU',
-    definition: '统计日内至少发生一次登录、访问核心页面或有效任务行为的去重用户数',
+    definition: '统计日（即昨日自然日）内至少发生一次登录、访问核心页面或有效任务行为的去重用户数',
     formula: 'count(distinct user_id with active event in day)',
     source: '登录/访问/任务事件',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '需定义 active event',
   },
   monthly_active_users: {
@@ -37,23 +37,23 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '近 30 天或自然月内至少发生一次登录、访问核心页面或有效任务行为的去重用户数',
     formula: 'count(distinct user_id with active event in month)',
     source: '活跃事件',
-    refresh: '1 小时',
+    refresh: 'T+1',
     note: '与 DAU 同事件口径',
   },
   platform_active_rate: {
     name: '平台月活跃用户占比',
-    definition: '近 30 天或自然月活跃用户数/截至统计日注册总用户数',
+    definition: '近 30 天或自然月活跃用户数/截至统计日（即昨日）的注册总用户数',
     formula: 'MAU / 注册总用户数',
     source: '用户表 + 活跃事件',
-    refresh: '1 小时',
+    refresh: 'T+1',
     note: 'demo 为 3.89%',
   },
   daily_submitted_items: {
-    name: '今日提交数据',
-    definition: '统计日内用户提交的数据条数，同一数据被多次提交按提交记录累计',
+    name: '昨日提交数据',
+    definition: '统计日（即昨日自然日）内用户提交的数据条数，同一数据被多次提交按提交记录累计',
     formula: 'count(data_submit_event)',
     source: '分析中心/任务提交',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '区分提交条数和完成条数',
   },
   first_pass_rate: {
@@ -61,7 +61,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '首次质检即通过的数据条数/首次进入质检并完成质检的数据条数',
     formula: 'first_pass_count / first_qc_checked_count',
     source: '质检/验收记录',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '返修后通过不计入首次通过数据',
   },
   recruitment_supply_gap: {
@@ -69,7 +69,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '目标招募人数减去招募通过人数后的缺口人数，结果小于 0 时按 0 统计',
     formula: 'max(target_workers - approved_workers, 0)',
     source: '招募单 + 申请记录/已通过人员',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '支持按招募单汇总',
   },
   recruitment_gap_rate: {
@@ -77,7 +77,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '招募缺口人数/目标招募人数；目标人数为 0 时不计算',
     formula: 'gap / target_workers',
     source: '招募单',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: 'target 为 0 时返回空值',
   },
   unique_visitors: {
@@ -85,7 +85,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内访问平台的去重访客数，未登录按访客 ID 去重，已登录按用户 ID 去重',
     formula: 'count(distinct visitor_id)',
     source: 'EliteAI 招募广场访问日志/前端埋点',
-    refresh: '5-15 分钟',
+    refresh: 'T+1',
     note: '已验证招募广场入口，需覆盖 /guest/recruitment/square',
   },
   page_views: {
@@ -93,7 +93,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内页面浏览事件次数，同一访客多次浏览累计计数',
     formula: 'count(page_view_event)',
     source: 'EliteAI 招募广场 page_view 事件',
-    refresh: '5-15 分钟',
+    refresh: 'T+1',
     note: '同一 visitor 多次访问累加',
   },
   avg_session_duration: {
@@ -101,7 +101,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内总会话停留时长除以会话数，异常超长会话按约定上限截断',
     formula: 'sum(session_duration) / session_count',
     source: 'session 事件表',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '异常超长 session 需截断',
   },
   bounce_rate: {
@@ -109,7 +109,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '仅浏览一个页面且未产生有效互动即离开的会话数/进入页面的总会话数',
     formula: 'bounced_sessions / sessions',
     source: 'session 事件表',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '以招募广场作为落地页时需定义 bounce',
   },
   recruit_channel_tab_clicks: {
@@ -117,7 +117,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内用户点击招募频道标签的次数，同一用户多次点击累计计数',
     formula: 'count(channel_tab_click_event)',
     source: 'EliteAI 招募广场事件',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '频道：最新发布、热门精选、新手专区、预算丰厚',
   },
   recruit_search_submits: {
@@ -125,7 +125,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内用户提交招募单搜索的次数，同一用户多次搜索累计计数',
     formula: 'count(search_submit_event)',
     source: 'EliteAI 招募广场事件',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '字段含 keyword、result_count',
   },
   recruit_card_exposures: {
@@ -133,7 +133,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内招募卡片进入用户可视区的次数，同一卡片多次曝光累计计数',
     formula: 'count(recruit_card_impression_event)',
     source: 'EliteAI 招募广场事件',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '字段含 recruit_sheet_id、card_position、channel_name',
   },
   recruit_card_clicks: {
@@ -141,7 +141,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内招募卡片被点击的次数，同一用户多次点击累计计数',
     formula: 'count(recruit_card_click_event)',
     source: 'EliteAI 招募广场事件',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '字段含 recruit_sheet_id、card_position、channel_name',
   },
   login_intent_clicks: {
@@ -149,7 +149,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内用户点击登录入口，或因访问受保护入口触发登录的次数',
     formula: 'count(login_click_event)',
     source: 'EliteAI 招募广场/登录页事件',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '区分顶部去登录、导航、申请链路触发',
   },
   recruit_sheet_ctr: {
@@ -157,7 +157,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '招募卡片点击次数/招募卡片曝光次数，用于衡量招募单从曝光到点击的转化',
     formula: 'recruit_card_clicks / recruit_card_exposures',
     source: 'EliteAI 招募广场事件',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '未登录态未验证详情页跳转，先按卡片 click 计',
   },
   traffic_source_share: {
@@ -165,7 +165,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '指定来源带来的 UV 或 PV/全部来源带来的 UV 或 PV，图表展示各来源占比',
     formula: 'source_uv / total_uv',
     source: 'referrer/utm/source',
-    refresh: '1 小时',
+    refresh: 'T+1',
     note: '直接访问、搜索、外链、社媒、邮件',
   },
   new_returning_visitor_share: {
@@ -173,7 +173,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '新访客 UV/所选时间范围内全部访问 UV，老访客 UV/所选时间范围内全部访问 UV',
     formula: 'new_or_returning_uv / total_uv',
     source: '访问日志/访客身份表',
-    refresh: '1 小时',
+    refresh: 'T+1',
     note: '用于判断新增流量和回访流量结构',
   },
   page_rank_by_pv: {
@@ -181,7 +181,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '按页面维度汇总 PV、UV、平均停留和跳出率，并按浏览量或运营选择的指标排序',
     formula: 'order by PV desc',
     source: 'page_path 访问日志',
-    refresh: '1 小时',
+    refresh: 'T+1',
     note: '至少包含招募广场、登录页，详情页待确认',
   },
   device_share: {
@@ -189,7 +189,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '指定设备端访问 UV/全部设备端访问 UV，用于观察 App 和 Web 的访问占比',
     formula: 'device_uv / total_uv',
     source: 'user_agent 或前端设备字段',
-    refresh: '1 小时',
+    refresh: 'T+1',
     note: '用于判断不同设备端的招募访问体验',
   },
   registration_conversion_rate: {
@@ -197,7 +197,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内完成注册的新访客数/同一时间范围内首次访问平台的新访客数',
     formula: 'new_registered_users / unique_visitors 或 register_success / login_intent_clicks',
     source: 'EliteAI 登录/注册事件 + 用户表',
-    refresh: '1 小时',
+    refresh: 'T+1',
     note: '已验证登录/注册入口，需确认基准访问口径',
   },
   funnel_new_registered_users: {
@@ -206,11 +206,11 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     formula: 'count(distinct user_id where registered_at in cohort_range)',
     source: '用户注册事件',
     refresh: 'T+1',
-    note: '漏斗默认展示截至当前最新转化状态，不强制等待 30 天观察期',
+    note: '漏斗默认展示截至统计日（即昨日）的最新转化状态，不强制等待 30 天观察期',
   },
   funnel_verified_users_current: {
     name: '完成实名认证',
-    definition: '所选注册周期用户中，截至当前已完成实名认证的去重用户数',
+    definition: '所选注册周期用户中，截至统计日（即昨日）已完成实名认证的去重用户数',
     formula: 'count(distinct user_id where verified_at is not null)',
     source: '用户注册事件 + 实名认证记录',
     refresh: 'T+1',
@@ -218,7 +218,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   funnel_applied_users_current: {
     name: '提交招募申请',
-    definition: '所选注册周期用户中，截至当前至少提交过一次招募申请的去重用户数',
+    definition: '所选注册周期用户中，截至统计日（即昨日）至少提交过一次招募申请的去重用户数',
     formula: 'count(distinct user_id where first_application_at is not null)',
     source: '用户注册事件 + 招募申请记录',
     refresh: 'T+1',
@@ -226,7 +226,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   funnel_approved_users_current: {
     name: '招募通过',
-    definition: '所选注册周期用户中，截至当前至少有一个招募申请审核通过的去重用户数',
+    definition: '所选注册周期用户中，截至统计日（即昨日）至少有一个招募申请审核通过的去重用户数',
     formula: 'count(distinct user_id where first_approved_at is not null)',
     source: '招募申请审核记录',
     refresh: 'T+1',
@@ -234,7 +234,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   funnel_task_started_users_current: {
     name: '首次任务执行',
-    definition: '所选注册周期用户中，截至当前已产生首次有效任务行为的去重用户数；有效任务行为建议优先使用首次有效任务提交',
+    definition: '所选注册周期用户中，截至统计日（即昨日）已产生首次有效任务行为的去重用户数；有效任务行为建议优先使用首次有效任务提交',
     formula: 'count(distinct user_id where first_task_event_at is not null)',
     source: '任务分配/领取/提交事件',
     refresh: 'T+1',
@@ -269,7 +269,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '已完成实名认证的注册用户数/具备实名认证资格的注册用户数；未开始认证和认证失败均不计入已认证用户数',
     formula: 'verified_users / eligible_registered_users',
     source: '申请记录/实名表',
-    refresh: '1 小时',
+    refresh: 'T+1',
     note: '已认证、未认证分布',
   },
   recruit_apply_rate: {
@@ -277,7 +277,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '完成实名认证后提交过至少一次招募申请的用户数/完成实名认证且可申请招募的用户数',
     formula: 'submitted_applicants / verified_users 或 applications / recruit_detail_uv',
     source: '申请记录 + 实名表 + 招募详情/申请事件',
-    refresh: '1 小时',
+    refresh: 'T+1',
     note: 'PM 侧申请记录存在，用户侧申请提交链路待确认',
   },
   recruit_approval_rate: {
@@ -285,7 +285,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '审核通过的招募申请数/已完成审核的招募申请数；待审核申请不纳入计算',
     formula: 'approved_applications / reviewed_applications',
     source: '申请记录',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '待审批申请不纳入计算',
   },
   sustained_active_worker_rate: {
@@ -338,7 +338,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   lifecycle_stage_users: {
     name: '生命周期阶段人数',
-    definition: '按用户截至统计日的最新生命周期状态归类的去重用户数；各阶段占比按该阶段用户数/注册总用户数计算',
+    definition: '按用户截至统计日（即昨日）的最新生命周期状态归类的去重用户数；各阶段占比按该阶段用户数/注册总用户数计算',
     formula: 'count(user_id by stage)',
     source: '用户事件聚合',
     refresh: 'T+1',
@@ -346,7 +346,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   lifecycle_stage_new_registered: {
     name: '新注册',
-    definition: '截至统计日注册未满 7 天，且尚未进入实名认证、招募申请或任务执行阶段的去重用户数；图中占比按该阶段用户数/注册总用户数计算',
+    definition: '截至统计日（即昨日）注册未满 7 天，且尚未进入实名认证、招募申请或任务执行阶段的去重用户数；图中占比按该阶段用户数/注册总用户数计算',
     formula: 'count(distinct user_id where days_since_registered < 7 and no later lifecycle event)',
     source: '用户注册事件 + 用户生命周期表',
     refresh: 'T+1',
@@ -402,7 +402,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   inactive_90d_new_users: {
     name: '90天未活跃用户',
-    definition: '统计日当天首次达到连续 90 天无登录且无有效任务行为的去重用户数，用于用户增长趋势中的新增流失观察',
+    definition: '统计日首次达到连续 90 天无登录且无有效任务行为的去重用户数，用于用户增长趋势中的新增流失观察',
     formula: 'count(distinct user_id where last_login_at < date - 90d and last_valid_task_event_at < date - 90d and first_reached_90d_inactive_at in day)',
     source: '登录事件 + 任务事件 + 用户生命周期表',
     refresh: 'T+1',
@@ -410,7 +410,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   lost_users_90d: {
     name: '已流失用户',
-    definition: '截至统计日连续 90 天无登录且无有效任务行为的去重用户数；图中占比按该阶段用户数/注册总用户数计算，重新登录或产生有效任务行为后退出已流失状态',
+    definition: '截至统计日（即昨日）连续 90 天无登录且无有效任务行为的去重用户数；图中占比按该阶段用户数/注册总用户数计算，重新登录或产生有效任务行为后退出已流失状态',
     formula: 'count(distinct user_id where last_login_at < snapshot_date - 90d and last_valid_task_event_at < snapshot_date - 90d)',
     source: '登录事件 + 任务事件 + 用户生命周期表',
     refresh: 'T+1',
@@ -426,7 +426,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   max_stage_churn_rate: {
     name: '最大流失断点',
-    definition: '转化流失断点分析中流失率最高的转化环节，同时展示该环节未进入下一环节的用户数；用于定位当前最明显的转化阻塞点',
+    definition: '转化流失断点分析中流失率最高的转化环节，同时展示该环节未进入下一环节的用户数；用于定位统计日最明显的转化阻塞点',
     formula: 'max(stage_churn_rate)',
     source: '漏斗事件',
     refresh: 'T+1',
@@ -442,7 +442,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   avg_lifecycle_days: {
     name: '平均生命周期',
-    definition: '纳入样本用户从注册到已流失判定日的平均天数；未达到已流失状态的用户统计到当前日期，已流失按连续 90 天无登录且无有效任务行为判定',
+    definition: '纳入样本用户从注册到已流失判定日的平均天数；未达到已流失状态的用户统计到统计日（即昨日），已流失按连续 90 天无登录且无有效任务行为判定',
     formula: 'avg(last_active_or_churn_at - registered_at)',
     source: '用户生命周期表',
     refresh: 'T+1',
@@ -458,7 +458,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   lifecycle_duration_bucket_share: {
     name: '生命周期时长分布',
-    definition: '生命周期时长落入指定区间的用户数/纳入生命周期统计的用户总数；生命周期时长从注册日统计到已流失判定日，未流失用户统计到当前日期',
+    definition: '生命周期时长落入指定区间的用户数/纳入生命周期统计的用户总数；生命周期时长从注册日统计到已流失判定日，未流失用户统计到统计日（即昨日）',
     formula: 'users_in_duration_bucket / lifecycle_users',
     source: '用户生命周期表',
     refresh: 'T+1',
@@ -469,15 +469,15 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内新创建的招募单数量，按招募单 ID 去重',
     formula: 'count(recruit_sheet where created_at in range)',
     source: '众包人力招募单',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: 'demo 显示 15 个',
   },
   active_recruit_sheets: {
     name: '进行中招募单',
-    definition: '截至统计日状态为招募中，且仍可接收用户申请的招募单数量，按招募单 ID 去重',
+    definition: '截至统计日（即昨日）状态为招募中，且仍可接收用户申请的招募单数量，按招募单 ID 去重',
     formula: 'count(status = recruiting)',
     source: '众包人力招募单',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '与已暂停、已完成区分',
   },
   completed_recruit_sheets: {
@@ -485,7 +485,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内状态为已完成的招募单数量，按招募单 ID 去重；关闭或暂停不等同于完成',
     formula: 'count(status = completed)',
     source: '众包人力招募单',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '关闭不等于完成',
   },
   recruit_sheet_count: {
@@ -493,7 +493,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选范围内招募单数量，按招募单 ID 去重；按领域查看时表示该领域下的招募单数量',
     formula: 'count(distinct recruit_sheet_id)',
     source: '众包人力招募单',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '用于按领域查看列表',
   },
   target_workers: {
@@ -501,7 +501,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选招募单计划招募人数的合计，按招募单目标人数汇总',
     formula: 'sum(target_count)',
     source: '招募单',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '当前表格从进度目标解析，后端需提供原字段',
   },
   applied_workers: {
@@ -509,7 +509,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选范围内提交过招募申请的去重用户数，同一用户对同一招募单多次申请只计一次',
     formula: 'count(distinct application_id/user_id)',
     source: '申请记录',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '按招募单去重',
   },
   approved_workers: {
@@ -517,7 +517,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选范围内招募申请审核通过的去重用户数，同一用户在同一招募单只计一次；不等同于已到位人数',
     formula: 'count(status = approved)',
     source: '申请记录/已通过人员',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '与已到位需区分',
   },
   recruit_progress_rate: {
@@ -525,7 +525,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '招募通过人数/目标招募人数，用于衡量目标人数完成进度',
     formula: 'approved_workers / target_workers',
     source: '招募单 + 申请记录',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '不再作为明细招募单排行中的通过率口径',
   },
   avg_daily_recruited_workers: {
@@ -541,7 +541,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '已完成审核的申请从提交申请到审批完成的平均时长，待审核申请不纳入统计',
     formula: 'avg(approved_or_rejected_at - applied_at)',
     source: '申请记录',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: 'demo 按领域展示',
   },
   application_rate: {
@@ -549,7 +549,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '提交招募申请的去重用户数/访问或曝光该招募单且具备申请资格的去重用户数',
     formula: 'applications / recruit_detail_uv 或 eligible_users',
     source: '埋点 + 申请记录',
-    refresh: '1 小时',
+    refresh: 'T+1',
     note: '需按业务确认基准访问或可申请用户口径',
   },
   approval_rate: {
@@ -557,7 +557,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '审核通过的招募申请数/已完成审核的招募申请数；待审核申请不纳入计算',
     formula: 'approved_applications / reviewed_applications',
     source: '申请记录',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '与整体通过率一致',
   },
   gap_workers: {
@@ -565,7 +565,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '目标招募人数减去招募通过人数后的缺口人数，结果小于 0 时按 0 统计',
     formula: 'max(target_workers - approved_workers, 0)',
     source: '招募单 + 申请记录',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '可为 0',
   },
   gap_rate: {
@@ -573,15 +573,15 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '缺口人数/目标招募人数；目标人数为 0 时不计算',
     formula: 'gap_workers / target_workers',
     source: '招募单 + 任务',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: 'P0 预警指标',
   },
   active_tasks: {
     name: '进行中任务数',
-    definition: '截至统计日状态为进行中且可被执行或提交的任务数量，按任务 ID 去重',
+    definition: '截至统计日（即昨日）状态为进行中且可被执行或提交的任务数量，按任务 ID 去重',
     formula: 'count(job status = active)',
     source: '工作流',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: 'demo 显示 1,169',
   },
   task_participants: {
@@ -589,7 +589,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内产生领取、进入任务、提交或质检相关有效任务行为的去重用户数',
     formula: 'count(distinct worker_id with task event)',
     source: '工作流/分析中心',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '可按众包团队过滤',
   },
   total_submissions: {
@@ -597,23 +597,23 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内任务提交数据条数，同一数据多次提交按提交记录累计',
     formula: 'count(submit event)',
     source: '分析中心/任务提交',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: 'demo 显示 315,161',
   },
   daily_submissions: {
-    name: '今日提交量',
-    definition: '统计日内任务提交数据条数，同一数据多次提交按提交记录累计',
-    formula: 'count(submit event today)',
+    name: '昨日提交量',
+    definition: '统计日（即昨日自然日）内任务提交数据条数，同一数据多次提交按提交记录累计',
+    formula: 'count(submit event where event_date = yesterday)',
     source: '分析中心',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '与总提交量时间口径一致',
   },
   avg_daily_output_per_worker: {
     name: '人均日产能',
-    definition: '统计日任务提交数据条数/统计日有有效任务行为的去重用户数',
-    formula: 'daily_submissions / active_workers_today',
+    definition: '统计日（即昨日自然日）的任务提交数据条数/统计日（即昨日自然日）有有效任务行为的去重用户数',
+    formula: 'yesterday_submissions / active_workers_yesterday',
     source: '分析中心',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: 'demo 为 38.2 条',
   },
   task_participation_rate: {
@@ -621,7 +621,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '实际产生有效任务行为的用户数/已分配任务或已具备任务参与资格的用户数',
     formula: 'task_participants / available_workers',
     source: '申请人员 + 工作流',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: 'demo 为 85.2%',
   },
   labeled_items: {
@@ -629,7 +629,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内完成标注的数据条数，按数据项累计',
     formula: 'sum(labeled_count)',
     source: '分析中心',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '平台已有字段',
   },
   labeling_submissions: {
@@ -637,7 +637,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内标注任务产生的提交数据条数，同一数据多次提交按提交记录累计',
     formula: 'count(submit event where task_type = labeling)',
     source: '分析中心/任务提交',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '用于数据产出趋势',
   },
   collection_submissions: {
@@ -645,7 +645,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内采集任务产生的提交数据条数，同一数据多次提交按提交记录累计',
     formula: 'count(submit event where task_type = collection)',
     source: '分析中心/任务提交',
-    refresh: '15 分钟',
+    refresh: 'T+1',
     note: '用于数据产出趋势',
   },
   work_hours: {
@@ -653,7 +653,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内标注、审核或质检任务消耗的有效工时合计',
     formula: 'sum(work_seconds)/3600',
     source: '分析中心',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '需确认计时规则',
   },
   element_count: {
@@ -661,7 +661,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '所选时间范围内完成标注的元素数量合计，例如框、点、线段、标签等',
     formula: 'sum(element_count)',
     source: '分析中心',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '框、点、段、标签等',
   },
   seconds_per_element: {
@@ -669,7 +669,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '有效作业耗时/标注元素数量，用于观察每个元素的平均处理耗时',
     formula: 'work_seconds / element_count',
     source: '分析中心',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '平台已有“秒/元素”',
   },
   first_qc_pass_rate: {
@@ -677,7 +677,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '首次质检即通过的数据条数/首次完成质检的数据条数',
     formula: 'first_pass_count / first_checked_count',
     source: '质检/验收',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: 'P0 质量指标',
   },
   labeling_qc_pass_rate: {
@@ -685,7 +685,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '标注任务中质检通过的数据条数/标注任务中已完成质检的数据条数',
     formula: 'labeling_qc_pass_count / labeling_qc_checked_count',
     source: '质检/验收',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '按任务类型筛选后可进一步细分',
   },
   collection_qc_pass_rate: {
@@ -693,7 +693,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '采集任务中质检通过的数据条数/采集任务中已完成质检的数据条数',
     formula: 'collection_qc_pass_count / collection_qc_checked_count',
     source: '质检/验收',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '按任务类型筛选后可进一步细分',
   },
   followup_qc_pass_rate: {
@@ -701,7 +701,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '首次质检未通过后在后续质检中通过的数据条数/进入后续质检并完成检查的数据条数；不拆分具体轮次',
     formula: 'followup_pass_count / followup_checked_count',
     source: '质检/验收',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: '用于观察返修后整体质量收敛情况',
   },
   rework_rate: {
@@ -709,7 +709,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '被退回或要求返修的数据条数/已质检或已提交的数据条数，按业务选择同一口径',
     formula: 'reworked_items / checked_or_submitted_items',
     source: '质检/验收/数据中心',
-    refresh: '30 分钟',
+    refresh: 'T+1',
     note: 'demo 为 7.8%',
   },
   error_type_rate: {
@@ -717,7 +717,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '指定错误类型的错误条数/全部质检错误条数，用于观察错误结构',
     formula: 'error_type_count / total_error_count',
     source: '质检错误明细',
-    refresh: '1 小时',
+    refresh: 'T+1',
     note: 'demo 包含边界框不精确、类别错误等',
   },
   new_worker_error_share: {
@@ -725,7 +725,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     definition: '新用户产生的质检错误条数/全部质检错误条数；新用户口径需按平台注册或首单时间窗统一定义',
     formula: 'errors_by_new_workers / total_errors',
     source: '错误明细 + 用户生命周期',
-    refresh: '1 小时',
+    refresh: 'T+1',
     note: 'demo 显示主要责任分析',
   },
 };

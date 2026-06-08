@@ -9,8 +9,8 @@ export const platformOverviewData = {
   mauChange: -3,
   activeRate: 3.89,
   activeRateTarget: 4,
-  todaySubmissions: 45023,
-  todaySubmissionsChange: 8,
+  yesterdaySubmissions: 45023,
+  yesterdaySubmissionsChange: 8,
   qualityPassRate: 89.2,
   qualityPassRateChange: 1.3,
   recruitGap: 6271,
@@ -287,7 +287,7 @@ export const taskTrafficData = [
 ];
 
 export const recruitTaskStatusData = {
-  new: { value: 15, change: 3, label: '较昨日' },
+  new: { value: 15, change: 3, label: '较前日' },
   inProgress: { value: 98, change: 5, label: '较上周' },
   paused: { value: 8, change: -2, label: '较上周' },
   completed: { value: 45, change: 12, label: '本月累计' },
