@@ -75,9 +75,13 @@ export default function GrowthRetention() {
   const [selectedCohortIndex, setSelectedCohortIndex] = useState(cohortData.length - 1);
   const [metricTimeRange, setMetricTimeRange] = useState(defaultTimeRange);
   const [retentionWeekCount, setRetentionWeekCount] = useState(8);
+  const [churnTimeRange, setChurnTimeRange] = useState(defaultTimeRange);
+  const [lifecycleDurationTimeRange, setLifecycleDurationTimeRange] = useState(defaultTimeRange);
   const metricMeta = getTimeRangeMeta(metricTimeRange);
   const metricDayCount = getTimeRangeDayCount(metricTimeRange);
   const metricRangeFactor = metricDayCount;
+  const churnMeta = getTimeRangeMeta(churnTimeRange);
+  const lifecycleDurationMeta = getTimeRangeMeta(lifecycleDurationTimeRange);
   const visibleCohortStartIndex = Math.max(cohortData.length - retentionWeekCount, 0);
   const visibleCohortData = cohortData.slice(visibleCohortStartIndex);
   const retentionWeekOptions = [4, 8, 12];
@@ -405,9 +409,11 @@ export default function GrowthRetention() {
         <EditableChartCard id="gr-c3" title="转化流失断点分析" showTitleTooltip={false} className="order-5 col-span-1">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">统计范围：当前样本截至最新统计日</span>
-                <span>观察相邻环节掉点，不展示跨环节平均流失率</span>
+                <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：用户注册时间</span>
+                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">{churnMeta.periodLabel}</span>
+                <span>筛选该时间范围内新注册用户，观察截至昨日的相邻环节掉点</span>
               </div>
+              <TimeRangeControl label="注册时间" value={churnTimeRange} onChange={setChurnTimeRange} />
             </div>
             <div className="flex justify-between items-end mb-4">
               <div>
@@ -482,9 +488,11 @@ export default function GrowthRetention() {
         <EditableChartCard id="gr-c4" title="用户平均生命周期时长" showTitleTooltip={false} className="order-6 col-span-1">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">统计范围：当前样本截至最新统计日</span>
-                <span>统计样本用户从注册到流失判定或统计期末的生命周期时长</span>
+                <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：用户注册时间</span>
+                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">{lifecycleDurationMeta.periodLabel}</span>
+                <span>筛选该时间范围内新注册用户，统计截至昨日的生命周期时长</span>
               </div>
+              <TimeRangeControl label="注册时间" value={lifecycleDurationTimeRange} onChange={setLifecycleDurationTimeRange} />
             </div>
             <div className="grid grid-cols-2 gap-2 mb-6">
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">

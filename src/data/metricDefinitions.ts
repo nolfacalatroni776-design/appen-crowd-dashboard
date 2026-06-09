@@ -410,7 +410,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   stage_churn_rate: {
     name: '转化环节流失率',
-    definition: '当前样本用户截至 T+1 最新统计日进入指定转化环节后未进入下一环节的用户数/进入该环节的用户数；用于比较相邻转化断点，不应对多个环节简单平均，不等同于 90 天未活跃/已流失用户',
+    definition: '当前样本用户截至 T+1 最新统计日进入指定转化环节后未进入下一环节的用户数/进入该环节的用户数',
     formula: 'lost_users_at_stage / entered_stage_users',
     source: '漏斗事件',
     refresh: 'T+1',
@@ -418,7 +418,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   max_stage_churn_rate: {
     name: '最大流失断点',
-    definition: '当前样本用户截至 T+1 最新统计日流失率最高的转化环节，同时展示该环节未进入下一环节的用户数；用于定位最明显的转化阻塞点',
+    definition: '所选用户注册时间内新注册用户中，截至 T+1 最新统计日流失率最高的转化环节，同时展示该环节未进入下一环节的用户数；用于定位最明显的转化阻塞点',
     formula: 'max(stage_churn_rate)',
     source: '漏斗事件',
     refresh: 'T+1',
@@ -426,7 +426,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   stage_churn_users: {
     name: '转化环节流失人数',
-    definition: '当前样本用户截至 T+1 最新统计日进入指定环节后未进入下一环节的去重用户数；不用于用户增长趋势中的 90 天未活跃用户口径',
+    definition: '当前样本用户截至 T+1 最新统计日进入指定环节后未进入下一环节的去重用户数',
     formula: 'count(distinct user_id lost at stage)',
     source: '漏斗事件',
     refresh: 'T+1',
@@ -434,7 +434,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   avg_lifecycle_days: {
     name: '平均生命周期',
-    definition: '当前样本用户从注册到已流失判定日的平均天数；未达到已流失状态的用户统计到 T+1 最新统计日，已流失按连续 90 天无登录且无有效任务行为判定',
+    definition: '所选用户注册时间内新注册用户从注册到已流失判定日的平均天数；未达到已流失状态的用户统计到 T+1 最新统计日，已流失按连续 90 天无登录且无有效任务行为判定',
     formula: 'avg(last_active_or_churn_at - registered_at)',
     source: '用户生命周期表',
     refresh: 'T+1',
@@ -442,7 +442,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   time_to_first_task_days: {
     name: '注册到首单时长',
-    definition: '完成注册到首次产生有效任务行为之间的平均时长，有效任务行为可包括领取、进入任务或首次提交',
+    definition: '所选用户注册时间内新注册用户从完成注册到首次产生有效任务行为之间的平均时长，有效任务行为可包括领取、进入任务或首次提交',
     formula: 'avg(first_task_at - registered_at)',
     source: '用户 + 任务事件',
     refresh: 'T+1',
@@ -450,7 +450,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   lifecycle_duration_bucket_share: {
     name: '生命周期时长分布',
-    definition: '生命周期时长落入指定区间的用户数/纳入生命周期统计的用户总数；生命周期时长从注册日统计到已流失判定日，未流失用户统计到 T+1 最新统计日',
+    definition: '所选用户注册时间内新注册用户中，生命周期时长落入指定区间的用户数/纳入生命周期统计的用户总数；生命周期时长从注册日统计到已流失判定日，未流失用户统计到 T+1 最新统计日',
     formula: 'users_in_duration_bucket / lifecycle_users',
     source: '用户生命周期表',
     refresh: 'T+1',
