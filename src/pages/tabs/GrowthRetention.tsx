@@ -134,7 +134,6 @@ export default function GrowthRetention() {
         <MetricCard id="gr-4" title="新增注册" value={`+${(platformOverviewData.newUsers * metricRangeFactor).toLocaleString()}`} change={platformOverviewData.newUsersChange} changeLabel={metricMeta.compareLabel} tooltip={metricTip('new_registered_users')} />
         <MetricCard id="gr-5" title="活跃用户" value={(platformOverviewData.dau * Math.min(metricRangeFactor, 7)).toLocaleString()} change={platformOverviewData.dauChange} changeLabel={metricMeta.compareLabel} tooltip={metricTip('daily_active_users')} />
         <MetricCard id="gr-7" title="活跃用户占比" value={`${platformOverviewData.activeRate}%`} change={-0.1} changeLabel={metricMeta.compareLabel} isWarning tooltip={metricTip('platform_active_rate')} />
-        <MetricCard id="gr-1" title="新访客注册转化率" value="5.47%" change={-0.3} changeLabel={metricMeta.compareLabel} isWarning tooltip={metricTip('registration_conversion_rate')} />
         <MetricCard id="gr-2" title="实名认证率" value="78.3%" change={-1.8} changeLabel={metricMeta.compareLabel} isWarning tooltip={metricTip('real_name_verification_rate')} />
         <MetricCard id="gr-3" title="招募申请率" value="60.7%" change={-5.4} changeLabel={metricMeta.compareLabel} isDanger tooltip={metricTip('recruit_apply_rate')} />
       </div>
