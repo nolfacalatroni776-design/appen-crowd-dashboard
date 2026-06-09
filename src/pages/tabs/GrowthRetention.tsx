@@ -165,9 +165,6 @@ export default function GrowthRetention() {
 
         <EditableChartCard id="gr-funnel" title="新用户转化漏斗" showTitleTooltip={false} className="order-4 col-span-1">
           <div className="mt-2 space-y-4">
-            <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：注册时间</span>
-            </div>
             <div className="grid grid-cols-2 gap-2 text-[11px] xl:grid-cols-3">
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
                 <div className="text-slate-400">当前注册周期</div>
@@ -250,9 +247,6 @@ export default function GrowthRetention() {
         {/* 留存矩阵 */}
         <EditableChartCard id="gr-c1" title="用户留存矩阵（按注册周）" showTitleTooltip={false} className="order-3 col-span-1">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：注册时间</span>
-              </div>
               <div className="inline-flex h-8 overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
                 {retentionWeekOptions.map((weekCount) => (
                   <button
@@ -402,11 +396,7 @@ export default function GrowthRetention() {
 
         {/* Churn Analysis */}
         <EditableChartCard id="gr-c3" title="转化流失断点分析" showTitleTooltip={false} className="order-5 col-span-1">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：用户注册时间</span>
-                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">{churnMeta.periodLabel}</span>
-              </div>
+            <div className="mb-3 flex flex-wrap items-center justify-end gap-2 text-[11px] text-slate-500">
               <TimeRangeControl label="注册时间" value={churnTimeRange} onChange={setChurnTimeRange} />
             </div>
             <div className="flex justify-between items-end mb-4">
@@ -480,11 +470,7 @@ export default function GrowthRetention() {
 
         {/* Average Lifecycle */}
         <EditableChartCard id="gr-c4" title="用户平均生命周期时长" showTitleTooltip={false} className="order-6 col-span-1">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：用户注册时间</span>
-                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">{lifecycleDurationMeta.periodLabel}</span>
-              </div>
+            <div className="mb-3 flex flex-wrap items-center justify-end gap-2 text-[11px] text-slate-500">
               <TimeRangeControl label="注册时间" value={lifecycleDurationTimeRange} onChange={setLifecycleDurationTimeRange} />
             </div>
             <div className="grid grid-cols-2 gap-2 mb-6">
