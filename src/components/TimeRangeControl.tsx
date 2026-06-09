@@ -40,6 +40,11 @@ const formatDate = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
+const formatPeriodLabel = (start: Date, end: Date) =>
+  formatDate(start) === formatDate(end)
+    ? formatDate(end)
+    : `${formatDate(start)} ~ ${formatDate(end)}`;
+
 const getLatestStatDate = () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -99,14 +104,17 @@ export const getTimeRangeMeta = (state: TimeRangeState) => {
     start = addDays(end, -29);
     compareLabel = '较前30天';
   } else {
-    end = latestStatDate;
-    start = addDays(end, -29);
-    compareLabel = '较上一周期';
+    const rangeDays = 30;
+    const baseEnd = latestStatDate;
+    const baseStart = addDays(baseEnd, -(rangeDays - 1));
+    start = addDays(baseStart, state.offset * rangeDays);
+    end = addDays(baseEnd, state.offset * rangeDays);
+    const compareEnd = addDays(start, -1);
+    const compareStart = addDays(compareEnd, -(rangeDays - 1));
+    compareLabel = `较上一周期（${formatPeriodLabel(compareStart, compareEnd)}）`;
   }
 
-  const periodLabel = formatDate(start) === formatDate(end)
-    ? formatDate(end)
-    : `${formatDate(start)} ~ ${formatDate(end)}`;
+  const periodLabel = formatPeriodLabel(start, end);
 
   return {
     start,
