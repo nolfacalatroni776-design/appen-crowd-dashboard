@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
-import { Eye, EyeOff, Download } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useDashboard } from '@/src/context/DashboardContext';
 import MetricInfo from '@/src/components/MetricInfo';
 
@@ -64,30 +64,11 @@ export default function EditableChartCard({ id, title: defaultTitle, tooltip: de
             )}
           </div>
         ) : (
-          <div className="flex items-center justify-between w-full">
+          <div className="flex items-center w-full">
             <CardTitle className="text-sm font-bold tracking-tight text-slate-900 flex items-center">
               {config.title}
               <MetricInfo tip={displayTooltip} className="ml-2" iconClassName="w-4 h-4" />
             </CardTitle>
-            <button
-              className="text-slate-400 hover:text-teal-600 transition-colors"
-              title="导出数据"
-              onClick={() => {
-                const blob = new Blob(['模版数据，此处仅作演示'], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                if (link.download !== undefined) {
-                  const url = URL.createObjectURL(blob);
-                  link.setAttribute('href', url);
-                  link.setAttribute('download', `${config.title}_data.csv`);
-                  link.style.visibility = 'hidden';
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
-                }
-              }}
-            >
-              <Download className="w-4 h-4" />
-            </button>
           </div>
         )}
       </CardHeader>

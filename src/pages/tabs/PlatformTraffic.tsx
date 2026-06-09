@@ -7,7 +7,7 @@ import MetricCard from '@/src/components/MetricCard';
 import MetricInfo from '@/src/components/MetricInfo';
 import TimeRangeControl, { defaultTimeRange, getTimeRangeDayCount, getTimeRangeMeta } from '@/src/components/TimeRangeControl';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
-import { Download, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 import { useDashboard } from '@/src/context/DashboardContext';
 
@@ -207,10 +207,6 @@ export default function PlatformTraffic() {
               <option key={option.value} value={option.value}>{option.label}</option>
             ))}
           </select>
-          <button className="px-4 py-2 bg-white border border-slate-200 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center">
-            <Download className="w-4 h-4 mr-2" />
-            导出报表
-          </button>
         </div>
       </div>
 
