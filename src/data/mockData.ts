@@ -288,7 +288,7 @@ export const taskTrafficData = [
 
 export const recruitTaskStatusData = {
   new: { value: 15, change: 3, label: '较前1日' },
-  inProgress: { value: 98, change: 5, label: '较上周' },
-  paused: { value: 8, change: -2, label: '较上周' },
-  completed: { value: 45, change: 12, label: '本月累计' },
+  inProgress: { value: 98, change: 5, label: '较前1日' },
+  paused: { value: 8, change: -2, label: '较前1日' },
+  completed: { value: 45, change: 12, label: '较前1日' },
 };

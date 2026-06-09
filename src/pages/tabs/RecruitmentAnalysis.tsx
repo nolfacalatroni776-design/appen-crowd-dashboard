@@ -6,6 +6,7 @@ import { metricTip } from '@/src/data/metricDefinitions';
 import { ArrowUpDown } from 'lucide-react';
 import MetricCard from '@/src/components/MetricCard';
 import MetricInfo from '@/src/components/MetricInfo';
+import TimeRangeControl, { defaultTimeRange, getTimeRangeMeta } from '@/src/components/TimeRangeControl';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 import { useDashboard } from '@/src/context/DashboardContext';
@@ -17,7 +18,9 @@ export default function RecruitmentAnalysis() {
   const [domainSortConfig, setDomainSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [taskSortConfig, setTaskSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [recruitStatusFilter, setRecruitStatusFilter] = useState('全部招募单状态');
+  const [trendTimeRange, setTrendTimeRange] = useState(defaultTimeRange);
   const { isEditMode, chartLists, updateChartListItem, globalDomain, setGlobalDomain } = useDashboard();
+  const recruitStatMeta = getTimeRangeMeta(defaultTimeRange);
   const topRecruitTasksState = chartLists.topRecruitTasks || topRecruitTasks;
   const trendData = recruitTrendByDomain[globalDomain] || recruitTrendByDomain['全部领域'];
   const getApprovedWorkers = (task: any) => Number(task.approved ?? task.onboarded ?? 0);
@@ -108,7 +111,7 @@ export default function RecruitmentAnalysis() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold text-slate-800">招募分析</h2>
-          <p className="text-sm text-slate-500 mt-1">按领域与招募单状态查看招募目标、审核通过、供需缺口和当前招募进度</p>
+          <p className="text-sm text-slate-500 mt-1">统计时间：{recruitStatMeta.periodLabel}（T+1） · 范围：领域与招募单状态筛选后的招募单集合 · 默认较前1日对比</p>
         </div>
         <div className="flex flex-wrap items-center gap-2 text-sm">
           <select
@@ -140,20 +143,27 @@ export default function RecruitmentAnalysis() {
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <MetricCard id="ra-s1" title="新增招募单" value={`${recruitTaskStatusData.new.value}个`} change={recruitTaskStatusData.new.change} changeLabel={recruitTaskStatusData.new.label} tooltip={metricTip('new_recruit_sheets')} />
-        <MetricCard id="ra-s2" title="进行中招募单" value={`${recruitTaskStatusData.inProgress.value}个`} change={recruitTaskStatusData.inProgress.change} changeLabel={recruitTaskStatusData.inProgress.label} tooltip={metricTip('active_recruit_sheets')} />
-        <MetricCard id="ra-s4" title="已完成招募单" value={`${recruitTaskStatusData.completed.value}个`} change={recruitTaskStatusData.completed.change} changeLabel={recruitTaskStatusData.completed.label} tooltip={metricTip('completed_recruit_sheets')} />
+        <MetricCard id="ra-s1" title="新增招募单" value={`${recruitTaskStatusData.new.value}个`} change={recruitTaskStatusData.new.change} changeLabel="较前1日" tooltip={metricTip('new_recruit_sheets')} />
+        <MetricCard id="ra-s2" title="进行中招募单" value={`${recruitTaskStatusData.inProgress.value}个`} change={recruitTaskStatusData.inProgress.change} changeLabel="较前1日" tooltip={metricTip('active_recruit_sheets')} />
+        <MetricCard id="ra-s4" title="已完成招募单" value={`${recruitTaskStatusData.completed.value}个`} change={recruitTaskStatusData.completed.change} changeLabel="较前1日" tooltip={metricTip('completed_recruit_sheets')} />
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <MetricCard id="ra-2" title="目标招募总人数" value="13,665人" change={800} changeLabel="较上周" tooltip={metricTip('target_workers')} />
-        <MetricCard id="ra-3" title="招募通过总人数" value="7,394人" change={-200} changeLabel="较上周" isWarning tooltip={metricTip('approved_workers')} />
-        <MetricCard id="ra-4" title="总缺口人数" value="6,271人" change={0} changeLabel="缺口率 45.9%" isDanger tooltip={metricTip('gap_workers', 'gap_rate')} />
-        <MetricCard id="ra-5" title="整体通过率" value="63.5%" change={-1.2} changeLabel="较上月" tooltip={metricTip('approval_rate')} />
+        <MetricCard id="ra-2" title="目标招募总人数" value="13,665人" change={800} changeLabel="较前1日" tooltip={metricTip('target_workers')} />
+        <MetricCard id="ra-3" title="招募通过总人数" value="7,394人" change={-200} changeLabel="较前1日" isWarning tooltip={metricTip('approved_workers')} />
+        <MetricCard id="ra-4" title="总缺口人数" value="6,271人" change={0} changeLabel="较前1日" isDanger tooltip={metricTip('gap_workers', 'gap_rate')} />
+        <MetricCard id="ra-5" title="整体通过率" value="63.5%" change={-1.2} changeLabel="较前1日" tooltip={metricTip('approval_rate')} />
       </div>
 
       <div className="grid grid-cols-1 gap-6">
         <EditableChartCard id="ra-c1" title="招募转化趋势" tooltip={metricTip('application_rate', 'approval_rate')} className="col-span-1">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：申请/审核发生时间</span>
+              <span>按趋势时间展示申请率和通过率变化</span>
+            </div>
+            <TimeRangeControl label="趋势时间" value={trendTimeRange} onChange={setTrendTimeRange} />
+          </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>

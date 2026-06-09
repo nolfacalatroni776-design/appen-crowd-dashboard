@@ -96,16 +96,20 @@ interface DashboardContextType {
 
 const canonicalWidgetTitleById: Record<string, string> = {
   'gr-4': '新增注册',
-  'gr-5': 'DAU 活跃',
+  'gr-5': '活跃用户',
+  'gr-6': '近30天活跃用户',
+  'gr-7': '活跃用户占比',
   'tq-3': '提交量',
   'tq-6': '提交量',
 };
 
-const legacyWidgetTitleById: Record<string, string> = {
-  'gr-4': ['昨', '日', '新', '增', '注', '册'].join(''),
-  'gr-5': `DAU ${['昨', '日', '活', '跃'].join('')}`,
-  'tq-3': ['总', '提', '交', '量'].join(''),
-  'tq-6': ['昨', '日', '提', '交', '量'].join(''),
+const legacyWidgetTitlesById: Record<string, string[]> = {
+  'gr-4': [['昨', '日', '新', '增', '注', '册'].join('')],
+  'gr-5': [`DAU ${['昨', '日', '活', '跃'].join('')}`, 'DAU 活跃'],
+  'gr-6': ['MAU 月活用户'],
+  'gr-7': ['平台月活跃用户占比'],
+  'tq-3': [['总', '提', '交', '量'].join('')],
+  'tq-6': [['昨', '日', '提', '交', '量'].join('')],
 };
 
 const normalizeWidgetConfigs = (configs: Record<string, WidgetConfig> = {}) =>
@@ -114,7 +118,7 @@ const normalizeWidgetConfigs = (configs: Record<string, WidgetConfig> = {}) =>
       id,
       {
         ...config,
-        title: config.title === legacyWidgetTitleById[id]
+        title: (legacyWidgetTitlesById[id] ?? []).includes(String(config.title)) || config.title === canonicalWidgetTitleById[id]
           ? canonicalWidgetTitleById[id]
           : config.title,
       },

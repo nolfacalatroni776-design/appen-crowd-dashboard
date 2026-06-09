@@ -25,25 +25,25 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
     note: '当统计粒度选择日时展示单日数据，选择周/月/近 N 天时展示区间汇总数据',
   },
   daily_active_users: {
-    name: 'DAU',
-    definition: '所选统计日期内至少发生一次登录、访问核心页面或有效任务行为的去重用户数；选择周/月时可按日均或区间活跃口径另行实现',
+    name: '活跃用户',
+    definition: '所选统计时间内至少发生一次登录、访问核心页面或有效任务行为的去重用户数；选择日时为单日活跃用户，选择周、月或近 N 天时为区间活跃用户',
     formula: 'count(distinct user_id with active event in day)',
     source: '登录/访问/任务事件',
     refresh: 'T+1',
     note: '需定义 active event',
   },
   monthly_active_users: {
-    name: 'MAU',
-    definition: '近 30 天或自然月内至少发生一次登录、访问核心页面或有效任务行为的去重用户数',
+    name: '近30天活跃用户',
+    definition: '截至所选统计期末，近 30 天内至少发生一次登录、访问核心页面或有效任务行为的去重用户数',
     formula: 'count(distinct user_id with active event in month)',
     source: '活跃事件',
     refresh: 'T+1',
-    note: '与 DAU 同事件口径',
+    note: '与活跃用户使用同一事件口径',
   },
   platform_active_rate: {
-    name: '平台月活跃用户占比',
-    definition: '近 30 天或自然月活跃用户数/截至所选统计期末的注册总用户数',
-    formula: 'MAU / 注册总用户数',
+    name: '活跃用户占比',
+    definition: '截至所选统计期末的近 30 天活跃用户数/截至同一统计期末的注册总用户数',
+    formula: '近30天活跃用户数 / 注册总用户数',
     source: '用户表 + 活跃事件',
     refresh: 'T+1',
     note: 'demo 为 3.89%',
@@ -266,7 +266,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   real_name_verification_rate: {
     name: '实名认证率',
-    definition: '已完成实名认证的注册用户数/具备实名认证资格的注册用户数；未开始认证和认证失败均不计入已认证用户数',
+    definition: '所选统计时间内注册且截至统计期末已完成实名认证的用户数/所选统计时间内具备实名认证资格的注册用户数；时间筛选的是用户注册时间，未开始认证和认证失败均不计入已认证用户数',
     formula: 'verified_users / eligible_registered_users',
     source: '申请记录/实名表',
     refresh: 'T+1',
@@ -274,7 +274,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   recruit_apply_rate: {
     name: '招募申请率',
-    definition: '完成实名认证后提交过至少一次招募申请的用户数/完成实名认证且可申请招募的用户数',
+    definition: '所选统计时间内注册且截至统计期末完成实名认证后提交过至少一次招募申请的用户数/所选统计时间内完成实名认证且可申请招募的用户数；时间筛选的是用户注册时间',
     formula: 'submitted_applicants / verified_users 或 applications / recruit_detail_uv',
     source: '申请记录 + 实名表 + 招募详情/申请事件',
     refresh: 'T+1',
@@ -466,7 +466,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   new_recruit_sheets: {
     name: '新增招募单',
-    definition: '当前招募分析统计范围内新创建的招募单数量，按招募单 ID 去重；招募分析不跟随其他模块的日期筛选',
+    definition: '统计日新创建，且符合当前领域与招募单状态筛选范围的招募单数量，按招募单 ID 去重；统计日为 T+1 最新可用日期，默认与前一统计日对比',
     formula: 'count(recruit_sheet where created_at in range)',
     source: '众包人力招募单',
     refresh: 'T+1',
@@ -474,7 +474,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   active_recruit_sheets: {
     name: '进行中招募单',
-    definition: '统计日当前状态为招募中，且仍可接收用户申请的招募单数量，按招募单 ID 去重',
+    definition: '统计日当前状态为招募中、仍可接收用户申请，且符合当前领域与招募单状态筛选范围的招募单数量，按招募单 ID 去重；默认与前一统计日对比',
     formula: 'count(status = recruiting)',
     source: '众包人力招募单',
     refresh: 'T+1',
@@ -482,7 +482,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   completed_recruit_sheets: {
     name: '已完成招募单',
-    definition: '当前招募分析统计范围内状态变更为已完成的招募单数量，按招募单 ID 去重；关闭或暂停不等同于完成',
+    definition: '统计日状态变更为已完成，且符合当前领域与招募单状态筛选范围的招募单数量，按招募单 ID 去重；关闭或暂停不等同于完成，默认与前一统计日对比',
     formula: 'count(status = completed)',
     source: '众包人力招募单',
     refresh: 'T+1',
@@ -490,7 +490,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   recruit_sheet_count: {
     name: '招募单数',
-    definition: '当前招募分析统计范围内的招募单数量，按招募单 ID 去重；按领域查看时表示该领域下的招募单数量',
+    definition: '统计日符合当前领域与招募单状态筛选范围的招募单数量，按招募单 ID 去重；按领域查看时表示该领域下的招募单数量，默认与前一统计日对比',
     formula: 'count(distinct recruit_sheet_id)',
     source: '众包人力招募单',
     refresh: 'T+1',
@@ -498,7 +498,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   target_workers: {
     name: '目标招募人数',
-    definition: '当前招募分析统计范围内，招募单计划招募人数的合计，按招募单目标人数汇总',
+    definition: '统计日符合当前领域与招募单状态筛选范围的招募单计划招募人数合计，按招募单目标人数汇总；默认与前一统计日对比',
     formula: 'sum(target_count)',
     source: '招募单',
     refresh: 'T+1',
@@ -506,7 +506,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   applied_workers: {
     name: '申请人数',
-    definition: '当前招募分析统计范围内，提交过招募申请的去重用户数，同一用户对同一招募单多次申请只计一次',
+    definition: '统计日累计符合当前领域与招募单状态筛选范围、提交过招募申请的去重用户数，同一用户对同一招募单多次申请只计一次；默认与前一统计日对比',
     formula: 'count(distinct application_id/user_id)',
     source: '申请记录',
     refresh: 'T+1',
@@ -514,7 +514,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   approved_workers: {
     name: '招募通过人数',
-    definition: '当前招募分析统计范围内，招募申请审核通过的去重用户数，同一用户在同一招募单只计一次',
+    definition: '统计日累计符合当前领域与招募单状态筛选范围、招募申请审核通过的去重用户数，同一用户在同一招募单只计一次；默认与前一统计日对比',
     formula: 'count(status = approved)',
     source: '申请记录/已通过人员',
     refresh: 'T+1',
@@ -538,7 +538,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   avg_review_cycle_days: {
     name: '平均审核周期',
-    definition: '当前招募分析统计范围内，已完成审核的申请从提交申请到审批完成的平均时长，待审核申请不纳入统计',
+    definition: '统计日符合当前领域与招募单状态筛选范围、已完成审核的申请从提交申请到审批完成的平均时长，待审核申请不纳入统计；默认与前一统计日对比',
     formula: 'avg(approved_or_rejected_at - applied_at)',
     source: '申请记录',
     refresh: 'T+1',
@@ -546,7 +546,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   application_rate: {
     name: '申请率',
-    definition: '当前招募分析统计范围内，提交招募申请的去重用户数/访问或曝光该招募单且具备申请资格的去重用户数',
+    definition: '所选趋势时间内，符合当前领域筛选的提交招募申请去重用户数/访问或曝光该招募单且具备申请资格的去重用户数；招募指标卡片默认按统计日与前一统计日对比',
     formula: 'applications / recruit_detail_uv 或 eligible_users',
     source: '埋点 + 申请记录',
     refresh: 'T+1',
@@ -554,7 +554,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   approval_rate: {
     name: '通过率',
-    definition: '当前招募分析统计范围内，审核通过的招募申请数/已完成审核的招募申请数；待审核申请不纳入计算',
+    definition: '所选趋势时间内，符合当前领域筛选的审核通过招募申请数/已完成审核招募申请数；待审核申请不纳入计算，招募指标卡片默认按统计日与前一统计日对比',
     formula: 'approved_applications / reviewed_applications',
     source: '申请记录',
     refresh: 'T+1',
@@ -562,7 +562,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   gap_workers: {
     name: '缺口人数',
-    definition: '当前招募分析统计范围内，目标招募人数减去招募通过人数后的缺口人数，结果小于 0 时按 0 统计',
+    definition: '统计日符合当前领域与招募单状态筛选范围的目标招募人数减去招募通过人数后的缺口人数，结果小于 0 时按 0 统计；默认与前一统计日对比',
     formula: 'max(target_workers - approved_workers, 0)',
     source: '招募单 + 申请记录',
     refresh: 'T+1',
@@ -570,7 +570,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   gap_rate: {
     name: '缺口率',
-    definition: '当前招募分析统计范围内，缺口人数/目标招募人数；目标人数为 0 时不计算',
+    definition: '统计日符合当前领域与招募单状态筛选范围的缺口人数/目标招募人数；目标人数为 0 时不计算，默认与前一统计日对比',
     formula: 'gap_workers / target_workers',
     source: '招募单 + 任务',
     refresh: 'T+1',

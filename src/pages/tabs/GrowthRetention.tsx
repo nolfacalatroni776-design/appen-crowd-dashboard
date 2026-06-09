@@ -21,7 +21,7 @@ import {
 import EditableChartCard from '@/src/components/EditableChartCard';
 import MetricCard from '@/src/components/MetricCard';
 import MetricInfo from '@/src/components/MetricInfo';
-import TimeRangeControl, { defaultTimeRange, getTimeRangeDayCount, getTimeRangeMeta } from '@/src/components/TimeRangeControl';
+import TimeRangeControl, { defaultTimeRange, getTimeRangeDayCount, getTimeRangeMeta, TimeRangeState } from '@/src/components/TimeRangeControl';
 import { useDashboard } from '@/src/context/DashboardContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
@@ -70,13 +70,28 @@ const buildFunnelFromCohort = (cohort) => [
   { id: 'funnel-current-task-started', name: '首次任务执行', value: cohort?.taskStarted ?? 0, metricKey: 'funnel_task_started_users_current', color: '#65a30d' },
 ];
 
+const registrationDefaultTimeRange: TimeRangeState = {
+  granularity: 'last30',
+  offset: 0,
+};
+
 export default function GrowthRetention() {
   const { isEditMode, chartLists, updateChartListItem, addChartListItem, removeChartListItem } = useDashboard();
   const [selectedCohortIndex, setSelectedCohortIndex] = useState(cohortData.length - 1);
-  const [timeRange, setTimeRange] = useState(defaultTimeRange);
-  const timeMeta = getTimeRangeMeta(timeRange);
-  const dayCount = getTimeRangeDayCount(timeRange);
-  const rangeFactor = dayCount;
+  const [metricTimeRange, setMetricTimeRange] = useState(defaultTimeRange);
+  const [growthTrendTimeRange, setGrowthTrendTimeRange] = useState(defaultTimeRange);
+  const [retentionTimeRange, setRetentionTimeRange] = useState(registrationDefaultTimeRange);
+  const [lifecycleSnapshotTimeRange, setLifecycleSnapshotTimeRange] = useState(defaultTimeRange);
+  const [churnTimeRange, setChurnTimeRange] = useState(registrationDefaultTimeRange);
+  const [lifecycleDurationTimeRange, setLifecycleDurationTimeRange] = useState(registrationDefaultTimeRange);
+  const metricMeta = getTimeRangeMeta(metricTimeRange);
+  const metricDayCount = getTimeRangeDayCount(metricTimeRange);
+  const metricRangeFactor = metricDayCount;
+  const growthTrendMeta = getTimeRangeMeta(growthTrendTimeRange);
+  const retentionMeta = getTimeRangeMeta(retentionTimeRange);
+  const lifecycleSnapshotMeta = getTimeRangeMeta(lifecycleSnapshotTimeRange);
+  const churnMeta = getTimeRangeMeta(churnTimeRange);
+  const lifecycleDurationMeta = getTimeRangeMeta(lifecycleDurationTimeRange);
 
   const getRetentionColor = (val) => {
     if (!val) return 'bg-slate-50 text-slate-400';
@@ -116,27 +131,31 @@ export default function GrowthRetention() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold text-slate-800">增长&留存</h2>
-          <p className="mt-1 text-sm text-slate-500">新增、活跃与转化指标按所选统计时间计算；留存矩阵和生命周期使用独立观察周期</p>
+          <p className="mt-1 text-sm text-slate-500">核心指标按事件发生时间统计；留存、生命周期和流失分析使用各自独立时间口径</p>
         </div>
-        <TimeRangeControl value={timeRange} onChange={setTimeRange} />
+        <TimeRangeControl label="核心指标时间" value={metricTimeRange} onChange={setMetricTimeRange} />
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <MetricCard id="gr-0" title="注册总用户数" value={platformOverviewData.totalUsers.toLocaleString()} change={0.08} changeLabel={timeMeta.compareLabel} tooltip={metricTip('registered_users_total')} />
-        <MetricCard id="gr-4" title="新增注册" value={`+${(platformOverviewData.newUsers * rangeFactor).toLocaleString()}`} change={platformOverviewData.newUsersChange} changeLabel={timeMeta.compareLabel} tooltip={metricTip('new_registered_users')} />
-        <MetricCard id="gr-5" title="DAU 活跃" value={(platformOverviewData.dau * Math.min(rangeFactor, 7)).toLocaleString()} change={platformOverviewData.dauChange} changeLabel={timeMeta.compareLabel} tooltip={metricTip('daily_active_users')} />
-        <MetricCard id="gr-6" title="MAU 月活用户" value={platformOverviewData.mau.toLocaleString()} change={platformOverviewData.mauChange} changeLabel="较上月" isWarning tooltip={metricTip('monthly_active_users')} />
-        <MetricCard id="gr-7" title="平台月活跃用户占比" value={`${platformOverviewData.activeRate}%`} change={-0.1} changeLabel="较上月" isWarning tooltip={metricTip('platform_active_rate')} />
-        <MetricCard id="gr-1" title="新访客注册转化率" value="5.47%" change={-0.3} changeLabel={timeMeta.compareLabel} isWarning tooltip={metricTip('registration_conversion_rate')} />
-        <MetricCard id="gr-2" title="实名认证率" value="78.3%" change={-1.8} changeLabel={timeMeta.compareLabel} isWarning tooltip={metricTip('real_name_verification_rate')} />
-        <MetricCard id="gr-3" title="招募申请率" value="60.7%" change={-5.4} changeLabel={timeMeta.compareLabel} isDanger tooltip={metricTip('recruit_apply_rate')} />
+        <MetricCard id="gr-0" title="注册总用户数" value={platformOverviewData.totalUsers.toLocaleString()} change={0.08} changeLabel={metricMeta.compareLabel} tooltip={metricTip('registered_users_total')} />
+        <MetricCard id="gr-4" title="新增注册" value={`+${(platformOverviewData.newUsers * metricRangeFactor).toLocaleString()}`} change={platformOverviewData.newUsersChange} changeLabel={metricMeta.compareLabel} tooltip={metricTip('new_registered_users')} />
+        <MetricCard id="gr-5" title="活跃用户" value={(platformOverviewData.dau * Math.min(metricRangeFactor, 7)).toLocaleString()} change={platformOverviewData.dauChange} changeLabel={metricMeta.compareLabel} tooltip={metricTip('daily_active_users')} />
+        <MetricCard id="gr-6" title="近30天活跃用户" value={platformOverviewData.mau.toLocaleString()} change={platformOverviewData.mauChange} changeLabel={metricMeta.compareLabel} isWarning tooltip={metricTip('monthly_active_users')} />
+        <MetricCard id="gr-7" title="活跃用户占比" value={`${platformOverviewData.activeRate}%`} change={-0.1} changeLabel={metricMeta.compareLabel} isWarning tooltip={metricTip('platform_active_rate')} />
+        <MetricCard id="gr-1" title="新访客注册转化率" value="5.47%" change={-0.3} changeLabel={metricMeta.compareLabel} isWarning tooltip={metricTip('registration_conversion_rate')} />
+        <MetricCard id="gr-2" title="实名认证率" value="78.3%" change={-1.8} changeLabel={metricMeta.compareLabel} isWarning tooltip={metricTip('real_name_verification_rate')} />
+        <MetricCard id="gr-3" title="招募申请率" value="60.7%" change={-5.4} changeLabel={metricMeta.compareLabel} isDanger tooltip={metricTip('recruit_apply_rate')} />
       </div>
 
       <div className="grid grid-cols-2 gap-6">
         <EditableChartCard id="gr-c0" title="用户增长趋势" tooltip={metricTip('new_registered_users', 'daily_active_users', 'inactive_90d_new_users')} className="order-1 col-span-1">
-          <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-            <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">趋势周期：{timeMeta.periodLabel}</span>
-            <span>按所选统计时间展示新增注册、活跃与 90 天未活跃用户变化</span>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：事件发生时间</span>
+              <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">{growthTrendMeta.periodLabel}</span>
+              <span>展示该时间内注册、活跃和首次达到 90 天未活跃的用户变化</span>
+            </div>
+            <TimeRangeControl label="趋势时间" value={growthTrendTimeRange} onChange={setGrowthTrendTimeRange} />
           </div>
           <div className="h-64 w-full block">
             <ResponsiveContainer width="100%" height="100%">
@@ -157,7 +176,7 @@ export default function GrowthRetention() {
         <EditableChartCard id="gr-funnel" title="新用户转化漏斗" showTitleTooltip={false} className="order-4 col-span-1">
           <div className="mt-2 space-y-4">
             <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">转化状态：{timeMeta.periodLabel}</span>
+              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：注册时间</span>
               <span>点击留存矩阵中的注册周期后，同步查看该批新用户当前转化进度</span>
             </div>
             <div className="grid grid-cols-2 gap-2 text-[11px] xl:grid-cols-3">
@@ -167,7 +186,7 @@ export default function GrowthRetention() {
               </div>
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
                 <div className="text-slate-400">统计口径</div>
-                <div className="mt-0.5 font-semibold text-slate-700">{timeMeta.periodLabel}</div>
+                <div className="mt-0.5 font-semibold text-slate-700">注册时间 {retentionMeta.periodLabel}</div>
               </div>
               <div className="rounded border border-amber-100 bg-amber-50 px-3 py-2">
                 <div className="text-amber-600">最大流失</div>
@@ -241,10 +260,14 @@ export default function GrowthRetention() {
 
         {/* 留存矩阵 */}
         <EditableChartCard id="gr-c1" title="用户留存矩阵（按注册周）" showTitleTooltip={false} className="order-3 col-span-1">
-            <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">注册周期：近8周</span>
-              <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">按注册周分组</span>
-              <span>点击某一注册周期，可同步查看该批新用户在当前统计时间内的转化漏斗</span>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：注册时间</span>
+                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">{retentionMeta.periodLabel}</span>
+                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">按注册周分组</span>
+                <span>点击某一注册周期，可同步查看该批新用户的当前转化漏斗</span>
+              </div>
+              <TimeRangeControl label="注册时间" value={retentionTimeRange} onChange={setRetentionTimeRange} />
             </div>
             <div className="overflow-x-auto mt-2">
               <table className="w-full text-xs text-left">
@@ -311,9 +334,13 @@ export default function GrowthRetention() {
 
         {/* Lifecycle */}
         <EditableChartCard id="gr-c2" title="用户生命周期阶段分布" showTitleTooltip={false} className="order-2 col-span-1">
-            <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">快照时间：{timeMeta.periodLabel}</span>
-              <span>按用户最新生命周期状态归类，各阶段互斥统计</span>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：快照时间</span>
+                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">{lifecycleSnapshotMeta.periodLabel}</span>
+                <span>按快照时点的最新生命周期状态归类，各阶段互斥统计</span>
+              </div>
+              <TimeRangeControl label="快照时间" value={lifecycleSnapshotTimeRange} onChange={setLifecycleSnapshotTimeRange} />
             </div>
             <div className="space-y-3 mt-2">
               {lifecycleDataState.map((item, i) => (
@@ -369,9 +396,13 @@ export default function GrowthRetention() {
 
         {/* Churn Analysis */}
         <EditableChartCard id="gr-c3" title="转化流失断点分析" showTitleTooltip={false} className="order-5 col-span-1">
-            <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">转化状态：{timeMeta.periodLabel}</span>
-              <span>按相邻转化环节定位人数掉点，不展示跨环节平均流失率</span>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：入组注册时间</span>
+                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">{churnMeta.periodLabel}</span>
+                <span>观察该批用户截至统计期末的相邻环节掉点，不展示跨环节平均流失率</span>
+              </div>
+              <TimeRangeControl label="入组时间" value={churnTimeRange} onChange={setChurnTimeRange} />
             </div>
             <div className="flex justify-between items-end mb-4">
               <div>
@@ -444,9 +475,13 @@ export default function GrowthRetention() {
 
         {/* Average Lifecycle */}
         <EditableChartCard id="gr-c4" title="用户平均生命周期时长" showTitleTooltip={false} className="order-6 col-span-1">
-            <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">统计口径：{timeMeta.periodLabel}</span>
-              <span>按用户从注册到最近一次有效任务行为的间隔统计</span>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：注册时间</span>
+                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">{lifecycleDurationMeta.periodLabel}</span>
+                <span>统计该批用户从注册到流失判定或统计期末的生命周期时长</span>
+              </div>
+              <TimeRangeControl label="注册时间" value={lifecycleDurationTimeRange} onChange={setLifecycleDurationTimeRange} />
             </div>
             <div className="grid grid-cols-2 gap-2 mb-6">
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
