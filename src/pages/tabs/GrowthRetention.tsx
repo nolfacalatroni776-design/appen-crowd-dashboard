@@ -84,7 +84,7 @@ export default function GrowthRetention() {
   const lifecycleDurationMeta = getTimeRangeMeta(lifecycleDurationTimeRange);
   const visibleCohortStartIndex = Math.max(cohortData.length - retentionWeekCount, 0);
   const visibleCohortData = cohortData.slice(visibleCohortStartIndex);
-  const retentionWeekOptions = [4, 8, 12];
+  const retentionWeekOptions = [4, 8];
 
   const getRetentionColor = (val) => {
     if (!val) return 'bg-slate-50 text-slate-400';
@@ -167,7 +167,6 @@ export default function GrowthRetention() {
           <div className="mt-2 space-y-4">
             <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
               <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：注册时间</span>
-              <span>点击留存矩阵中的注册周期后，同步查看该批新用户当前转化进度</span>
             </div>
             <div className="grid grid-cols-2 gap-2 text-[11px] xl:grid-cols-3">
               <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
@@ -253,9 +252,6 @@ export default function GrowthRetention() {
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：注册时间</span>
-                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">近 {retentionWeekCount} 个注册周</span>
-                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">按注册周分组</span>
-                <span>点击某一注册周期，可同步查看该批新用户的当前转化漏斗</span>
               </div>
               <div className="inline-flex h-8 overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
                 {retentionWeekOptions.map((weekCount) => (
@@ -410,7 +406,6 @@ export default function GrowthRetention() {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：用户注册时间</span>
                 <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">{churnMeta.periodLabel}</span>
-                <span>筛选该时间范围内新注册用户，观察截至昨日的相邻环节掉点</span>
               </div>
               <TimeRangeControl label="注册时间" value={churnTimeRange} onChange={setChurnTimeRange} />
             </div>
@@ -489,7 +484,6 @@ export default function GrowthRetention() {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：用户注册时间</span>
                 <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-600">{lifecycleDurationMeta.periodLabel}</span>
-                <span>筛选该时间范围内新注册用户，统计截至昨日的生命周期时长</span>
               </div>
               <TimeRangeControl label="注册时间" value={lifecycleDurationTimeRange} onChange={setLifecycleDurationTimeRange} />
             </div>
