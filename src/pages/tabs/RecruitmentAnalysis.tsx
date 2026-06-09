@@ -160,7 +160,7 @@ export default function RecruitmentAnalysis() {
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：申请/审核发生时间</span>
-              <span>按趋势时间展示申请人数、申请率和通过率变化</span>
+              <span>按趋势时间展示累计申请人数、累计申请率和累计通过率变化</span>
             </div>
             <TimeRangeControl label="趋势时间" value={trendTimeRange} onChange={setTrendTimeRange} />
           </div>
