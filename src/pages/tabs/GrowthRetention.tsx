@@ -493,7 +493,6 @@ export default function GrowthRetention() {
                   <MetricInfo tip={metricTip('avg_lifecycle_days')} />
                 </div>
                 <div className="text-lg font-bold text-slate-800">68.5天</div>
-                <div className="text-[10px] text-emerald-600 mt-1">↑ 3天</div>
               </div>
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
                 <div className="flex items-center text-xs text-slate-500 mb-1">
