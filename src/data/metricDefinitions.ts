@@ -554,11 +554,11 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   trend_application_users: {
     name: '申请人数',
-    definition: '所选时间范围内，截止对应日期累计提交招募申请的去重用户数',
-    formula: 'count(distinct user_id where application_submitted_at <= date)',
+    definition: '所选时间范围内，当日提交招募申请的去重用户数',
+    formula: 'count(distinct user_id where application_submitted_at in date)',
     source: '申请记录',
     refresh: 'T+1',
-    note: '用于观察累计申请规模变化',
+    note: '用于观察每日申请规模变化',
   },
   gap_workers: {
     name: '缺口人数',
