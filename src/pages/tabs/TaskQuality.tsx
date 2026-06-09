@@ -6,11 +6,16 @@ import { Plus, Trash2 } from 'lucide-react';
 import MetricCard from '@/src/components/MetricCard';
 import EditableChartCard from '@/src/components/EditableChartCard';
 import MetricInfo from '@/src/components/MetricInfo';
+import TimeRangeControl, { defaultTimeRange, getTimeRangeDayCount, getTimeRangeMeta } from '@/src/components/TimeRangeControl';
 import { useDashboard } from '@/src/context/DashboardContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 export default function TaskQuality() {
   const { isEditMode, chartLists, updateChartListItem, addChartListItem, removeChartListItem } = useDashboard();
+  const [timeRange, setTimeRange] = useState(defaultTimeRange);
+  const timeMeta = getTimeRangeMeta(timeRange);
+  const dayCount = getTimeRangeDayCount(timeRange);
+  const rangeFactor = dayCount;
   const errorTypeDataState = chartLists.errorType || [];
 
   return (
@@ -18,13 +23,10 @@ export default function TaskQuality() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold text-slate-800">任务&质量</h2>
-          <p className="text-sm text-slate-500 mt-1">提交类指标按任务提交时间统计，质量类指标按质检完成时间统计，状态类指标展示截至昨日快照</p>
+          <p className="text-sm text-slate-500 mt-1">提交类指标按所选统计时间计算，质量类指标按质检完成时间统计，状态类指标展示统计期末快照</p>
         </div>
         <div className="flex flex-wrap items-center gap-2 text-sm">
-          <div className="flex h-9 items-center rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm">
-            <span className="mr-1 text-slate-400">任务统计周期</span>
-            近30天
-          </div>
+          <TimeRangeControl value={timeRange} onChange={setTimeRange} />
           <select
             className="h-9 rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm outline-none transition hover:border-teal-200 focus:border-teal-300 focus:ring-2 focus:ring-teal-100"
             defaultValue="全部任务类型"
@@ -42,13 +44,12 @@ export default function TaskQuality() {
       <div className="grid grid-cols-4 gap-4">
         <MetricCard id="tq-1" title="进行中任务数" value="1,169个" change={0} changeLabel="占任务总量30%" tooltip={metricTip('active_tasks')} />
         <MetricCard id="tq-2" title="参与人数" value="8,245人" change={10} changeLabel="较上周" tooltip={metricTip('task_participants')} />
-        <MetricCard id="tq-3" title="总提交量" value="315,161条" change={12} changeLabel="较上周" tooltip={metricTip('total_submissions')} />
-        <MetricCard id="tq-4" title="标注质检通过率" value="89.2%" change={1.3} changeLabel="较前日" tooltip={metricTip('labeling_qc_pass_rate')} />
+        <MetricCard id="tq-3" title="提交量" value={`${Math.round(45023 * rangeFactor).toLocaleString()}条`} change={12} changeLabel={timeMeta.compareLabel} tooltip={metricTip('total_submissions')} />
+        <MetricCard id="tq-4" title="标注质检通过率" value="89.2%" change={1.3} changeLabel={timeMeta.compareLabel} tooltip={metricTip('labeling_qc_pass_rate')} />
 
-        <MetricCard id="tq-5" title="返工率" value="7.8%" change={0} changeLabel="较前日" isWarning tooltip={metricTip('rework_rate')} />
-        <MetricCard id="tq-6" title="昨日提交量" value="45,023条" change={8} changeLabel="较前日" tooltip={metricTip('daily_submissions')} />
-        <MetricCard id="tq-7" title="人均日产能" value="38.2条" change={-4.5} changeLabel="较前日" isWarning tooltip={metricTip('avg_daily_output_per_worker')} />
-        <MetricCard id="tq-8" title="采集质检通过率" value="85.2%" change={2.1} changeLabel="较前日" tooltip={metricTip('collection_qc_pass_rate')} />
+        <MetricCard id="tq-5" title="返工率" value="7.8%" change={0} changeLabel={timeMeta.compareLabel} isWarning tooltip={metricTip('rework_rate')} />
+        <MetricCard id="tq-7" title="人均日产能" value="38.2条" change={-4.5} changeLabel={timeMeta.compareLabel} isWarning tooltip={metricTip('avg_daily_output_per_worker')} />
+        <MetricCard id="tq-8" title="采集质检通过率" value="85.2%" change={2.1} changeLabel={timeMeta.compareLabel} tooltip={metricTip('collection_qc_pass_rate')} />
       </div>
 
       <div className="grid grid-cols-2 gap-6">

@@ -5,6 +5,7 @@ import { trafficKpiData, trafficTrendData, trafficSourceData, topPagesData, visi
 import { metricTip } from '@/src/data/metricDefinitions';
 import MetricCard from '@/src/components/MetricCard';
 import MetricInfo from '@/src/components/MetricInfo';
+import TimeRangeControl, { defaultTimeRange, getTimeRangeDayCount, getTimeRangeMeta } from '@/src/components/TimeRangeControl';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
 import { Download, Info } from 'lucide-react';
 
@@ -98,6 +99,25 @@ const deviceProfiles: Record<TrafficDeviceFilter, {
 
 const scaleCount = (value: number, factor: number) => Math.max(0, Math.round(value * factor));
 const clampPercent = (value: number) => Math.min(100, Math.max(0, Number(value.toFixed(1))));
+const buildRangeTrend = (data: typeof trafficTrendData, dayCount: number, deviceShare: number) => {
+  const rows = dayCount <= 7 ? data : Array.from({ length: Math.min(dayCount, 30) }, (_, idx) => {
+    const base = data[idx % data.length];
+    const cycle = Math.floor(idx / data.length);
+
+    return {
+      ...base,
+      date: `${idx + 1}日`,
+      pv: Math.round(base.pv * (1 + cycle * 0.06)),
+      uv: Math.round(base.uv * (1 + cycle * 0.05)),
+    };
+  });
+
+  return rows.map(item => ({
+    ...item,
+    pv: scaleCount(item.pv, deviceShare),
+    uv: scaleCount(item.uv, deviceShare),
+  }));
+};
 
 const buildScaledSourceData = (deviceFilter: TrafficDeviceFilter, share: number) => {
   const multipliers = deviceProfiles[deviceFilter].sourceMultipliers;
@@ -116,11 +136,15 @@ const buildScaledSourceData = (deviceFilter: TrafficDeviceFilter, share: number)
 export default function PlatformTraffic() {
   const { isEditMode, chartLists, updateChartListItem } = useDashboard();
   const [deviceFilter, setDeviceFilter] = React.useState<TrafficDeviceFilter>('total');
+  const [timeRange, setTimeRange] = React.useState(defaultTimeRange);
   const deviceProfile = deviceProfiles[deviceFilter];
+  const timeMeta = getTimeRangeMeta(timeRange);
+  const dayCount = getTimeRangeDayCount(timeRange);
+  const rangeFactor = dayCount;
   const topPagesDataState = chartLists.topPages || topPagesData;
   const trafficKpi = {
-    uv: scaleCount(trafficKpiData.uv, deviceProfile.share),
-    pv: scaleCount(trafficKpiData.pv, deviceProfile.share),
+    uv: scaleCount(trafficKpiData.uv, deviceProfile.share * rangeFactor),
+    pv: scaleCount(trafficKpiData.pv, deviceProfile.share * rangeFactor),
     avgTime: deviceProfile.avgTime,
     uvChange: deviceProfile.uvChange,
     pvChange: deviceProfile.pvChange,
@@ -129,20 +153,16 @@ export default function PlatformTraffic() {
     bounceRateChange: deviceProfile.bounceRateChange,
     recruitCtr: deviceProfile.recruitCtr,
     recruitCtrChange: deviceProfile.recruitCtrChange,
-    recruitChannelClicks: scaleCount(2860, deviceProfile.share * deviceProfile.actionMultiplier),
-    recruitSearchSubmits: scaleCount(742, deviceProfile.share * deviceProfile.actionMultiplier),
-    loginIntentClicks: scaleCount(1126, deviceProfile.share * deviceProfile.actionMultiplier),
+    recruitChannelClicks: scaleCount(2860, deviceProfile.share * deviceProfile.actionMultiplier * rangeFactor),
+    recruitSearchSubmits: scaleCount(742, deviceProfile.share * deviceProfile.actionMultiplier * rangeFactor),
+    loginIntentClicks: scaleCount(1126, deviceProfile.share * deviceProfile.actionMultiplier * rangeFactor),
   };
-  const trafficTrendDataByDevice = trafficTrendData.map(item => ({
-    ...item,
-    pv: scaleCount(item.pv, deviceProfile.share),
-    uv: scaleCount(item.uv, deviceProfile.share),
-  }));
+  const trafficTrendDataByDevice = buildRangeTrend(trafficTrendData, dayCount, deviceProfile.share);
   const trafficSourceDataByDevice = buildScaledSourceData(deviceFilter, deviceProfile.share);
   const topPagesDataByDevice = topPagesDataState.map(row => ({
     ...row,
-    pv: isEditMode ? row.pv : scaleCount(row.pv, deviceProfile.share),
-    uv: isEditMode ? row.uv : scaleCount(row.uv, deviceProfile.share),
+    pv: isEditMode ? row.pv : scaleCount(row.pv, deviceProfile.share * rangeFactor),
+    uv: isEditMode ? row.uv : scaleCount(row.uv, deviceProfile.share * rangeFactor),
     bounce: isEditMode ? row.bounce : clampPercent(row.bounce + (deviceProfile.bounceRate - trafficKpiData.bounceRate)),
   }));
   const visitorDataByDevice = [
@@ -156,13 +176,13 @@ export default function PlatformTraffic() {
         .map(item => ({ ...item, value: 100 }));
   const domainTrafficDataByDevice = domainTrafficData.map(row => ({
     ...row,
-    pv: scaleCount(row.pv, deviceProfile.share),
-    uv: scaleCount(row.uv, deviceProfile.share),
+    pv: scaleCount(row.pv, deviceProfile.share * rangeFactor),
+    uv: scaleCount(row.uv, deviceProfile.share * rangeFactor),
   }));
   const taskTrafficDataByDevice = taskTrafficData.map(task => {
-    const pv = scaleCount(task.pv, deviceProfile.share);
-    const uv = scaleCount(task.uv, deviceProfile.share);
-    const clicks = scaleCount(task.clicks, deviceProfile.share * deviceProfile.recruitClickMultiplier);
+    const pv = scaleCount(task.pv, deviceProfile.share * rangeFactor);
+    const uv = scaleCount(task.uv, deviceProfile.share * rangeFactor);
+    const clicks = scaleCount(task.clicks, deviceProfile.share * deviceProfile.recruitClickMultiplier * rangeFactor);
     const ctr = pv > 0 ? (clicks / pv) * 100 : 0;
 
     return { ...task, pv, uv, clicks, ctr };
@@ -173,13 +193,10 @@ export default function PlatformTraffic() {
       <div className="flex flex-wrap justify-between items-center gap-4">
         <div>
           <h2 className="text-lg font-bold text-slate-800">平台流量统计</h2>
-          <p className="text-sm text-slate-500 mt-1">T+1 查看昨日平台页面访问量、用户行为及来源分布 · 当前设备端：{deviceProfile.label}</p>
+          <p className="text-sm text-slate-500 mt-1">按所选统计时间查看平台页面访问量、用户行为及来源分布 · 当前设备端：{deviceProfile.label}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2 text-sm">
-          <div className="flex h-9 items-center rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm">
-            <span className="mr-1 text-slate-400">访问时间</span>
-            近30天
-          </div>
+          <TimeRangeControl value={timeRange} onChange={setTimeRange} />
           <select
             className="h-9 rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm outline-none transition hover:border-teal-200 focus:border-teal-300 focus:ring-2 focus:ring-teal-100"
             value={deviceFilter}
@@ -198,14 +215,14 @@ export default function PlatformTraffic() {
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <MetricCard id="pt-1" title="UV (独立访客)" value={trafficKpi.uv.toLocaleString()} change={trafficKpi.uvChange} changeLabel="较前日" tooltip={metricTip('unique_visitors')} />
-        <MetricCard id="pt-2" title="PV (页面浏览量)" value={trafficKpi.pv.toLocaleString()} change={trafficKpi.pvChange} changeLabel="较前日" tooltip={metricTip('page_views')} />
-        <MetricCard id="pt-3" title="人均停留时长" value={trafficKpi.avgTime} change={trafficKpi.avgTimeChange} changeLabel="较前日" tooltip={metricTip('avg_session_duration')} />
-        <MetricCard id="pt-4" title="整体跳出率" value={`${trafficKpi.bounceRate}%`} change={trafficKpi.bounceRateChange} changeLabel="较前日" tooltip={metricTip('bounce_rate')} />
-        <MetricCard id="pt-5" title="招募单点击率" value={`${trafficKpi.recruitCtr}%`} change={trafficKpi.recruitCtrChange} changeLabel="较前日" tooltip={metricTip('recruit_sheet_ctr')} />
-        <MetricCard id="pt-6" title="招募频道点击" value={`${trafficKpi.recruitChannelClicks.toLocaleString()}次`} change={9.6} changeLabel="较前日" tooltip={metricTip('recruit_channel_tab_clicks')} />
-        <MetricCard id="pt-7" title="招募单搜索次数" value={`${trafficKpi.recruitSearchSubmits.toLocaleString()}次`} change={6.4} changeLabel="较前日" tooltip={metricTip('recruit_search_submits')} />
-        <MetricCard id="pt-8" title="登录意向点击" value={`${trafficKpi.loginIntentClicks.toLocaleString()}次`} change={11.8} changeLabel="较前日" tooltip={metricTip('login_intent_clicks')} />
+        <MetricCard id="pt-1" title="UV (独立访客)" value={trafficKpi.uv.toLocaleString()} change={trafficKpi.uvChange} changeLabel={timeMeta.compareLabel} tooltip={metricTip('unique_visitors')} />
+        <MetricCard id="pt-2" title="PV (页面浏览量)" value={trafficKpi.pv.toLocaleString()} change={trafficKpi.pvChange} changeLabel={timeMeta.compareLabel} tooltip={metricTip('page_views')} />
+        <MetricCard id="pt-3" title="人均停留时长" value={trafficKpi.avgTime} change={trafficKpi.avgTimeChange} changeLabel={timeMeta.compareLabel} tooltip={metricTip('avg_session_duration')} />
+        <MetricCard id="pt-4" title="整体跳出率" value={`${trafficKpi.bounceRate}%`} change={trafficKpi.bounceRateChange} changeLabel={timeMeta.compareLabel} tooltip={metricTip('bounce_rate')} />
+        <MetricCard id="pt-5" title="招募单点击率" value={`${trafficKpi.recruitCtr}%`} change={trafficKpi.recruitCtrChange} changeLabel={timeMeta.compareLabel} tooltip={metricTip('recruit_sheet_ctr')} />
+        <MetricCard id="pt-6" title="招募频道点击" value={`${trafficKpi.recruitChannelClicks.toLocaleString()}次`} change={9.6} changeLabel={timeMeta.compareLabel} tooltip={metricTip('recruit_channel_tab_clicks')} />
+        <MetricCard id="pt-7" title="招募单搜索次数" value={`${trafficKpi.recruitSearchSubmits.toLocaleString()}次`} change={6.4} changeLabel={timeMeta.compareLabel} tooltip={metricTip('recruit_search_submits')} />
+        <MetricCard id="pt-8" title="登录意向点击" value={`${trafficKpi.loginIntentClicks.toLocaleString()}次`} change={11.8} changeLabel={timeMeta.compareLabel} tooltip={metricTip('login_intent_clicks')} />
       </div>
 
       <div className="grid grid-cols-3 gap-6">

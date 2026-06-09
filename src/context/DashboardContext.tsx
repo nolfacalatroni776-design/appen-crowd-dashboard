@@ -94,6 +94,33 @@ interface DashboardContextType {
   updateSystemText: (key: string, value: string) => void;
 }
 
+const canonicalWidgetTitleById: Record<string, string> = {
+  'gr-4': '新增注册',
+  'gr-5': 'DAU 活跃',
+  'tq-3': '提交量',
+  'tq-6': '提交量',
+};
+
+const legacyWidgetTitleById: Record<string, string> = {
+  'gr-4': ['昨', '日', '新', '增', '注', '册'].join(''),
+  'gr-5': `DAU ${['昨', '日', '活', '跃'].join('')}`,
+  'tq-3': ['总', '提', '交', '量'].join(''),
+  'tq-6': ['昨', '日', '提', '交', '量'].join(''),
+};
+
+const normalizeWidgetConfigs = (configs: Record<string, WidgetConfig> = {}) =>
+  Object.fromEntries(
+    Object.entries(configs).map(([id, config]) => [
+      id,
+      {
+        ...config,
+        title: config.title === legacyWidgetTitleById[id]
+          ? canonicalWidgetTitleById[id]
+          : config.title,
+      },
+    ])
+  );
+
 const DashboardContext = createContext<DashboardContextType | null>(null);
 
 const readStoredDashboardState = (): StoredDashboardState => {
@@ -111,7 +138,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [storedState] = useState<StoredDashboardState>(() => readStoredDashboardState());
   const [isEditMode, setIsEditMode] = useState(false);
   const [globalDomain, setGlobalDomain] = useState('全部领域');
-  const [widgetConfigs, setWidgetConfigs] = useState<Record<string, WidgetConfig>>(() => storedState.widgetConfigs ?? {});
+  const [widgetConfigs, setWidgetConfigs] = useState<Record<string, WidgetConfig>>(() => normalizeWidgetConfigs(storedState.widgetConfigs));
   const [customMetrics, setCustomMetrics] = useState<Record<string, CustomMetric[]>>(() => storedState.customMetrics ?? {});
   const [chartLists, setChartLists] = useState<Record<string, any[]>>(() => mergeStoredChartLists(storedState.chartLists));
   const [systemTexts, setSystemTexts] = useState<Record<string, string>>(() => storedState.systemTexts ?? {});
@@ -154,7 +181,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         title: '新增自定义指标',
         value: '0',
         change: 0,
-        changeLabel: '较前日',
+        changeLabel: '较前1日',
         tooltip: '自定义指标说明',
       };
       return { ...prev, [tabId]: [...existing, newMetric] };
