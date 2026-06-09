@@ -155,12 +155,12 @@ export default function RecruitmentAnalysis() {
         <MetricCard id="ra-5" title="整体通过率" value="63.5%" change={-1.2} changeLabel="较前1日" tooltip={metricTip('approval_rate')} />
       </div>
 
-      <div className="grid grid-cols-1 gap-6">
-        <EditableChartCard id="ra-c1" title="招募转化趋势" tooltip={metricTip('trend_application_users', 'application_rate', 'approval_rate')} className="col-span-1">
+      <div className="grid grid-cols-2 gap-6">
+        <EditableChartCard id="ra-c1" title="招募转化趋势" tooltip={metricTip('application_rate', 'approval_rate')} className="col-span-1">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：申请/审核发生时间</span>
-              <span>按趋势时间展示累计申请人数、累计申请率和累计通过率变化</span>
+              <span>按趋势时间展示累计申请率和累计通过率变化</span>
             </div>
             <TimeRangeControl label="趋势时间" value={trendTimeRange} onChange={setTrendTimeRange} />
           </div>
@@ -169,13 +169,33 @@ export default function RecruitmentAnalysis() {
               <LineChart data={trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                <YAxis yAxisId="count" tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                <YAxis yAxisId="rate" orientation="right" tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} domain={[0, 100]} tickFormatter={(value) => `${value}%`} />
+                <YAxis tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} domain={[0, 100]} tickFormatter={(value) => `${value}%`} />
                 <Tooltip contentStyle={{ fontSize: '12px', borderRadius: '6px' }} />
                 <Legend wrapperStyle={{ fontSize: '10px' }} />
-                <Line yAxisId="count" type="monotone" dataKey="applicants" name="申请人数" stroke="#0f766e" strokeWidth={2} dot={{ r: 3 }} />
-                <Line yAxisId="rate" type="monotone" dataKey="applyRate" name="申请率" stroke="#f59e0b" strokeWidth={2} dot={{ r: 3 }} />
-                <Line yAxisId="rate" type="monotone" dataKey="passRate" name="通过率" stroke="#14b8a6" strokeWidth={2} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="applyRate" name="累计申请率" stroke="#f59e0b" strokeWidth={2} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="passRate" name="累计通过率" stroke="#14b8a6" strokeWidth={2} dot={{ r: 3 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </EditableChartCard>
+
+        <EditableChartCard id="ra-c2" title="每日申请人数趋势" tooltip={metricTip('trend_application_users')} className="col-span-1">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-teal-100 bg-teal-50 px-2.5 py-1 font-semibold text-teal-700">筛选：申请发生时间</span>
+              <span>按趋势时间展示每日申请人数变化</span>
+            </div>
+            <TimeRangeControl label="趋势时间" value={trendTimeRange} onChange={setTrendTimeRange} />
+          </div>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ fontSize: '12px', borderRadius: '6px' }} />
+                <Legend wrapperStyle={{ fontSize: '10px' }} />
+                <Line type="monotone" dataKey="applicants" name="申请人数" stroke="#0f766e" strokeWidth={2} dot={{ r: 3 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
