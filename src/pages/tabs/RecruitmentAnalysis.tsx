@@ -6,7 +6,6 @@ import { metricTip } from '@/src/data/metricDefinitions';
 import { ArrowUpDown } from 'lucide-react';
 import MetricCard from '@/src/components/MetricCard';
 import MetricInfo from '@/src/components/MetricInfo';
-import TimeRangeControl, { defaultTimeRange, getTimeRangeDayCount, getTimeRangeMeta } from '@/src/components/TimeRangeControl';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 import { useDashboard } from '@/src/context/DashboardContext';
@@ -18,11 +17,7 @@ export default function RecruitmentAnalysis() {
   const [domainSortConfig, setDomainSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [taskSortConfig, setTaskSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [recruitStatusFilter, setRecruitStatusFilter] = useState('全部招募单状态');
-  const [timeRange, setTimeRange] = useState(defaultTimeRange);
   const { isEditMode, chartLists, updateChartListItem, globalDomain, setGlobalDomain } = useDashboard();
-  const timeMeta = getTimeRangeMeta(timeRange);
-  const dayCount = getTimeRangeDayCount(timeRange);
-  const rangeFactor = dayCount;
   const topRecruitTasksState = chartLists.topRecruitTasks || topRecruitTasks;
   const trendData = recruitTrendByDomain[globalDomain] || recruitTrendByDomain['全部领域'];
   const getApprovedWorkers = (task: any) => Number(task.approved ?? task.onboarded ?? 0);
@@ -113,10 +108,9 @@ export default function RecruitmentAnalysis() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold text-slate-800">招募分析</h2>
-          <p className="text-sm text-slate-500 mt-1">新增、申请与审核指标按所选统计时间计算，进行中状态展示统计期末快照</p>
+          <p className="text-sm text-slate-500 mt-1">按领域与招募单状态查看招募目标、审核通过、供需缺口和当前招募进度</p>
         </div>
         <div className="flex flex-wrap items-center gap-2 text-sm">
-          <TimeRangeControl value={timeRange} onChange={setTimeRange} />
           <select
             className="h-9 rounded-full border border-slate-200 bg-white px-3 text-slate-700 shadow-sm outline-none transition hover:border-teal-200 focus:border-teal-300 focus:ring-2 focus:ring-teal-100"
             value={globalDomain}
@@ -146,9 +140,9 @@ export default function RecruitmentAnalysis() {
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <MetricCard id="ra-s1" title="新增招募单" value={`${Math.round(recruitTaskStatusData.new.value * rangeFactor).toLocaleString()}个`} change={recruitTaskStatusData.new.change} changeLabel={timeMeta.compareLabel} tooltip={metricTip('new_recruit_sheets')} />
+        <MetricCard id="ra-s1" title="新增招募单" value={`${recruitTaskStatusData.new.value}个`} change={recruitTaskStatusData.new.change} changeLabel={recruitTaskStatusData.new.label} tooltip={metricTip('new_recruit_sheets')} />
         <MetricCard id="ra-s2" title="进行中招募单" value={`${recruitTaskStatusData.inProgress.value}个`} change={recruitTaskStatusData.inProgress.change} changeLabel={recruitTaskStatusData.inProgress.label} tooltip={metricTip('active_recruit_sheets')} />
-        <MetricCard id="ra-s4" title="已完成招募单" value={`${Math.round(recruitTaskStatusData.completed.value * Math.max(1, rangeFactor / 7)).toLocaleString()}个`} change={recruitTaskStatusData.completed.change} changeLabel={timeMeta.compareLabel} tooltip={metricTip('completed_recruit_sheets')} />
+        <MetricCard id="ra-s4" title="已完成招募单" value={`${recruitTaskStatusData.completed.value}个`} change={recruitTaskStatusData.completed.change} changeLabel={recruitTaskStatusData.completed.label} tooltip={metricTip('completed_recruit_sheets')} />
       </div>
 
       <div className="grid grid-cols-4 gap-4">
