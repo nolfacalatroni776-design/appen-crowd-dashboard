@@ -538,11 +538,11 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   application_rate: {
     name: '申请率',
-    definition: '所选时间范围内，当日提交招募申请去重用户数/当日访问该招募单的去重用户数',
-    formula: 'daily_distinct_applicants / daily_distinct_recruit_visitors',
+    definition: '所选时间范围内，截止对应日期累计提交招募申请去重用户数/截止对应日期累计访问该招募单的去重用户数',
+    formula: 'cumulative_distinct_applicants / cumulative_distinct_recruit_visitors',
     source: '埋点 + 申请记录',
     refresh: 'T+1',
-    note: '按日展示申请转化效率',
+    note: '按累计口径展示申请转化效率',
   },
   approval_rate: {
     name: '通过率',
@@ -554,11 +554,11 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   trend_application_users: {
     name: '申请人数',
-    definition: '所选时间范围内，当日提交招募申请的去重用户数',
-    formula: 'count(distinct user_id where application_submitted_at in date)',
+    definition: '所选时间范围内，截止对应日期累计提交招募申请的去重用户数',
+    formula: 'count(distinct user_id where application_submitted_at <= date)',
     source: '申请记录',
     refresh: 'T+1',
-    note: '用于观察申请规模变化',
+    note: '用于观察累计申请规模变化',
   },
   gap_workers: {
     name: '缺口人数',
