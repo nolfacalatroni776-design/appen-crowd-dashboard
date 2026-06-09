@@ -4,14 +4,12 @@ import { cn } from '@/src/lib/utils';
 import { useDashboard } from '@/src/context/DashboardContext';
 import GrowthRetention from '@/src/pages/tabs/GrowthRetention';
 import RecruitmentAnalysis from '@/src/pages/tabs/RecruitmentAnalysis';
-import TaskQuality from '@/src/pages/tabs/TaskQuality';
 import PlatformTraffic from '@/src/pages/tabs/PlatformTraffic';
 
 const tabs = [
   { id: 'traffic', label: '平台流量' },
   { id: 'growth', label: '增长&留存' },
   { id: 'recruitment', label: '招募分析' },
-  { id: 'task', label: '任务&质量' },
 ];
 
 export default function Layout() {
@@ -80,7 +78,6 @@ export default function Layout() {
           {activeTab === 'traffic' && <PlatformTraffic />}
           {activeTab === 'growth' && <GrowthRetention />}
           {activeTab === 'recruitment' && <RecruitmentAnalysis />}
-          {activeTab === 'task' && <TaskQuality />}
         </div>
       </main>
     </div>
