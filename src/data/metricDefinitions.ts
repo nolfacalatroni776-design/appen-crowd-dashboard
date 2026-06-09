@@ -10,7 +10,7 @@ type MetricDefinition = {
 export const metricDefinitions: Record<string, MetricDefinition> = {
   registered_users_total: {
     name: '注册总用户数',
-    definition: '截至所选统计期末，平台累计完成注册的去重众包用户数，以用户 ID 去重',
+    definition: '截至核心指标时间期末，平台累计完成注册的去重众包用户数，以用户 ID 去重',
     formula: 'count(distinct user_id where registered_at <= end_time)',
     source: '用户表/注册事件',
     refresh: 'T+1',
@@ -18,7 +18,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   new_registered_users: {
     name: '新增注册',
-    definition: '所选时间范围内完成注册的去重用户数，以用户 ID 去重',
+    definition: '核心指标时间内完成注册的去重用户数，以用户 ID 去重；时间筛选的是用户注册成功时间',
     formula: 'count(distinct user_id where registered_at in range)',
     source: '用户表/注册事件',
     refresh: 'T+1',
@@ -26,24 +26,16 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   daily_active_users: {
     name: '活跃用户',
-    definition: '所选统计时间内至少发生一次登录、访问核心页面或有效任务行为的去重用户数；选择日时为单日活跃用户，选择周、月或近 N 天时为区间活跃用户',
+    definition: '核心指标时间内至少发生一次登录、访问核心页面或有效任务行为的去重用户数；时间筛选的是活跃事件发生时间，选择日时为单日活跃用户，选择周、月或近 N 天时为区间活跃用户',
     formula: 'count(distinct user_id with active event in day)',
     source: '登录/访问/任务事件',
     refresh: 'T+1',
     note: '需定义 active event',
   },
-  monthly_active_users: {
-    name: '近30天活跃用户',
-    definition: '截至所选统计期末，近 30 天内至少发生一次登录、访问核心页面或有效任务行为的去重用户数',
-    formula: 'count(distinct user_id with active event in month)',
-    source: '活跃事件',
-    refresh: 'T+1',
-    note: '与活跃用户使用同一事件口径',
-  },
   platform_active_rate: {
     name: '活跃用户占比',
-    definition: '截至所选统计期末的近 30 天活跃用户数/截至同一统计期末的注册总用户数',
-    formula: '近30天活跃用户数 / 注册总用户数',
+    definition: '截至核心指标时间期末的近 30 天活跃用户数/截至同一统计期末的注册总用户数',
+    formula: '近 30 天活跃用户数 / 注册总用户数',
     source: '用户表 + 活跃事件',
     refresh: 'T+1',
     note: 'demo 为 3.89%',
@@ -194,7 +186,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   registration_conversion_rate: {
     name: '新访客注册转化率',
-    definition: '所选时间范围内完成注册的新访客数/同一时间范围内首次访问平台的新访客数',
+    definition: '核心指标时间内首次访问平台的新访客中，截至该统计期末完成注册的新访客数/同一核心指标时间内首次访问平台的新访客数；时间筛选的是新访客首次访问时间',
     formula: 'new_registered_users / unique_visitors 或 register_success / login_intent_clicks',
     source: 'EliteAI 登录/注册事件 + 用户表',
     refresh: 'T+1',
@@ -202,7 +194,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   funnel_new_registered_users: {
     name: '新注册用户',
-    definition: '所选注册周期内完成注册的去重用户数，是新用户转化漏斗和留存矩阵联动分析的基准用户数',
+    definition: '留存矩阵中选定注册周内完成注册的去重用户数，是新用户转化漏斗和留存矩阵联动分析的基准用户数',
     formula: 'count(distinct user_id where registered_at in cohort_range)',
     source: '用户注册事件',
     refresh: 'T+1',
@@ -210,7 +202,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   funnel_verified_users_current: {
     name: '完成实名认证',
-    definition: '所选注册周期用户中，截至所选统计期末已完成实名认证的去重用户数',
+    definition: '留存矩阵中选定注册周用户里，截至 T+1 最新统计日已完成实名认证的去重用户数',
     formula: 'count(distinct user_id where verified_at is not null)',
     source: '用户注册事件 + 实名认证记录',
     refresh: 'T+1',
@@ -218,7 +210,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   funnel_applied_users_current: {
     name: '提交招募申请',
-    definition: '所选注册周期用户中，截至所选统计期末至少提交过一次招募申请的去重用户数',
+    definition: '留存矩阵中选定注册周用户里，截至 T+1 最新统计日至少提交过一次招募申请的去重用户数',
     formula: 'count(distinct user_id where first_application_at is not null)',
     source: '用户注册事件 + 招募申请记录',
     refresh: 'T+1',
@@ -226,7 +218,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   funnel_approved_users_current: {
     name: '招募通过',
-    definition: '所选注册周期用户中，截至所选统计期末至少有一个招募申请审核通过的去重用户数',
+    definition: '留存矩阵中选定注册周用户里，截至 T+1 最新统计日至少有一个招募申请审核通过的去重用户数',
     formula: 'count(distinct user_id where first_approved_at is not null)',
     source: '招募申请审核记录',
     refresh: 'T+1',
@@ -234,7 +226,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   funnel_task_started_users_current: {
     name: '首次任务执行',
-    definition: '所选注册周期用户中，截至所选统计期末已产生首次有效任务行为的去重用户数；有效任务行为建议优先使用首次有效任务提交',
+    definition: '留存矩阵中选定注册周用户里，截至 T+1 最新统计日已产生首次有效任务行为的去重用户数；有效任务行为建议优先使用首次有效任务提交',
     formula: 'count(distinct user_id where first_task_event_at is not null)',
     source: '任务分配/领取/提交事件',
     refresh: 'T+1',
@@ -266,7 +258,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   real_name_verification_rate: {
     name: '实名认证率',
-    definition: '所选统计时间内注册且截至统计期末已完成实名认证的用户数/所选统计时间内具备实名认证资格的注册用户数；时间筛选的是用户注册时间，未开始认证和认证失败均不计入已认证用户数',
+    definition: '核心指标时间内注册且截至该统计期末已完成实名认证的用户数/同一核心指标时间内具备实名认证资格的注册用户数；时间筛选的是用户注册时间，未开始认证和认证失败均不计入已认证用户数',
     formula: 'verified_users / eligible_registered_users',
     source: '申请记录/实名表',
     refresh: 'T+1',
@@ -274,7 +266,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   recruit_apply_rate: {
     name: '招募申请率',
-    definition: '所选统计时间内注册且截至统计期末完成实名认证后提交过至少一次招募申请的用户数/所选统计时间内完成实名认证且可申请招募的用户数；时间筛选的是用户注册时间',
+    definition: '核心指标时间内注册且截至该统计期末完成实名认证后提交过至少一次招募申请的用户数/同一核心指标时间内完成实名认证且可申请招募的用户数；时间筛选的是用户注册时间',
     formula: 'submitted_applicants / verified_users 或 applications / recruit_detail_uv',
     source: '申请记录 + 实名表 + 招募详情/申请事件',
     refresh: 'T+1',
@@ -306,7 +298,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   cohort_users: {
     name: '注册分组用户数',
-    definition: '指定注册周期内完成注册的去重用户数，是留存矩阵 D1/D7/D14/D30 留存率的基准用户数',
+    definition: '留存矩阵按近 N 个注册周筛选，指定注册周内完成注册的去重用户数，是 D1/D7/D14/D30 留存率的基准用户数',
     formula: 'count(distinct user_id in cohort)',
     source: '用户注册事件',
     refresh: 'T+1',
@@ -338,7 +330,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   lifecycle_stage_users: {
     name: '生命周期阶段人数',
-    definition: '按用户截至所选统计期末的最新生命周期状态归类的去重用户数；各阶段占比按该阶段用户数/注册总用户数计算',
+    definition: '按用户截至 T+1 最新统计日的最新生命周期状态归类的去重用户数；各阶段占比按该阶段用户数/注册总用户数计算',
     formula: 'count(user_id by stage)',
     source: '用户事件聚合',
     refresh: 'T+1',
@@ -346,7 +338,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   lifecycle_stage_new_registered: {
     name: '新注册',
-    definition: '截至所选统计期末注册未满 7 天，且尚未进入实名认证、招募申请或任务执行阶段的去重用户数；图中占比按该阶段用户数/注册总用户数计算',
+    definition: '截至 T+1 最新统计日注册未满 7 天，且尚未进入实名认证、招募申请或任务执行阶段的去重用户数；图中占比按该阶段用户数/注册总用户数计算',
     formula: 'count(distinct user_id where days_since_registered < 7 and no later lifecycle event)',
     source: '用户注册事件 + 用户生命周期表',
     refresh: 'T+1',
@@ -410,7 +402,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   lost_users_90d: {
     name: '已流失用户',
-    definition: '截至所选统计期末连续 90 天无登录且无有效任务行为的去重用户数；图中占比按该阶段用户数/注册总用户数计算，重新登录或产生有效任务行为后退出已流失状态',
+    definition: '截至 T+1 最新统计日连续 90 天无登录且无有效任务行为的去重用户数；图中占比按该阶段用户数/注册总用户数计算，重新登录或产生有效任务行为后退出已流失状态',
     formula: 'count(distinct user_id where last_login_at < snapshot_date - 90d and last_valid_task_event_at < snapshot_date - 90d)',
     source: '登录事件 + 任务事件 + 用户生命周期表',
     refresh: 'T+1',
@@ -418,7 +410,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   stage_churn_rate: {
     name: '转化环节流失率',
-    definition: '进入指定转化环节后未进入下一环节的用户数/进入该环节的用户数；用于比较相邻转化断点，不应对多个环节简单平均，不等同于 90 天未活跃/已流失用户',
+    definition: '当前样本用户截至 T+1 最新统计日进入指定转化环节后未进入下一环节的用户数/进入该环节的用户数；用于比较相邻转化断点，不应对多个环节简单平均，不等同于 90 天未活跃/已流失用户',
     formula: 'lost_users_at_stage / entered_stage_users',
     source: '漏斗事件',
     refresh: 'T+1',
@@ -426,7 +418,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   max_stage_churn_rate: {
     name: '最大流失断点',
-    definition: '转化流失断点分析中流失率最高的转化环节，同时展示该环节未进入下一环节的用户数；用于定位统计日最明显的转化阻塞点',
+    definition: '当前样本用户截至 T+1 最新统计日流失率最高的转化环节，同时展示该环节未进入下一环节的用户数；用于定位最明显的转化阻塞点',
     formula: 'max(stage_churn_rate)',
     source: '漏斗事件',
     refresh: 'T+1',
@@ -434,7 +426,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   stage_churn_users: {
     name: '转化环节流失人数',
-    definition: '用户转化漏斗中进入指定环节后未进入下一环节的去重用户数；不用于用户增长趋势中的 90 天未活跃用户口径',
+    definition: '当前样本用户截至 T+1 最新统计日进入指定环节后未进入下一环节的去重用户数；不用于用户增长趋势中的 90 天未活跃用户口径',
     formula: 'count(distinct user_id lost at stage)',
     source: '漏斗事件',
     refresh: 'T+1',
@@ -442,7 +434,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   avg_lifecycle_days: {
     name: '平均生命周期',
-    definition: '纳入样本用户从注册到已流失判定日的平均天数；未达到已流失状态的用户统计到所选统计期末，已流失按连续 90 天无登录且无有效任务行为判定',
+    definition: '当前样本用户从注册到已流失判定日的平均天数；未达到已流失状态的用户统计到 T+1 最新统计日，已流失按连续 90 天无登录且无有效任务行为判定',
     formula: 'avg(last_active_or_churn_at - registered_at)',
     source: '用户生命周期表',
     refresh: 'T+1',
@@ -458,7 +450,7 @@ export const metricDefinitions: Record<string, MetricDefinition> = {
   },
   lifecycle_duration_bucket_share: {
     name: '生命周期时长分布',
-    definition: '生命周期时长落入指定区间的用户数/纳入生命周期统计的用户总数；生命周期时长从注册日统计到已流失判定日，未流失用户统计到所选统计期末',
+    definition: '生命周期时长落入指定区间的用户数/纳入生命周期统计的用户总数；生命周期时长从注册日统计到已流失判定日，未流失用户统计到 T+1 最新统计日',
     formula: 'users_in_duration_bucket / lifecycle_users',
     source: '用户生命周期表',
     refresh: 'T+1',
