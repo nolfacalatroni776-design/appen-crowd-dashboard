@@ -76,12 +76,10 @@ export default function GrowthRetention() {
   const [metricTimeRange, setMetricTimeRange] = useState(defaultTimeRange);
   const [retentionWeekCount, setRetentionWeekCount] = useState(8);
   const [churnTimeRange, setChurnTimeRange] = useState(defaultTimeRange);
-  const [lifecycleDurationTimeRange, setLifecycleDurationTimeRange] = useState(defaultTimeRange);
   const metricMeta = getTimeRangeMeta(metricTimeRange);
   const metricDayCount = getTimeRangeDayCount(metricTimeRange);
   const metricRangeFactor = metricDayCount;
   const churnMeta = getTimeRangeMeta(churnTimeRange);
-  const lifecycleDurationMeta = getTimeRangeMeta(lifecycleDurationTimeRange);
   const visibleCohortStartIndex = Math.max(cohortData.length - retentionWeekCount, 0);
   const visibleCohortData = cohortData.slice(visibleCohortStartIndex);
   const retentionWeekOptions = [4, 8];
@@ -96,7 +94,6 @@ export default function GrowthRetention() {
 
   const lifecycleDataState = chartLists.lifecycle || [];
   const churnDataState = chartLists.churn || [];
-  const lifecycleDurationDataState = chartLists.lifecycleDuration || [];
   const funnelDataState = chartLists.funnel || [];
   const selectedCohort = cohortData[selectedCohortIndex] ?? cohortData[cohortData.length - 1];
   const currentFunnelData = isEditMode ? funnelDataState : buildFunnelFromCohort(selectedCohort);
@@ -468,68 +465,6 @@ export default function GrowthRetention() {
             </div>
         </EditableChartCard>
 
-        {/* Average Lifecycle */}
-        <EditableChartCard id="gr-c4" title="用户平均生命周期时长" showTitleTooltip={false} className="order-6 col-span-1">
-            <div className="mb-3 flex flex-wrap items-center justify-end gap-2 text-[11px] text-slate-500">
-              <TimeRangeControl label="注册时间" value={lifecycleDurationTimeRange} onChange={setLifecycleDurationTimeRange} />
-            </div>
-            <div className="grid grid-cols-2 gap-2 mb-6">
-              <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                <div className="flex items-center text-xs text-slate-500 mb-1">
-                  平均生命周期
-                  <MetricInfo tip={metricTip('avg_lifecycle_days')} />
-                </div>
-                <div className="text-lg font-bold text-slate-800">68.5天</div>
-              </div>
-              <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                <div className="flex items-center text-xs text-slate-500 mb-1">
-                  注册→首单
-                  <MetricInfo tip={metricTip('time_to_first_task_days')} />
-                </div>
-                <div className="text-lg font-bold text-slate-800">6.8天</div>
-              </div>
-            </div>
-
-            <div className="mb-2 flex items-center text-xs font-medium text-slate-500">
-              生命周期时长分布
-              <MetricInfo tip={metricTip('lifecycle_duration_bucket_share')} />
-            </div>
-            <div className="space-y-3">
-              {lifecycleDurationDataState.map((item, i) => (
-                <div key={item.id} className="relative group p-1 -mx-1 rounded-md hover:bg-slate-50 transition-colors">
-                  <div className="flex justify-between items-center text-xs mb-1">
-                    {isEditMode ? (
-                      <div className="flex w-full gap-2 items-center">
-                        <input className="font-medium text-slate-700 w-1/3 border rounded px-1 min-w-0" value={item.range} onChange={e => updateChartListItem('lifecycleDuration', item.id, { range: e.target.value })} />
-                        <input type="number" className="text-slate-500 w-1/4 border rounded px-1 text-right min-w-0" value={item.percent} onChange={e => updateChartListItem('lifecycleDuration', item.id, { percent: Number(e.target.value) })} />
-                        <input className="text-slate-500 w-1/3 border rounded px-1 min-w-0" value={item.desc} onChange={e => updateChartListItem('lifecycleDuration', item.id, { desc: e.target.value })} />
-                        <button onClick={() => removeChartListItem('lifecycleDuration', item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded"><Trash2 className="w-3 h-3" /></button>
-                      </div>
-                    ) : (
-                      <>
-                        <span className="font-medium text-slate-700">{item.range}</span>
-                        <span className="text-slate-500">{item.percent}% <span className="text-slate-400 ml-1">({item.desc})</span></span>
-                      </>
-                    )}
-                  </div>
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-teal-500 min-w-1"
-                      style={{ width: isEditMode ? '100%' : `${item.percent}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-              {isEditMode && (
-                <button
-                  onClick={() => addChartListItem('lifecycleDuration', { range: '新时间段', percent: 0, desc: '描述' })}
-                  className="w-full mt-2 py-1.5 flex items-center justify-center gap-1 border border-dashed border-teal-300 rounded text-xs text-teal-600 hover:bg-teal-50"
-                >
-                   <Plus className="w-3 h-3" /> 添加占比区间
-                </button>
-              )}
-            </div>
-        </EditableChartCard>
       </div>
     </div>
   );
